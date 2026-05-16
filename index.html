@@ -319,7 +319,9 @@
             
             // Slider-Range dynamisch aus dem Fahrplan berechnen
             let minMins = 24 * 60, maxMins = 0;
+            const now = new Date();
             fahrplanData.directions.forEach(dir => dir.trains.forEach(t => {
+                if (!isTrainRunningToday(t.restriction, now)) return;
                 t.times.forEach(ts => {
                     if (ts && ts !== '-') {
                         const m = timeToMinutes(ts);
@@ -330,7 +332,6 @@
             }));
 
             // Startzeit begrenzen
-            const now = new Date();
             const nowMins = now.getHours() * 60 + now.getMinutes();
             if (nowMins < minMins) {
                 baseSimTime = new Date(); baseSimTime.setHours(Math.floor(minMins/60), minMins%60, 0, 0);
