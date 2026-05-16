@@ -620,8 +620,8 @@
             if (activeTrains[dIdx]) {
                 const { train, legEnd } = activeTrains[dIdx];
                 
-                let listX = isToDoberan ? 10 : 740;
-                let listY = isToDoberan ? kwWest.y + 40 : bdBahnhof.y - 350;
+                let listX = isToDoberan ? 0 : 740;
+                let listY = isToDoberan ? kwWest.y + 70 : bdBahnhof.y - 350;
                 
                 const fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
                 fo.setAttribute("x", listX);
