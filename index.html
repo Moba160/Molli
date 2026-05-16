@@ -557,6 +557,11 @@
         return restriction === 'A' ? (day >= 1 && day <= 5) : true;
     }
 
+    function getLabelWidth(name) {
+        // Schätzung der Breite für Font-Size 12 (ca. 7.5px pro Zeichen)
+        return name.length * 7.5;
+    }
+
     function renderTrains(simTime) {
         if (!fahrplanData || projectedStations.length === 0) return;
         const svgTrains = document.getElementById('svg-trains');
@@ -633,20 +638,10 @@
                         if (stationName === "Bad Doberan Goethestraße") vertOffset += 40;
                         
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                        let xOffset = isToDoberan ? 60 : -60;
-                        if (isToDoberan) {
-                            if (stationName === "Steilküste") xOffset = 35;
-                            if (stationName === "Heiligendamm") xOffset = 55;
-                            if (stationName === "Rennbahn") xOffset = 30;
-                            if (stationName === "Bad Doberan Goethestraße") xOffset = 90;
-                        } else {
-                            if (stationName === "Steilküste") xOffset += 25;
-                            if (stationName === "Heiligendamm") xOffset += 12;
-                            if (stationName === "Rennbahn") xOffset += 25;
-                            if (stationName === "Bad Doberan Bahnhof") xOffset -= 12;
-                            if (stationName === "Bad Doberan Stadtmitte") xOffset -= 15;
-                            if (stationName === "Bad Doberan Goethestraße") xOffset -= 24;
-                        }
+                        
+                        const labelWidth = getLabelWidth(stationName);
+                        const gap = 8;
+                        const xOffset = isToDoberan ? (labelWidth / 2 + gap) : -(labelWidth / 2 + gap);
                         
                         timeLabel.setAttribute("x", bf.x + xOffset);
                         timeLabel.setAttribute("y", bf.y + vertOffset);
