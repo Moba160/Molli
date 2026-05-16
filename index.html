@@ -191,6 +191,7 @@
                     <g id="svg-train-times"></g>
                     <g id="svg-user-location"></g>
                     <g id="svg-train-list"></g>
+                    <g id="svg-station-board"></g>
                 </svg>
             </div>
             <p style="margin-top: 1rem; font-size: 0.8rem; color: #888;">* Der Standort wird bei Freigabe angezeigt. Die Karte wird live aktualisiert.</p>
@@ -390,12 +391,86 @@
             const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
             circle.setAttribute("cx", bf.x); circle.setAttribute("cy", bf.y); circle.setAttribute("r", "7"); circle.setAttribute("fill", "#666");
             svgStations.appendChild(circle);
+
+            const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            hitArea.setAttribute("cx", bf.x); hitArea.setAttribute("cy", bf.y);
+            hitArea.setAttribute("r", "20");
+            hitArea.setAttribute("fill", "transparent");
+            hitArea.style.cursor = "pointer";
+            hitArea.addEventListener("mouseover", () => showStationBoard(bf.name));
+            hitArea.addEventListener("mouseout", hideStationBoard);
+            svgStations.appendChild(hitArea);
+
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
             text.setAttribute("x", bf.x); text.setAttribute("y", bf.y + (i % 2 === 0 ? -20 : 30));
             text.setAttribute("text-anchor", "middle"); text.setAttribute("font-size", "12");
             text.setAttribute("font-weight", "600"); text.setAttribute("fill", "#444");
             text.textContent = bf.name; svgLabels.appendChild(text);
         });
+    }
+
+    function showStationBoard(stationName) {
+        const boardGroup = document.getElementById('svg-station-board');
+        if (!boardGroup) return;
+        boardGroup.innerHTML = '';
+        
+        let departures = [];
+        const simTime = getSimTime();
+        const nowMins = simTime.getHours() * 60 + simTime.getMinutes();
+        const colors = ['#e67e22', '#3498db'];
+        
+        fahrplanData.directions.forEach((dir, dIdx) => {
+            const sIdx = dir.stations.indexOf(stationName);
+            if (sIdx === -1) return;
+            
+            dir.trains.forEach(train => {
+                if (!isTrainRunningToday(train.restriction, simTime)) return;
+                const timeStr = train.times[sIdx];
+                if (!timeStr || timeStr === '-') return;
+                
+                const tMins = timeToMinutes(timeStr);
+                if (tMins >= nowMins) {
+                    departures.push({ time: timeStr, timeMins: tMins, to: dir.to, color: colors[dIdx], trainId: train.id });
+                }
+            });
+        });
+        
+        departures.sort((a, b) => a.timeMins - b.timeMins);
+        const nextDeps = departures.slice(0, 5); // Max. 5 nächste Abfahrten
+        
+        const fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+        fo.setAttribute("x", "350"); // Mittig im ViewBox (1000 Breit -> Mitte 500 -> Width 300 -> X=350)
+        fo.setAttribute("y", "150"); 
+        fo.setAttribute("width", "300");
+        fo.setAttribute("height", "300");
+        
+        let html = `<div xmlns="http://www.w3.org/1999/xhtml" style="font-family: inherit; background: rgba(255, 243, 205, 0.95); padding: 12px; border-radius: 8px; border: 2px solid #ffeeba; box-shadow: 0 4px 12px rgba(0,0,0,0.2); box-sizing: border-box;">
+            <div style="font-weight: bold; color: #856404; margin-bottom: 10px; font-size: 15px; text-align: center; border-bottom: 2px solid #ffeeba; padding-bottom: 5px;">Abfahrten: ${stationName}</div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+                <tr style="border-bottom: 2px solid #ffeeba; color: #856404;">
+                    <th style="padding: 4px;">Zeit</th>
+                    <th style="padding: 4px;">Ziel</th>
+                </tr>`;
+                
+        if (nextDeps.length === 0) {
+            html += `<tr><td colspan="2" style="padding: 8px; text-align: center; color: #856404;">Keine weiteren Züge heute</td></tr>`;
+        } else {
+            nextDeps.forEach(dep => {
+                html += `<tr style="border-bottom: 1px solid #ffeeba;">
+                    <td style="padding: 5px 4px; font-weight: bold; color: ${dep.color};">${dep.time}</td>
+                    <td style="padding: 5px 4px; color: #333;">Zug ${dep.trainId} nach ${dep.to}</td>
+                </tr>`;
+            });
+        }
+        
+        html += `</table></div>`;
+        fo.innerHTML = html;
+        boardGroup.appendChild(fo);
+    }
+
+    function hideStationBoard() {
+        const boardGroup = document.getElementById('svg-station-board');
+        if (boardGroup) boardGroup.innerHTML = '';
     }
 
     function timeToMinutes(timeStr) {
@@ -524,8 +599,8 @@
             if (activeTrains[dIdx]) {
                 const { train, legEnd } = activeTrains[dIdx];
                 
-                let listX = isToDoberan ? kwWest.x - 40 : bdBahnhof.x - 240;
-                let listY = isToDoberan ? kwWest.y + 120 : 40; // Rechts fest oben an den Rand setzen
+                let listX = isToDoberan ? 10 : 730;
+                let listY = isToDoberan ? kwWest.y + 40 : bdBahnhof.y - 320;
                 
                 const fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
                 fo.setAttribute("x", listX);
@@ -533,7 +608,7 @@
                 fo.setAttribute("width", "260");
                 fo.setAttribute("height", "400"); // Genügend Platz für die Tabelle
                 
-                let tableHtml = `<div style="font-family: inherit; background: rgba(255,255,255,0.9); padding: 8px; border-radius: 6px; border: 2px solid ${dirColor}; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                let tableHtml = `<div xmlns="http://www.w3.org/1999/xhtml" style="font-family: inherit; background: rgba(255,255,255,0.9); padding: 8px; border-radius: 6px; border: 2px solid ${dirColor}; box-shadow: 0 2px 5px rgba(0,0,0,0.1); box-sizing: border-box;">
                     <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px;">Zug ${train.id} nach ${dir.to}</div>
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
                         <tr style="border-bottom: 2px solid #ccc;">
