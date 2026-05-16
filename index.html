@@ -442,17 +442,11 @@
                     
                     const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
                     
-                    let yOffset = 0;
-                    if (dir.stations[legStart] === "Heiligendamm" || dir.stations[legEnd] === "Heiligendamm") {
-                        yOffset = isToDoberan ? -12 : 12;
-                    }
-
                     const triangle = document.createElementNS("http://www.w3.org/2000/svg", "path");
                     const size = 12;
-                    const dPath = `M ${-size},${-size/1.5} L ${size},0 L ${-size},${size/1.5} Z`;
-                    triangle.setAttribute("d", dPath);
+                    triangle.setAttribute("d", `M ${-size},${-size/1.5} L ${size},0 L ${-size},${size/1.5} Z`);
                     triangle.setAttribute("fill", dirColor);
-                    triangle.setAttribute("transform", `translate(${tx},${ty + yOffset}) rotate(${angle})`);
+                    triangle.setAttribute("transform", `translate(${tx},${ty}) rotate(${angle})`);
                     svgTrains.appendChild(triangle);
 
                     // Halt-Zeiten an den Bahnhöfen anzeigen
