@@ -192,6 +192,7 @@
                     <g id="svg-user-location"></g>
                     <g id="svg-train-list"></g>
                     <g id="svg-station-board"></g>
+                    <g id="svg-hit-areas"></g>
                 </svg>
             </div>
             <p style="margin-top: 1rem; font-size: 0.8rem; color: #888;">* Der Standort wird bei Freigabe angezeigt. Die Karte wird live aktualisiert.</p>
@@ -423,7 +424,8 @@
         const svgLine = document.getElementById('svg-route-line');
         const svgStations = document.getElementById('svg-stations');
         const svgLabels = document.getElementById('svg-labels');
-        svgLine.innerHTML = ''; svgStations.innerHTML = ''; svgLabels.innerHTML = '';
+        const svgHitAreas = document.getElementById('svg-hit-areas');
+        svgLine.innerHTML = ''; svgStations.innerHTML = ''; svgLabels.innerHTML = ''; svgHitAreas.innerHTML = '';
         const lats = bfData.map(b => b.lat), lngs = bfData.map(b => b.lng);
         mapBounds = { minLat: Math.min(...lats), maxLat: Math.max(...lats), minLng: Math.min(...lngs), maxLng: Math.max(...lngs) };
         projectedStations = bfData.map(bf => {
@@ -448,7 +450,7 @@
             hitArea.style.cursor = "pointer";
             hitArea.addEventListener("mouseover", () => showStationBoard(bf.name));
             hitArea.addEventListener("mouseout", hideStationBoard);
-            svgStations.appendChild(hitArea);
+            svgHitAreas.appendChild(hitArea);
 
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
             let labelY = bf.y + (i % 2 === 0 ? -20 : 30);
