@@ -248,8 +248,8 @@
     function project(lat, lng) {
         const padding = 60;
         const width = 1000 - 2 * padding, height = 600 - 2 * padding;
-        const x = padding + (lng - mapBounds.minLng) / (maxLng - mapBounds.minLng) * width;
-        const y = padding + (1 - (lat - mapBounds.minLat) / (maxLat - minLat)) * height;
+        const x = padding + (lng - mapBounds.minLng) / (mapBounds.maxLng - mapBounds.minLng) * width;
+        const y = padding + (1 - (lat - mapBounds.minLat) / (mapBounds.maxLat - mapBounds.minLat)) * height;
         return { x, y };
     }
 
