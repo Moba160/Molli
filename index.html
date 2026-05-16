@@ -166,12 +166,12 @@
 
 <div class="container">
     <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('fahrplan')">Fahrplan</button>
-        <button class="tab-btn" onclick="showTab('strecke')">Strecke</button>
+        <button class="tab-btn" onclick="showTab('fahrplan')">Fahrplan</button>
+        <button class="tab-btn active" onclick="showTab('strecke')">Strecke</button>
         <button class="tab-btn" onclick="showTab('tarife')">Tarife</button>
     </div>
 
-    <div id="fahrplan" class="content-section active">
+    <div id="fahrplan" class="content-section">
         <div class="card">
             <h2>Gültigkeit</h2>
             <p id="validity-text">Lädt...</p>
@@ -179,7 +179,7 @@
         <div id="timetable-container"></div>
     </div>
 
-    <div id="strecke" class="content-section">
+    <div id="strecke" class="content-section active">
         <div class="card">
             <h2>Streckenverlauf & Live-Positionen</h2>
             <div id="map-container" style="width: 100%; height: 500px; background: #f0f0f0; border-radius: 12px; position: relative; overflow: hidden; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);">
@@ -193,7 +193,7 @@
                     <g id="svg-train-list"></g>
                 </svg>
             </div>
-            <p style="margin-top: 1rem; font-size: 0.8rem; color: #888;">* Interaktive Zeitschaltung aktiv. Der Standort wird bei Freigabe angezeigt.</p>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: #888;">* Der Standort wird bei Freigabe angezeigt. Die Karte wird live aktualisiert.</p>
         </div>
     </div>
 
