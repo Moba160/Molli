@@ -218,7 +218,10 @@
     let bfData = null;
     let projectedStations = [];
     let mapBounds = { minLat: 0, maxLat: 0, minLng: 0, maxLng: 0 };
-    const TIME_OFFSET_MS = -10 * 60 * 60 * 1000; // -10 Stunden
+    
+    // Simulations-Logik
+    let baseSimTime = new Date();
+    let realTimeAtSet = Date.now();
 
     async function init() {
         try {
@@ -229,6 +232,20 @@
             fahrplanData = await fpRes.json();
             bfData = await bfRes.json();
             
+            // Initialzeit auf jetzt setzen
+            const timeInput = document.getElementById('sim-time-input');
+            const now = new Date();
+            timeInput.value = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            
+            timeInput.addEventListener('change', (e) => {
+                const [h, m] = e.target.value.split(':').map(Number);
+                const newSim = new Date();
+                newSim.setHours(h, m, 0, 0);
+                baseSimTime = newSim;
+                realTimeAtSet = Date.now();
+                updateLive();
+            });
+
             initGeolocation();
             renderData();
             updateLive();
@@ -280,12 +297,19 @@
         group.appendChild(circle);
     }
 
+    function getSimTime() {
+        const elapsed = Date.now() - realTimeAtSet;
+        return new Date(baseSimTime.getTime() + elapsed);
+    }
+
     function updateLive() {
-        // Simulationszeit: Jetzt minus 10 Stunden
-        const simTime = new Date(Date.now() + TIME_OFFSET_MS);
+        const simTime = getSimTime();
         
-        document.getElementById('current-time-display').innerText = 
-            simTime.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + " (Sim)";
+        // Input-Feld nur aktualisieren, wenn es nicht gerade fokussiert ist
+        const timeInput = document.getElementById('sim-time-input');
+        if (document.activeElement !== timeInput) {
+            timeInput.value = simTime.getHours().toString().padStart(2, '0') + ":" + simTime.getMinutes().toString().padStart(2, '0');
+        }
         
         renderRoute();
         renderTrains(simTime);
