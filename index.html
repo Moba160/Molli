@@ -378,13 +378,17 @@
         
         const colors = ['#e67e22', '#3498db']; // Orange für KW->BD, Blau für BD->KW
         
-        let listX = kwWest.x - 40, listY = kwWest.y + 80;
+        // Listen-Anker weiter nach unten verschieben
+        let listX = kwWest.x - 40, listY = kwWest.y + 130;
+        
         const title = document.createElementNS("http://www.w3.org/2000/svg", "text");
         title.setAttribute("x", listX); title.setAttribute("y", listY);
         title.setAttribute("font-size", "18"); title.setAttribute("font-weight", "bold");
         title.setAttribute("fill", varProp('--primary')); title.textContent = "Aktive Züge:";
         svgTrainList.appendChild(title); listY += 25;
+        
         let activeTrainsCount = 0;
+        let futureTrains = [];
 
         fahrplanData.directions.forEach((dir, dIdx) => {
             const isToDoberan = dIdx === 0;
@@ -395,6 +399,12 @@
                 const times = train.times.map(timeToMinutes);
                 let startIdx = -1, endIdx = -1;
                 for(let i=0; i<times.length; i++) if(times[i] !== null) { if(startIdx === -1) startIdx = i; endIdx = i; }
+                
+                // Falls der Zug noch nicht fährt, für "Nächste Züge" sammeln
+                if (nowMins < times[startIdx]) {
+                    futureTrains.push({ train, dir, dIdx, startTime: times[startIdx], startNode: dir.stations[startIdx], timeStr: train.times[startIdx] });
+                }
+
                 if(nowMins < times[startIdx] || nowMins > times[endIdx]) return;
                 
                 let legStart = -1, legEnd = -1;
@@ -472,7 +482,37 @@
             const none = document.createElementNS("http://www.w3.org/2000/svg", "text");
             none.setAttribute("x", listX); none.setAttribute("y", listY);
             none.setAttribute("font-size", "15"); none.setAttribute("fill", "#999");
-            none.textContent = "Kein Zugverkehr"; svgTrainList.appendChild(none);
+            none.textContent = "Kein Zugverkehr"; svgTrainList.appendChild(none); listY += 22;
+        }
+
+        // Nächste Züge
+        listY += 15;
+        const nextTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        nextTitle.setAttribute("x", listX); nextTitle.setAttribute("y", listY);
+        nextTitle.setAttribute("font-size", "18"); nextTitle.setAttribute("font-weight", "bold");
+        nextTitle.setAttribute("fill", varProp('--primary')); nextTitle.textContent = "Nächste Züge:";
+        svgTrainList.appendChild(nextTitle); listY += 25;
+
+        futureTrains.sort((a, b) => a.startTime - b.startTime);
+        const nextTwo = futureTrains.slice(0, 2);
+
+        if (nextTwo.length > 0) {
+            nextTwo.forEach(ft => {
+                const entry = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                entry.setAttribute("x", listX); entry.setAttribute("y", listY);
+                entry.setAttribute("font-size", "15"); entry.setAttribute("fill", "#333");
+                const tspanId = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+                tspanId.setAttribute("fill", colors[ft.dIdx]); tspanId.setAttribute("font-weight", "bold");
+                tspanId.textContent = `Zug ${ft.train.id}`;
+                entry.appendChild(tspanId);
+                entry.appendChild(document.createTextNode(`: ab ${ft.startNode} um ${ft.timeStr} nach ${ft.dir.to}`));
+                svgTrainList.appendChild(entry); listY += 22;
+            });
+        } else {
+            const none = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            none.setAttribute("x", listX); none.setAttribute("y", listY);
+            none.setAttribute("font-size", "15"); none.setAttribute("fill", "#999");
+            none.textContent = "Keine weiteren Züge heute"; svgTrainList.appendChild(none);
         }
     }
 
