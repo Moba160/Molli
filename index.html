@@ -597,6 +597,8 @@
                         let xOffset = isToDoberan ? 60 : -60;
                         if (stationName === "Steilküste") xOffset += 25;
                         if (stationName === "Heiligendamm") xOffset += 12;
+                        if (!isToDoberan && stationName === "Bad Doberan Bahnhof") xOffset -= 12;
+                        if (!isToDoberan && stationName === "Goethestraße") xOffset -= 24;
                         
                         timeLabel.setAttribute("x", bf.x + xOffset);
                         timeLabel.setAttribute("y", bf.y + vertOffset);
