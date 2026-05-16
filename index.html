@@ -155,7 +155,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; padding: 0 1rem;">
         <div style="text-align: left;">
             <h1>Molli Bäderbahn</h1>
-            <p>Fahrplan & Informationen 2026</p>
+            <p id="validity-header" style="font-size: 0.9rem; opacity: 0.8;">Lädt Fahrplan...</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px;">
             <span style="font-size: 0.9rem; font-weight: 400;">Sim-Zeit:</span>
@@ -172,10 +172,6 @@
     </div>
 
     <div id="fahrplan" class="content-section">
-        <div class="card">
-            <h2>Gültigkeit</h2>
-            <p id="validity-text">Lädt...</p>
-        </div>
         <div id="timetable-container"></div>
     </div>
 
@@ -300,7 +296,7 @@
 
     function renderData() {
         if (!fahrplanData) return;
-        document.getElementById('validity-text').innerText = fahrplanData.validity;
+        document.getElementById('validity-header').innerText = fahrplanData.validity;
         const container = document.getElementById('timetable-container');
         container.innerHTML = '';
         fahrplanData.directions.forEach(dir => {
