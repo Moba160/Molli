@@ -634,12 +634,16 @@
                         
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
                         let xOffset = isToDoberan ? 60 : -60;
-                        if (stationName === "Steilküste") xOffset += 25;
-                        if (stationName === "Heiligendamm") xOffset += 12;
-                        if (stationName === "Rennbahn") xOffset += 25;
-                        if (!isToDoberan && stationName === "Bad Doberan Bahnhof") xOffset -= 12;
-                        if (!isToDoberan && stationName === "Bad Doberan Stadtmitte") xOffset -= 15;
-                        if (!isToDoberan && stationName === "Bad Doberan Goethestraße") xOffset -= 24;
+                        if (isToDoberan) {
+                            if (["Steilküste", "Heiligendamm", "Rennbahn"].includes(stationName)) xOffset = -120;
+                        } else {
+                            if (stationName === "Steilküste") xOffset += 25;
+                            if (stationName === "Heiligendamm") xOffset += 12;
+                            if (stationName === "Rennbahn") xOffset += 25;
+                            if (stationName === "Bad Doberan Bahnhof") xOffset -= 12;
+                            if (stationName === "Bad Doberan Stadtmitte") xOffset -= 15;
+                            if (stationName === "Bad Doberan Goethestraße") xOffset -= 24;
+                        }
                         
                         timeLabel.setAttribute("x", bf.x + xOffset);
                         timeLabel.setAttribute("y", bf.y + vertOffset);
