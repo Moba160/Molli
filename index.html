@@ -398,13 +398,12 @@
         
         const colors = ['#e67e22', '#3498db']; // Orange für KW->BD, Blau für BD->KW
         
-        // Listen-Anker weiter nach unten verschieben
         let listX = kwWest.x - 40, listY = kwWest.y + 130;
         
         const title = document.createElementNS("http://www.w3.org/2000/svg", "text");
         title.setAttribute("x", listX); title.setAttribute("y", listY);
         title.setAttribute("font-size", "18"); title.setAttribute("font-weight", "bold");
-        title.setAttribute("fill", varProp('--primary')); title.textContent = "Aktive Züge:";
+        title.setAttribute("fill", varProp('--primary')); title.textContent = "Aktive Züge";
         svgTrainList.appendChild(title); listY += 25;
         
         let activeTrainsCount = 0;
@@ -488,8 +487,6 @@
                     entry.setAttribute("x", listX); entry.setAttribute("y", listY);
                     entry.setAttribute("font-size", "15"); entry.setAttribute("fill", "#333");
                     
-                    const nextTime = train.times[legEnd];
-                    
                     // Zug-Nummer farbig und fett
                     const tspanId = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
                     tspanId.setAttribute("fill", dirColor);
@@ -497,7 +494,7 @@
                     tspanId.textContent = `Zug ${train.id}`;
                     
                     entry.appendChild(tspanId);
-                    entry.appendChild(document.createTextNode(`: nach ${dir.to} (Halt: ${dir.stations[legEnd]} um ${nextTime})`));
+                    entry.appendChild(document.createTextNode(` nach ${dir.to}`));
                     
                     svgTrainList.appendChild(entry); listY += 22;
                 }
@@ -516,7 +513,7 @@
         const nextTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
         nextTitle.setAttribute("x", listX); nextTitle.setAttribute("y", listY);
         nextTitle.setAttribute("font-size", "18"); nextTitle.setAttribute("font-weight", "bold");
-        nextTitle.setAttribute("fill", varProp('--primary')); nextTitle.textContent = "Nächste Züge:";
+        nextTitle.setAttribute("fill", varProp('--primary')); nextTitle.textContent = "Nächste Züge";
         svgTrainList.appendChild(nextTitle); listY += 25;
 
         futureTrains.sort((a, b) => a.startTime - b.startTime);
@@ -531,7 +528,7 @@
                 tspanId.setAttribute("fill", colors[ft.dIdx]); tspanId.setAttribute("font-weight", "bold");
                 tspanId.textContent = `Zug ${ft.train.id}`;
                 entry.appendChild(tspanId);
-                entry.appendChild(document.createTextNode(`: ab ${ft.startNode} um ${ft.timeStr} nach ${ft.dir.to}`));
+                entry.appendChild(document.createTextNode(` nach ${ft.dir.to}`));
                 svgTrainList.appendChild(entry); listY += 22;
             });
         } else {
