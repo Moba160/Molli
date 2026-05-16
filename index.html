@@ -432,8 +432,8 @@
                         const bf = projectedStations.find(s => s.name === stationName);
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
                         
-                        // Optimierte Positionierung: Links (Ende) oder Rechts (Start) mit genügend Abstand
-                        const xOffset = isToDoberan ? 65 : -65;
+                        // Optimierte Positionierung: Konsequenter Abstand von 100 Einheiten
+                        const xOffset = isToDoberan ? 100 : -100;
                         const vertOffset = (sIdx % 2 === 0 ? -20 : 30);
                         
                         timeLabel.setAttribute("x", bf.x + xOffset);
