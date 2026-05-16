@@ -681,6 +681,12 @@
             if (activeTrains[dIdx]) {
                 const { train, legEnd } = activeTrains[dIdx];
                 
+                const times = train.times.map(timeToMinutes);
+                let startIdx = -1;
+                for(let i=0; i<times.length; i++) if(times[i] !== null) { startIdx = i; break; }
+                const isFuture = (nowMins < times[startIdx]);
+                const title = isFuture ? `${train.times[startIdx]} ab ${dir.stations[startIdx]}` : `Zug ${train.id} nach ${dir.to}`;
+
                 let listX = isToDoberan ? 0 : 740;
                 let listY = isToDoberan ? kwWest.y + 95 : bdBahnhof.y - 425;
                 
@@ -691,7 +697,7 @@
                 fo.setAttribute("height", "400"); // Genügend Platz für die Tabelle
                 
                 let tableHtml = `<div xmlns="http://www.w3.org/1999/xhtml" style="font-family: inherit; background: rgba(255,255,255,0.9); padding: 8px; border-radius: 6px; border: 2px solid ${dirColor}; box-shadow: 0 2px 5px rgba(0,0,0,0.1); box-sizing: border-box;">
-                    <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px;">Zug ${train.id} nach ${dir.to}</div>
+                    <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px;">${title}</div>
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
                         <tr style="border-bottom: 2px solid #ccc;">
                             <th style="padding: 3px; text-align: left;">Ank.</th>
