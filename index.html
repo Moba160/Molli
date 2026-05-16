@@ -158,7 +158,14 @@
             <p id="validity-header" style="font-size: 0.9rem; opacity: 0.8;">Lädt Fahrplan...</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px;">
-            <span style="font-size: 0.9rem; font-weight: 400;">Sim-Zeit:</span>
+            <span style="font-size: 0.8rem;">Speed:</span>
+            <select id="time-scale" style="background: transparent; color: white; border: none; font-weight: 600; cursor: pointer;">
+                <option value="1" style="color: black;">1x</option>
+                <option value="10" style="color: black;">10x</option>
+                <option value="20" style="color: black;">20x</option>
+            </select>
+            <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.3); margin: 0 5px;"></div>
+            <span style="font-size: 0.8rem; font-weight: 400;">Sim-Zeit:</span>
             <input type="time" id="sim-time-input" style="font-family: inherit; font-size: 1.2rem; font-weight: 600; border: none; background: transparent; color: white; cursor: pointer;">
         </div>
     </div>
@@ -207,6 +214,8 @@
     
     let baseSimTime = new Date();
     let realTimeAtSet = Date.now();
+    let timeScale = 1;
+    let updateInterval = null;
 
     async function init() {
         try {
@@ -218,6 +227,7 @@
             bfData = await bfRes.json();
             
             const timeInput = document.getElementById('sim-time-input');
+            const scaleSelect = document.getElementById('time-scale');
             const now = new Date();
             timeInput.value = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
             
@@ -230,13 +240,29 @@
                 updateLive();
             });
 
+            scaleSelect.addEventListener('change', (e) => {
+                // Jetzige Sim-Zeit einfrieren und als neue Basis nehmen
+                const currentSim = getSimTime();
+                baseSimTime = currentSim;
+                realTimeAtSet = Date.now();
+                timeScale = parseInt(e.target.value);
+                startInterval();
+                updateLive();
+            });
+
             initGeolocation();
             renderData();
             updateLive();
-            setInterval(updateLive, 30000);
+            startInterval();
         } catch (e) {
             console.error("Fehler beim Laden der Daten:", e);
         }
+    }
+
+    function startInterval() {
+        if (updateInterval) clearInterval(updateInterval);
+        const ms = timeScale > 1 ? 1000 : 30000;
+        updateInterval = setInterval(updateLive, ms);
     }
 
     function project(lat, lng) {
@@ -277,8 +303,8 @@
     }
 
     function getSimTime() {
-        const elapsed = Date.now() - realTimeAtSet;
-        return new Date(baseSimTime.getTime() + elapsed);
+        const elapsedReal = Date.now() - realTimeAtSet;
+        return new Date(baseSimTime.getTime() + elapsedReal * timeScale);
     }
 
     function updateLive() {
