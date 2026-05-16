@@ -215,6 +215,40 @@
     let realTimeAtSet = Date.now();
     let isDraggingSlider = false;
 
+    function interpolateMissingTimes() {
+        if (!fahrplanData || !bfData) return;
+        fahrplanData.directions.forEach(dir => {
+            dir.trains.forEach(train => {
+                for (let i = 1; i < dir.stations.length - 1; i++) {
+                    if (train.times[i] === '-') {
+                        let prevIdx = i - 1;
+                        while (prevIdx >= 0 && train.times[prevIdx] === '-') prevIdx--;
+                        let nextIdx = i + 1;
+                        while (nextIdx < dir.stations.length && train.times[nextIdx] === '-') nextIdx++;
+                        
+                        if (prevIdx !== -1 && nextIdx < dir.stations.length) {
+                            const t1 = timeToMinutes(train.times[prevIdx]);
+                            const t2 = timeToMinutes(train.times[nextIdx]);
+                            const bfPrev = bfData.find(b => b.name === dir.stations[prevIdx]);
+                            const bfMissing = bfData.find(b => b.name === dir.stations[i]);
+                            const bfNext = bfData.find(b => b.name === dir.stations[nextIdx]);
+                            
+                            if (bfPrev && bfMissing && bfNext) {
+                                const dist1 = Math.sqrt(Math.pow(bfMissing.lat - bfPrev.lat, 2) + Math.pow(bfMissing.lng - bfPrev.lng, 2));
+                                const dist2 = Math.sqrt(Math.pow(bfNext.lat - bfMissing.lat, 2) + Math.pow(bfNext.lng - bfMissing.lng, 2));
+                                const factor = dist1 / (dist1 + dist2);
+                                const interpolatedMins = t1 + (t2 - t1) * factor;
+                                const h = Math.floor(interpolatedMins / 60);
+                                const m = Math.round(interpolatedMins % 60);
+                                train.times[i] = `(${h}:${m.toString().padStart(2, '0')})`;
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    }
+
     async function init() {
         try {
             const [fpRes, bfRes] = await Promise.all([
@@ -223,6 +257,7 @@
             ]);
             fahrplanData = await fpRes.json();
             bfData = await bfRes.json();
+            interpolateMissingTimes();
             
             const slider = document.getElementById('sim-time-slider');
             const resetBtn = document.getElementById('reset-time-btn');
@@ -511,7 +546,8 @@
 
     function timeToMinutes(timeStr) {
         if (!timeStr || timeStr === '-') return null;
-        const [h, m] = timeStr.split(':').map(Number);
+        const clean = timeStr.replace(/[()]/g, '');
+        const [h, m] = clean.split(':').map(Number);
         return h * 60 + m;
     }
 
