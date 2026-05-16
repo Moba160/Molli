@@ -429,36 +429,49 @@
                 if (!timeStr || timeStr === '-') return;
                 
                 const tMins = timeToMinutes(timeStr);
-                if (tMins >= nowMins) {
-                    departures.push({ time: timeStr, timeMins: tMins, to: dir.to, color: colors[dIdx], trainId: train.id });
-                }
+                const isPast = tMins < nowMins;
+                departures.push({ time: timeStr, timeMins: tMins, to: dir.to, color: colors[dIdx], trainId: train.id, isPast });
             });
         });
         
         departures.sort((a, b) => a.timeMins - b.timeMins);
-        const nextDeps = departures.slice(0, 5); // Max. 5 nächste Abfahrten
         
         const fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
         fo.setAttribute("x", "350"); // Mittig im ViewBox (1000 Breit -> Mitte 500 -> Width 300 -> X=350)
-        fo.setAttribute("y", "150"); 
+        fo.setAttribute("y", "25"); 
         fo.setAttribute("width", "300");
-        fo.setAttribute("height", "300");
+        fo.setAttribute("height", "550");
         
-        let html = `<div xmlns="http://www.w3.org/1999/xhtml" style="font-family: inherit; background: rgba(255, 243, 205, 0.95); padding: 12px; border-radius: 8px; border: 2px solid #ffeeba; box-shadow: 0 4px 12px rgba(0,0,0,0.2); box-sizing: border-box;">
+        let html = `<div xmlns="http://www.w3.org/1999/xhtml" style="font-family: inherit; background: rgba(255, 243, 205, 0.95); padding: 12px; border-radius: 8px; border: 2px solid #ffeeba; box-shadow: 0 4px 12px rgba(0,0,0,0.2); box-sizing: border-box; max-height: 550px; overflow-y: auto;">
             <div style="font-weight: bold; color: #856404; margin-bottom: 10px; font-size: 15px; text-align: center; border-bottom: 2px solid #ffeeba; padding-bottom: 5px;">Abfahrten: ${stationName}</div>
             <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
                 <tr style="border-bottom: 2px solid #ffeeba; color: #856404;">
                     <th style="padding: 4px; text-align: left;">Zeit</th>
+                    <th style="padding: 4px; text-align: left;"></th>
                     <th style="padding: 4px; text-align: left;">Ziel</th>
                 </tr>`;
                 
-        if (nextDeps.length === 0) {
-            html += `<tr><td colspan="2" style="padding: 8px; text-align: center; color: #856404;">Keine weiteren Züge heute</td></tr>`;
+        if (departures.length === 0) {
+            html += `<tr><td colspan="3" style="padding: 8px; text-align: center; color: #856404;">Keine Züge heute</td></tr>`;
         } else {
-            nextDeps.forEach(dep => {
+            departures.forEach(dep => {
+                const rowColor = dep.isPast ? '#999' : dep.color;
+                const textColor = dep.isPast ? '#999' : '#333';
+                
+                let relativeTime = "";
+                if (!dep.isPast) {
+                    const diffMins = dep.timeMins - nowMins;
+                    if (diffMins <= 120 && diffMins >= 0) {
+                        const h = Math.floor(diffMins / 60);
+                        const m = diffMins % 60;
+                        relativeTime = `in ${h}:${m.toString().padStart(2, '0')}`;
+                    }
+                }
+                
                 html += `<tr style="border-bottom: 1px solid #ffeeba;">
-                    <td style="padding: 5px 4px; font-weight: bold; color: ${dep.color}; text-align: left;">${dep.time}</td>
-                    <td style="padding: 5px 4px; color: #333; text-align: left;">Zug ${dep.trainId} nach ${dep.to}</td>
+                    <td style="padding: 5px 4px; font-weight: bold; color: ${rowColor}; text-align: left;">${dep.time}</td>
+                    <td style="padding: 5px 4px; font-weight: bold; color: #d35400; text-align: left; font-size: 11px;">${relativeTime}</td>
+                    <td style="padding: 5px 4px; color: ${textColor}; text-align: left;">Zug ${dep.trainId} nach ${dep.to}</td>
                 </tr>`;
             });
         }
@@ -493,6 +506,7 @@
         svgTrains.innerHTML = ''; svgTrainTimes.innerHTML = ''; svgTrainList.innerHTML = '';
         const nowMins = simTime.getHours() * 60 + simTime.getMinutes();
         const kwWest = projectedStations.find(s => s.name === "Kühlungsborn West");
+        const bdBahnhof = projectedStations.find(s => s.name === "Bad Doberan Bahnhof");
         
         const colors = ['#e67e22', '#3498db']; // Orange für KW->BD, Blau für BD->KW
         
