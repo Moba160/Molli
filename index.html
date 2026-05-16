@@ -157,7 +157,7 @@
             <h1>Molli Bäderbahn</h1>
             <p id="validity-header" style="font-size: 0.9rem; opacity: 0.8;">Lädt Fahrplan...</p>
         </div>
-        <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; flex-grow: 1; max-width: 500px; margin-left: 20px;">
             <span style="font-size: 0.8rem;">Speed:</span>
             <select id="time-scale" style="background: transparent; color: white; border: none; font-weight: 600; cursor: pointer;">
                 <option value="1" style="color: black;">1x</option>
@@ -165,8 +165,14 @@
                 <option value="20" style="color: black;">20x</option>
             </select>
             <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.3); margin: 0 5px;"></div>
-            <span style="font-size: 0.8rem; font-weight: 400;">Sim-Zeit:</span>
-            <input type="time" id="sim-time-input" style="font-family: inherit; font-size: 1.2rem; font-weight: 600; border: none; background: transparent; color: white; cursor: pointer;">
+            
+            <button id="reset-time-btn" title="Auf Echtzeit zurücksetzen" style="background: none; border: none; cursor: pointer; color: white; padding: 0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </button>
+            
+            <span id="sim-time-display" style="font-family: inherit; font-size: 1.2rem; font-weight: 600; min-width: 55px; text-align: center;"></span>
+            
+            <input type="range" id="sim-time-slider" style="flex-grow: 1; cursor: pointer;">
         </div>
     </div>
 </header>
@@ -216,6 +222,7 @@
     let realTimeAtSet = Date.now();
     let timeScale = 1;
     let updateInterval = null;
+    let isDraggingSlider = false;
 
     async function init() {
         try {
@@ -226,16 +233,48 @@
             fahrplanData = await fpRes.json();
             bfData = await bfRes.json();
             
-            const timeInput = document.getElementById('sim-time-input');
             const scaleSelect = document.getElementById('time-scale');
-            const now = new Date();
-            timeInput.value = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            const slider = document.getElementById('sim-time-slider');
+            const resetBtn = document.getElementById('reset-time-btn');
             
-            timeInput.addEventListener('change', (e) => {
-                const [h, m] = e.target.value.split(':').map(Number);
+            // Slider-Range dynamisch aus dem Fahrplan berechnen
+            let minMins = 24 * 60, maxMins = 0;
+            fahrplanData.directions.forEach(dir => dir.trains.forEach(t => {
+                t.times.forEach(ts => {
+                    if (ts && ts !== '-') {
+                        const m = timeToMinutes(ts);
+                        if (m < minMins) minMins = m;
+                        if (m > maxMins) maxMins = m;
+                    }
+                });
+            }));
+            slider.min = minMins - 30; // 30 Min Puffer davor
+            slider.max = maxMins + 30; // 30 Min Puffer danach
+            
+            slider.addEventListener('mousedown', () => isDraggingSlider = true);
+            slider.addEventListener('touchstart', () => isDraggingSlider = true);
+            
+            const applySliderTime = (e) => {
+                const totalMins = parseInt(e.target.value);
+                const h = Math.floor(totalMins / 60);
+                const m = totalMins % 60;
+                
                 const newSim = new Date();
                 newSim.setHours(h, m, 0, 0);
                 baseSimTime = newSim;
+                realTimeAtSet = Date.now();
+                updateLive();
+            };
+            
+            slider.addEventListener('input', applySliderTime);
+            slider.addEventListener('change', (e) => {
+                isDraggingSlider = false;
+                applySliderTime(e);
+            });
+            slider.addEventListener('touchend', () => isDraggingSlider = false);
+
+            resetBtn.addEventListener('click', () => {
+                baseSimTime = new Date();
                 realTimeAtSet = Date.now();
                 updateLive();
             });
@@ -309,10 +348,21 @@
 
     function updateLive() {
         const simTime = getSimTime();
-        const timeInput = document.getElementById('sim-time-input');
-        if (document.activeElement !== timeInput) {
-            timeInput.value = simTime.getHours().toString().padStart(2, '0') + ":" + simTime.getMinutes().toString().padStart(2, '0');
+        
+        const display = document.getElementById('sim-time-display');
+        const slider = document.getElementById('sim-time-slider');
+        
+        const h = simTime.getHours();
+        const m = simTime.getMinutes();
+        
+        if (display) {
+            display.innerText = h.toString().padStart(2, '0') + ":" + m.toString().padStart(2, '0');
         }
+        
+        if (slider && !isDraggingSlider) {
+            slider.value = h * 60 + m;
+        }
+
         renderRoute();
         renderTrains(simTime);
         updateHighlighting(simTime);
