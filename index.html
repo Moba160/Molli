@@ -158,21 +158,13 @@
             <p id="validity-header" style="font-size: 0.9rem; opacity: 0.8;">Lädt Fahrplan...</p>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; flex-grow: 1; max-width: 500px; margin-left: 20px;">
-            <span style="font-size: 0.8rem;">Speed:</span>
-            <select id="time-scale" style="background: transparent; color: white; border: none; font-weight: 600; cursor: pointer;">
-                <option value="1" style="color: black;">1x</option>
-                <option value="10" style="color: black;">10x</option>
-                <option value="20" style="color: black;">20x</option>
-            </select>
-            <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.3); margin: 0 5px;"></div>
-            
             <button id="reset-time-btn" title="Auf Echtzeit zurücksetzen" style="background: none; border: none; cursor: pointer; color: white; padding: 0;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             </button>
             
             <span id="sim-time-display" style="font-family: inherit; font-size: 1.2rem; font-weight: 600; min-width: 55px; text-align: center;"></span>
             
-            <input type="range" id="sim-time-slider" style="flex-grow: 1; cursor: pointer;">
+            <input type="range" id="sim-time-slider" style="flex-grow: 1; cursor: pointer; accent-color: #888;">
         </div>
     </div>
 </header>
@@ -220,8 +212,6 @@
     
     let baseSimTime = new Date();
     let realTimeAtSet = Date.now();
-    let timeScale = 1;
-    let updateInterval = null;
     let isDraggingSlider = false;
 
     async function init() {
@@ -233,7 +223,6 @@
             fahrplanData = await fpRes.json();
             bfData = await bfRes.json();
             
-            const scaleSelect = document.getElementById('time-scale');
             const slider = document.getElementById('sim-time-slider');
             const resetBtn = document.getElementById('reset-time-btn');
             
@@ -279,29 +268,13 @@
                 updateLive();
             });
 
-            scaleSelect.addEventListener('change', (e) => {
-                // Jetzige Sim-Zeit einfrieren und als neue Basis nehmen
-                const currentSim = getSimTime();
-                baseSimTime = currentSim;
-                realTimeAtSet = Date.now();
-                timeScale = parseInt(e.target.value);
-                startInterval();
-                updateLive();
-            });
-
             initGeolocation();
             renderData();
             updateLive();
-            startInterval();
+            setInterval(updateLive, 30000); // Feste 30s Aktualisierung
         } catch (e) {
             console.error("Fehler beim Laden der Daten:", e);
         }
-    }
-
-    function startInterval() {
-        if (updateInterval) clearInterval(updateInterval);
-        const ms = timeScale > 1 ? 1000 : 30000;
-        updateInterval = setInterval(updateLive, ms);
     }
 
     function project(lat, lng) {
@@ -343,7 +316,7 @@
 
     function getSimTime() {
         const elapsedReal = Date.now() - realTimeAtSet;
-        return new Date(baseSimTime.getTime() + elapsedReal * timeScale);
+        return new Date(baseSimTime.getTime() + elapsedReal);
     }
 
     function updateLive() {
@@ -448,6 +421,7 @@
         
         const colors = ['#e67e22', '#3498db']; // Orange für KW->BD, Blau für BD->KW
         
+        let activeTrainsCount = 0;
         let activeTrains = [];
         let futureTrains = [];
 
@@ -461,9 +435,8 @@
                 let startIdx = -1, endIdx = -1;
                 for(let i=0; i<times.length; i++) if(times[i] !== null) { if(startIdx === -1) startIdx = i; endIdx = i; }
                 
-                // Falls der Zug noch nicht fährt, für "Nächste Züge" sammeln
                 if (nowMins < times[startIdx]) {
-                    futureTrains.push({ train, dir, dIdx, startTime: times[startIdx], startNode: dir.stations[startIdx], timeStr: train.times[startIdx] });
+                    futureTrains.push({ train, dir, dIdx, startTime: times[startIdx] });
                 }
 
                 if(nowMins < times[startIdx] || nowMins > times[endIdx]) return;
@@ -500,6 +473,29 @@
                     trainNumLabel.setAttribute("fill", dirColor);
                     trainNumLabel.textContent = train.id;
                     svgTrains.appendChild(trainNumLabel);
+
+                    // Halt-Zeiten an den Bahnhöfen auf dem Streckenband wiederherstellen
+                    dir.stations.forEach((stationName, sIdx) => {
+                        const timeStr = train.times[sIdx];
+                        if (!timeStr || timeStr === '-') return;
+                        const bf = projectedStations.find(s => s.name === stationName);
+                        
+                        const originalIdx = bfData.findIndex(b => b.name === stationName);
+                        const vertOffset = (originalIdx % 2 === 0 ? -20 : 30);
+                        
+                        const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        const xOffset = isToDoberan ? 60 : -60;
+                        
+                        timeLabel.setAttribute("x", bf.x + xOffset);
+                        timeLabel.setAttribute("y", bf.y + vertOffset);
+                        timeLabel.setAttribute("text-anchor", isToDoberan ? "start" : "end");
+                        timeLabel.setAttribute("font-size", "11");
+                        timeLabel.setAttribute("font-weight", "bold");
+                        
+                        timeLabel.setAttribute("fill", times[sIdx] < nowMins ? "#bbb" : dirColor);
+                        timeLabel.textContent = timeStr;
+                        svgTrainTimes.appendChild(timeLabel);
+                    });
                     
                     if (!activeTrains[dIdx]) {
                         activeTrains[dIdx] = { train, legEnd };
@@ -524,45 +520,56 @@
                 if (nextTrain) activeTrains[dIdx] = nextTrain;
             }
             
-            // Laufweg-Liste auf der Karte zeichnen
+            // Laufweg-Liste auf der Karte zeichnen (HTML Tabelle in SVG)
             if (activeTrains[dIdx]) {
                 const { train, legEnd } = activeTrains[dIdx];
                 
-                let listX = isToDoberan ? kwWest.x - 20 : bdBahnhof.x - 180;
-                let listY = isToDoberan ? kwWest.y + 60 : bdBahnhof.y - 250;
+                let listX = isToDoberan ? kwWest.x - 40 : bdBahnhof.x - 240;
+                let listY = isToDoberan ? kwWest.y + 120 : bdBahnhof.y - 280; // Links deutlich tiefer, rechts höher
                 
-                const title = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                title.setAttribute("x", listX); title.setAttribute("y", listY);
-                title.setAttribute("font-size", "14"); title.setAttribute("font-weight", "bold");
-                title.setAttribute("fill", dirColor);
-                title.textContent = `Zug ${train.id} nach ${dir.to}`;
-                svgTrainList.appendChild(title); 
-                listY += 20;
+                const fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+                fo.setAttribute("x", listX);
+                fo.setAttribute("y", listY);
+                fo.setAttribute("width", "260");
+                fo.setAttribute("height", "400"); // Genügend Platz für die Tabelle
+                
+                let tableHtml = `<div style="font-family: inherit; background: rgba(255,255,255,0.9); padding: 8px; border-radius: 6px; border: 2px solid ${dirColor}; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px;">Zug ${train.id} nach ${dir.to}</div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
+                        <tr style="border-bottom: 2px solid #ccc;">
+                            <th style="padding: 3px;">Ank.</th>
+                            <th style="padding: 3px;">Abf.</th>
+                            <th style="padding: 3px;">Bahnhof</th>
+                        </tr>`;
 
                 dir.stations.forEach((stationName, sIdx) => {
                     const timeStr = train.times[sIdx];
                     if (!timeStr || timeStr === '-') return;
 
-                    const entry = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                    entry.setAttribute("x", listX); entry.setAttribute("y", listY);
-                    entry.setAttribute("font-size", "12"); 
-                    
                     const isPast = (timeToMinutes(timeStr) < nowMins);
                     const isNextStop = (sIdx === legEnd);
                     
-                    if (isNextStop) {
-                        entry.setAttribute("fill", dirColor);
-                        entry.setAttribute("font-weight", "bold");
-                    } else if (isPast) {
-                        entry.setAttribute("fill", "#bbb");
-                    } else {
-                        entry.setAttribute("fill", "#333");
-                    }
+                    let styleStr = isNextStop ? `font-weight: bold; color: ${dirColor}; background: rgba(${isToDoberan ? '230,126,34' : '52,152,219'}, 0.1);` : (isPast ? "color: #bbb;" : "color: #333;");
                     
-                    entry.textContent = `${stationName} / ${timeStr}`;
-                    svgTrainList.appendChild(entry); 
-                    listY += 18;
+                    let ank = "";
+                    let abf = "";
+                    // Wenn es die letzte Station ist, ist es eine Ankunft, sonst Abfahrt.
+                    if (sIdx === dir.stations.length - 1) {
+                        ank = timeStr;
+                    } else {
+                        abf = timeStr;
+                    }
+
+                    tableHtml += `<tr style="border-bottom: 1px solid #eee; ${styleStr}">
+                        <td style="padding: 4px 3px;">${ank}</td>
+                        <td style="padding: 4px 3px;">${abf}</td>
+                        <td style="padding: 4px 3px;">${stationName}</td>
+                    </tr>`;
                 });
+                
+                tableHtml += `</table></div>`;
+                fo.innerHTML = tableHtml;
+                svgTrainList.appendChild(fo);
             }
         });
 
