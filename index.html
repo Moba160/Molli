@@ -636,6 +636,7 @@
                         let xOffset = isToDoberan ? 60 : -60;
                         if (stationName === "Steilküste") xOffset += 25;
                         if (stationName === "Heiligendamm") xOffset += 12;
+                        if (stationName === "Rennbahn") xOffset += 25;
                         if (!isToDoberan && stationName === "Bad Doberan Bahnhof") xOffset -= 12;
                         if (!isToDoberan && stationName === "Bad Doberan Stadtmitte") xOffset -= 15;
                         if (!isToDoberan && stationName === "Bad Doberan Goethestraße") xOffset -= 24;
@@ -679,7 +680,7 @@
                 const { train, legEnd } = activeTrains[dIdx];
                 
                 let listX = isToDoberan ? 0 : 740;
-                let listY = isToDoberan ? kwWest.y + 95 : bdBahnhof.y - 400;
+                let listY = isToDoberan ? kwWest.y + 95 : bdBahnhof.y - 425;
                 
                 const fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
                 fo.setAttribute("x", listX);
