@@ -687,7 +687,6 @@
     }
 
     function getLabelWidth(name) {
-        // Schätzung der Breite für Font-Size 12 (ca. 7.5px pro Zeichen)
         return name.length * 7.5;
     }
 
@@ -701,16 +700,14 @@
         const kwWest = projectedStations.find(s => s.name === "Kühlungsborn West");
         const bdBahnhof = projectedStations.find(s => s.name === "Bad Doberan Bahnhof");
         
-        const colors = ['#e67e22', '#3498db']; // Orange für KW->BD, Blau für BD->KW
-        
-        let activeTrainsCount = 0;
+        const colors = ['#e67e22', '#3498db']; 
         let activeTrains = [];
         let futureTrains = [];
 
         fahrplanData.directions.forEach((dir, dIdx) => {
             const isToDoberan = dIdx === 0;
             const dirColor = colors[dIdx];
-
+            
             dir.trains.forEach(train => {
                 if (!isTrainRunningToday(train.restriction, simTime)) return;
                 
@@ -718,7 +715,7 @@
                 const timesDep = train.times.map(t => timeToMinutes(t, 'dep'));
                 
                 let startIdx = -1, endIdx = -1;
-                for(let i=0; i<timesArr.length; i++) if(timesArr[i] !== null) { if(startIdx === -1) startIdx = i; endIdx = i; }
+                for(let i=0; i<timesArr.length; i++) if(timesArr[i] !== null || timesDep[i] !== null) { if(startIdx === -1) startIdx = i; endIdx = i; }
                 
                 if (nowMins < timesArr[startIdx]) {
                     futureTrains.push({ train, dir, dIdx, startTime: timesArr[startIdx], startStation: dir.stations[startIdx] });
@@ -728,7 +725,6 @@
                 
                 let tx = null, ty = null, angle = 0, currentLegEnd = -1;
 
-                // 1. Prüfen, ob der Zug an einem Bahnhof STEHT
                 for (let i = 0; i < timesArr.length; i++) {
                     if (timesArr[i] !== null && timesDep[i] !== null) {
                         if (nowMins >= timesArr[i] && nowMins < timesDep[i]) {
@@ -741,7 +737,6 @@
                     }
                 }
 
-                // 2. Falls nicht stehend, Leg-Position berechnen
                 if (tx === null) {
                     for (let i = 0; i < timesDep.length - 1; i++) {
                         const start = timesDep[i];
@@ -790,30 +785,24 @@
                         const originalIdx = bfData.findIndex(b => b.name === stationName);
                         let vertOffset = (originalIdx % 2 === 0 ? -20 : 30);
                         if (stationName === "Bad Doberan Goethestraße") vertOffset += 40;
-                        
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
                         const labelWidth = getLabelWidth(stationName);
                         const gap = 4;
                         const xOffset = isToDoberan ? (labelWidth / 2 + gap) : -(labelWidth / 2 + gap);
-                        
                         timeLabel.setAttribute("x", bf.x + xOffset);
                         timeLabel.setAttribute("y", bf.y + vertOffset);
                         timeLabel.setAttribute("text-anchor", isToDoberan ? "start" : "end");
                         timeLabel.setAttribute("font-size", "11");
                         timeLabel.setAttribute("font-weight", "bold");
                         timeLabel.setAttribute("fill", timesDep[sIdx] < nowMins ? "#bbb" : dirColor);
-                        
                         if (timeStr.includes('/')) {
                             const [arr, dep] = timeStr.split('/');
                             const tspanArr = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
-                            tspanArr.textContent = arr;
-                            tspanArr.setAttribute("x", bf.x + xOffset);
+                            tspanArr.textContent = arr; tspanArr.setAttribute("x", bf.x + xOffset);
                             const tspanDep = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
-                            tspanDep.textContent = dep;
-                            tspanDep.setAttribute("x", bf.x + xOffset);
+                            tspanDep.textContent = dep; tspanDep.setAttribute("x", bf.x + xOffset);
                             tspanDep.setAttribute("dy", "1.1em");
-                            timeLabel.appendChild(tspanArr);
-                            timeLabel.appendChild(tspanDep);
+                            timeLabel.appendChild(tspanArr); timeLabel.appendChild(tspanDep);
                         } else {
                             timeLabel.textContent = timeStr;
                         }
@@ -822,7 +811,6 @@
                 }
             });
 
-            // Falls kein aktiver Zug, nächsten Zug für die Liste suchen
             if (!activeTrains[dIdx]) {
                 let nextTrain = null;
                 dir.trains.forEach(train => {
@@ -839,7 +827,6 @@
                 if (nextTrain) activeTrains[dIdx] = nextTrain;
             }
             
-            // Laufweg-Liste (Tabelle)
             if (activeTrains[dIdx]) {
                 const { train, legEnd } = activeTrains[dIdx];
                 let listX = isToDoberan ? 0 : 740;
@@ -871,23 +858,19 @@
             }
         });
 
-        // Nächste Züge (zentriert unten)
         futureTrains.sort((a, b) => a.startTime - b.startTime);
-        let nextListX = 500;
-        let nextListY = 520;
+        let nextListX = 500; let nextListY = 520;
         const nextTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
         nextTitle.setAttribute("x", nextListX); nextTitle.setAttribute("y", nextListY);
         nextTitle.setAttribute("text-anchor", "middle"); nextTitle.setAttribute("font-size", "14");
         nextTitle.setAttribute("font-weight", "bold"); nextTitle.setAttribute("fill", "#b00000");
         nextTitle.textContent = "Nächste Züge";
         svgTrainList.appendChild(nextTitle);
-
         futureTrains.slice(0, 2).forEach((ft, i) => {
             const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
             txt.setAttribute("x", nextListX); txt.setAttribute("y", nextListY + 20 + (i * 18));
             txt.setAttribute("text-anchor", "middle"); txt.setAttribute("font-size", "12");
             txt.setAttribute("fill", colors[ft.dIdx]);
-            
             const timeStr = ft.train.times.find(t => t && t !== '-').split('/')[0];
             txt.textContent = `${timeStr} ab ${ft.startStation} nach ${ft.dir.to}`;
             svgTrainList.appendChild(txt);
