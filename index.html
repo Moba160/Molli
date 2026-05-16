@@ -430,7 +430,7 @@
                 
                 const tMins = timeToMinutes(timeStr);
                 const isPast = tMins < nowMins;
-                departures.push({ time: timeStr, timeMins: tMins, to: dir.to, color: colors[dIdx], trainId: train.id, isPast });
+                departures.push({ time: timeStr, timeMins: tMins, to: dir.to, color: colors[dIdx], trainId: train.id, isPast, dIdx });
             });
         });
         
@@ -468,10 +468,17 @@
                     }
                 }
                 
+                let destStr = "";
+                if (dep.dIdx === 0) {
+                    destStr = `${dep.to} <span style="color: ${dep.color};">&#9654;</span>`;
+                } else {
+                    destStr = `<span style="color: ${dep.color};">&#9664;</span> ${dep.to}`;
+                }
+                
                 html += `<tr style="border-bottom: 1px solid #ffeeba;">
                     <td style="padding: 5px 4px; font-weight: bold; color: ${rowColor}; text-align: left;">${dep.time}</td>
                     <td style="padding: 5px 4px; font-weight: bold; color: #d35400; text-align: left; font-size: 11px;">${relativeTime}</td>
-                    <td style="padding: 5px 4px; color: ${textColor}; text-align: left;">Zug ${dep.trainId} nach ${dep.to}</td>
+                    <td style="padding: 5px 4px; color: ${textColor}; text-align: left;">${destStr}</td>
                 </tr>`;
             });
         }
