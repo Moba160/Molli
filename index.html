@@ -161,8 +161,15 @@
 <body>
 
 <header>
-    <h1>Molli Bäderbahn</h1>
-    <p>Fahrplan & Informationen 2026</p>
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; padding: 0 1rem;">
+        <div style="text-align: left;">
+            <h1>Molli Bäderbahn</h1>
+            <p>Fahrplan & Informationen 2026</p>
+        </div>
+        <div id="current-time-display" style="font-size: 1.5rem; font-weight: 600; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px;">
+            00:00
+        </div>
+    </div>
 </header>
 
 <div class="container">
@@ -183,13 +190,19 @@
 
     <div id="strecke" class="content-section">
         <div class="card">
-            <h2>Streckenverlauf</h2>
-            <div id="map-container" style="width: 100%; height: 500px; background: #eee; border-radius: 8px; position: relative; overflow: hidden;">
+            <h2>Streckenverlauf & Live-Positionen</h2>
+            <div id="map-container" style="width: 100%; height: 500px; background: #f0f0f0; border-radius: 12px; position: relative; overflow: hidden; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);">
                 <svg id="route-svg" width="100%" height="100%" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
-                    <g id="svg-content"></g>
+                    <g id="svg-route-line"></g>
+                    <g id="svg-stations"></g>
+                    <g id="svg-trains"></g>
+                    <g id="svg-labels"></g>
                 </svg>
             </div>
-            <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">Visualisierung basierend auf geografischen Koordinaten.</p>
+            
+            <div id="live-status-panel" style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <!-- Live Züge werden hier gerendert -->
+            </div>
         </div>
     </div>
 
@@ -204,6 +217,7 @@
 <script>
     let fahrplanData = null;
     let bfData = null;
+    let projectedStations = [];
 
     async function init() {
         try {
@@ -215,12 +229,20 @@
             bfData = await bfRes.json();
             
             renderData();
-            renderRoute();
-            updateHighlighting();
-            setInterval(updateHighlighting, 60000);
+            updateLive();
+            setInterval(updateLive, 30000); // Alle 30 Sekunden für flüssigere Updates
         } catch (e) {
             console.error("Fehler beim Laden der Daten:", e);
         }
+    }
+
+    function updateLive() {
+        const now = new Date();
+        document.getElementById('current-time-display').innerText = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        
+        renderRoute();
+        renderTrains();
+        updateHighlighting();
     }
 
     function renderData() {
@@ -279,10 +301,14 @@
     function renderRoute() {
         if (!bfData) return;
         
-        const svgContent = document.getElementById('svg-content');
-        svgContent.innerHTML = '';
+        const svgLine = document.getElementById('svg-route-line');
+        const svgStations = document.getElementById('svg-stations');
+        const svgLabels = document.getElementById('svg-labels');
         
-        // Min/Max finden für Skalierung
+        svgLine.innerHTML = '';
+        svgStations.innerHTML = '';
+        svgLabels.innerHTML = '';
+        
         const lats = bfData.map(b => b.lat);
         const lngs = bfData.map(b => b.lng);
         const minLat = Math.min(...lats);
@@ -290,54 +316,197 @@
         const minLng = Math.min(...lngs);
         const maxLng = Math.max(...lngs);
         
-        const padding = 50;
+        const padding = 60;
         const width = 1000 - 2 * padding;
         const height = 600 - 2 * padding;
         
-        const project = (lat, lng) => {
-            const x = padding + (lng - minLng) / (maxLng - minLng) * width;
-            // Latitude ist umgekehrt im SVG (y=0 ist oben)
-            const y = padding + (1 - (lat - minLat) / (maxLat - minLat)) * height;
-            return { x, y };
-        };
+        projectedStations = bfData.map(bf => {
+            const x = padding + (bf.lng - minLng) / (maxLng - minLng) * width;
+            const y = padding + (1 - (bf.lat - minLat) / (maxLat - minLat)) * height;
+            return { ...bf, x, y };
+        });
 
-        // Linie zeichnen
+        // Linie
         let pathData = "";
-        bfData.forEach((bf, i) => {
-            const { x, y } = project(bf.lat, bf.lng);
-            pathData += (i === 0 ? "M" : " L") + `${x},${y}`;
+        projectedStations.forEach((bf, i) => {
+            pathData += (i === 0 ? "M" : " L") + `${bf.x},${bf.y}`;
         });
         
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.setAttribute("d", pathData);
         path.setAttribute("fill", "none");
-        path.setAttribute("stroke", "var(--primary)");
-        path.setAttribute("stroke-width", "4");
-        path.setAttribute("stroke-linejoin", "round");
-        svgContent.appendChild(path);
+        path.setAttribute("stroke", "#ccc");
+        path.setAttribute("stroke-width", "6");
+        path.setAttribute("stroke-linecap", "round");
+        svgLine.appendChild(path);
         
-        // Bahnhöfe zeichnen
-        bfData.forEach(bf => {
-            const { x, y } = project(bf.lat, bf.lng);
-            
+        // Bahnhöfe & Labels
+        projectedStations.forEach((bf, i) => {
             const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            circle.setAttribute("cx", x);
-            circle.setAttribute("cy", y);
-            circle.setAttribute("r", "8");
-            circle.setAttribute("fill", "var(--primary)");
-            svgContent.appendChild(circle);
+            circle.setAttribute("cx", bf.x);
+            circle.setAttribute("cy", bf.y);
+            circle.setAttribute("r", "7");
+            circle.setAttribute("fill", "#666");
+            svgStations.appendChild(circle);
             
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("x", x);
-            text.setAttribute("y", y - 15);
+            text.setAttribute("x", bf.x);
+            
+            // Abwechselnd oben/unten gegen Überlappung
+            const isTop = i % 2 === 0;
+            text.setAttribute("y", bf.y + (isTop ? -20 : 30));
+            
             text.setAttribute("text-anchor", "middle");
-            text.setAttribute("font-size", "14");
+            text.setAttribute("font-size", "12");
             text.setAttribute("font-weight", "600");
-            text.setAttribute("fill", "var(--text)");
+            text.setAttribute("fill", "#444");
             text.textContent = bf.name;
-            svgContent.appendChild(text);
+            svgLabels.appendChild(text);
         });
     }
+
+    function timeToMinutes(timeStr) {
+        if (!timeStr || timeStr === '-') return null;
+        const [h, m] = timeStr.split(':').map(Number);
+        return h * 60 + m;
+    }
+
+    function isTrainRunningToday(restriction) {
+        if (!restriction) return true;
+        const day = new Date().getDay(); // 0=Sun, 6=Sat
+        if (restriction === 'A') {
+            return day >= 1 && day <= 5; // Mo-Fr
+        }
+        return true;
+    }
+
+    function renderTrains() {
+        if (!fahrplanData || projectedStations.length === 0) return;
+        
+        const svgTrains = document.getElementById('svg-trains');
+        const statusPanel = document.getElementById('live-status-panel');
+        svgTrains.innerHTML = '';
+        statusPanel.innerHTML = '';
+
+        const now = new Date();
+        const nowMins = now.getHours() * 60 + now.getMinutes();
+        
+        let activeTrainsCount = 0;
+
+        fahrplanData.directions.forEach((dir, dIdx) => {
+            const isToDoberan = dIdx === 0; // KW -> BD
+            const verticalOffset = isToDoberan ? -12 : 12;
+
+            dir.trains.forEach(train => {
+                if (!isTrainRunningToday(train.restriction)) return;
+
+                const times = train.times.map(timeToMinutes);
+                
+                // Start- und Endzeit des Zugs finden
+                let startIdx = -1;
+                let endIdx = -1;
+                for(let i=0; i<times.length; i++) {
+                    if(times[i] !== null) {
+                        if(startIdx === -1) startIdx = i;
+                        endIdx = i;
+                    }
+                }
+
+                if(nowMins < times[startIdx] || nowMins > times[endIdx]) return;
+
+                // Position interpolieren
+                let legStart = -1;
+                let legEnd = -1;
+                for(let i=0; i<times.length - 1; i++) {
+                    if(times[i] !== null && times[i+1] !== null) {
+                        if(nowMins >= times[i] && nowMins <= times[i+1]) {
+                            legStart = i;
+                            legEnd = i + 1;
+                            break;
+                        }
+                    }
+                }
+
+                if (legStart !== -1) {
+                    activeTrainsCount++;
+                    const p1 = projectedStations.find(s => s.name === dir.stations[legStart]);
+                    const p2 = projectedStations.find(s => s.name === dir.stations[legEnd]);
+                    
+                    const duration = times[legEnd] - times[legStart];
+                    const elapsed = nowMins - times[legStart];
+                    const factor = duration === 0 ? 0 : elapsed / duration;
+
+                    const tx = p1.x + (p2.x - p1.x) * factor;
+                    const ty = p1.y + (p2.y - p1.y) * factor + verticalOffset;
+
+                    // Dreieck zeichnen
+                    const triangle = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    const size = 10;
+                    let d = "";
+                    if (isToDoberan) {
+                        // Spitze nach rechts
+                        d = `M ${tx-size},${ty-size} L ${tx+size},${ty} L ${tx-size},${ty+size} Z`;
+                    } else {
+                        // Spitze nach links
+                        d = `M ${tx+size},${ty-size} L ${tx-size},${ty} L ${tx+size},${ty+size} Z`;
+                    }
+                    triangle.setAttribute("d", d);
+                    triangle.setAttribute("fill", varProp('--primary'));
+                    svgTrains.appendChild(triangle);
+
+                    // Status-Panel Eintrag
+                    const statusCard = document.createElement('div');
+                    statusCard.className = 'card';
+                    statusCard.style.padding = '1rem';
+                    statusCard.style.margin = '0';
+                    statusCard.innerHTML = `
+                        <div style="font-weight: 600; color: var(--primary);">Zug ${train.id}</div>
+                        <div style="font-size: 0.85rem;">Nach: ${dir.to}</div>
+                        <div style="font-size: 0.85rem; color: #666;">Nächster Halt: ${dir.stations[legEnd]} (${dir.trains[0].times[legEnd]})</div>
+                    `;
+                    statusPanel.appendChild(statusCard);
+                }
+            });
+        });
+
+        if (activeTrainsCount === 0) {
+            statusPanel.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #888;">Aktuell verkehren keine Züge.</div>';
+        }
+    }
+
+    function varProp(name) {
+        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function updateHighlighting() {
+        const now = new Date();
+        const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+        document.querySelectorAll('td[data-time]').forEach(td => {
+            td.classList.remove('next-train');
+            const timeStr = td.getAttribute('data-time');
+            if (timeStr && timeStr !== '-') {
+                const [h, m] = timeStr.split(':').map(Number);
+                const trainMinutes = h * 60 + m;
+                const diff = trainMinutes - nowMinutes;
+
+                if (diff >= 0 && diff <= 10) {
+                    td.classList.add('next-train');
+                }
+            }
+        });
+    }
+
+    function showTab(tabId) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+        if (tabId === 'strecke') renderRoute();
+    }
+
+    init();
+</script>
 
     function updateHighlighting() {
         const now = new Date();
