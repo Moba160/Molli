@@ -425,21 +425,24 @@
                     triangle.setAttribute("transform", `translate(${tx},${ty + yOffset}) rotate(${angle})`);
                     svgTrains.appendChild(triangle);
 
+                    // Halt-Zeiten an den Bahnhöfen anzeigen
                     dir.stations.forEach((stationName, sIdx) => {
                         const timeStr = train.times[sIdx];
                         if (!timeStr || timeStr === '-') return;
                         const bf = projectedStations.find(s => s.name === stationName);
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
                         
-                        const sideOffset = isToDoberan ? 50 : -50;
+                        // Optimierte Positionierung: Links (Ende) oder Rechts (Start) mit genügend Abstand
+                        const xOffset = isToDoberan ? 65 : -65;
                         const vertOffset = (sIdx % 2 === 0 ? -20 : 30);
                         
-                        timeLabel.setAttribute("x", bf.x + sideOffset);
+                        timeLabel.setAttribute("x", bf.x + xOffset);
                         timeLabel.setAttribute("y", bf.y + vertOffset);
-                        timeLabel.setAttribute("text-anchor", "middle");
+                        timeLabel.setAttribute("text-anchor", isToDoberan ? "start" : "end");
                         timeLabel.setAttribute("font-size", "11");
                         timeLabel.setAttribute("font-weight", "bold");
                         
+                        // Farbe: Deutliches Grau für vorbei, Richtungsfarbe für anstehend
                         timeLabel.setAttribute("fill", times[sIdx] < nowMins ? "#bbb" : dirColor);
                         timeLabel.textContent = timeStr;
                         svgTrainTimes.appendChild(timeLabel);
@@ -448,8 +451,18 @@
                     const entry = document.createElementNS("http://www.w3.org/2000/svg", "text");
                     entry.setAttribute("x", listX); entry.setAttribute("y", listY);
                     entry.setAttribute("font-size", "15"); entry.setAttribute("fill", "#333");
+                    
                     const nextTime = train.times[legEnd];
-                    entry.textContent = `Zug ${train.id}: nach ${dir.to} (Halt: ${dir.stations[legEnd]} um ${nextTime})`;
+                    
+                    // Zug-Nummer farbig und fett
+                    const tspanId = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+                    tspanId.setAttribute("fill", dirColor);
+                    tspanId.setAttribute("font-weight", "bold");
+                    tspanId.textContent = `Zug ${train.id}`;
+                    
+                    entry.appendChild(tspanId);
+                    entry.appendChild(document.createTextNode(`: nach ${dir.to} (Halt: ${dir.stations[legEnd]} um ${nextTime})`));
+                    
                     svgTrainList.appendChild(entry); listY += 22;
                 }
             });
