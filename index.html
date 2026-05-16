@@ -222,10 +222,13 @@
 </header>
 
 <div class="container">
-    <div class="tabs">
-        <button class="tab-btn" onclick="showTab('fahrplan')">Fahrplan</button>
-        <button class="tab-btn active" onclick="showTab('strecke')">Strecke</button>
-        <button class="tab-btn" onclick="showTab('tarife')">Tarife</button>
+    <div class="tabs" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--secondary); margin-bottom: 0.5rem;">
+        <div style="display: flex; gap: 1rem;">
+            <button class="tab-btn" onclick="showTab('fahrplan')">Fahrplan</button>
+            <button class="tab-btn active" onclick="showTab('strecke')">Strecke</button>
+            <button class="tab-btn" onclick="showTab('tarife')">Tarife</button>
+        </div>
+        <span style="font-size: 0.75rem; color: #888; padding-bottom: 4px;">* Standort bei Freigabe &middot; Karte wird live aktualisiert</span>
     </div>
 
     <div id="fahrplan" class="content-section">
@@ -247,7 +250,6 @@
                     <g id="svg-hit-areas"></g>
                 </svg>
             </div>
-            <p style="margin-top: 0.4rem; font-size: 0.75rem; color: #888;">* Der Standort wird bei Freigabe angezeigt. Die Karte wird live aktualisiert.</p>
         </div>
     </div>
 
