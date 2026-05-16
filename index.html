@@ -581,7 +581,7 @@
                         
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
                         let xOffset = isToDoberan ? 60 : -60;
-                        if (!isToDoberan && stationName === "Steilküste") xOffset = -35;
+                        if (stationName === "Steilküste") xOffset += 25;
                         
                         timeLabel.setAttribute("x", bf.x + xOffset);
                         timeLabel.setAttribute("y", bf.y + vertOffset);
