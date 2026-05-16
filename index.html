@@ -17,11 +17,7 @@
             --shadow: rgba(0,0,0,0.1);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Outfit', sans-serif;
@@ -33,7 +29,7 @@
         header {
             background: linear-gradient(135deg, var(--primary), #b00000);
             color: var(--white);
-            padding: 2rem 1rem;
+            padding: 1.5rem 1rem;
             text-align: center;
             box-shadow: 0 4px 10px var(--shadow);
         }
@@ -130,9 +126,7 @@
             top: 0;
         }
 
-        tr:hover {
-            background-color: #f9f9f9;
-        }
+        tr:hover { background-color: #f9f9f9; }
 
         .next-train {
             background-color: var(--highlight) !important;
@@ -150,10 +144,7 @@
         }
 
         @media (max-width: 600px) {
-            th, td {
-                padding: 0.5rem 0.25rem;
-                font-size: 0.8rem;
-            }
+            th, td { padding: 0.5rem 0.25rem; font-size: 0.8rem; }
             .card { padding: 1rem; }
         }
     </style>
@@ -166,8 +157,9 @@
             <h1>Molli Bäderbahn</h1>
             <p>Fahrplan & Informationen 2026</p>
         </div>
-        <div id="current-time-display" style="font-size: 1.5rem; font-weight: 600; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px;">
-            00:00
+        <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px;">
+            <span style="font-size: 0.9rem; font-weight: 400;">Sim-Zeit:</span>
+            <input type="time" id="sim-time-input" style="font-family: inherit; font-size: 1.2rem; font-weight: 600; border: none; background: transparent; color: white; cursor: pointer;">
         </div>
     </div>
 </header>
@@ -184,7 +176,6 @@
             <h2>Gültigkeit</h2>
             <p id="validity-text">Lädt...</p>
         </div>
-
         <div id="timetable-container"></div>
     </div>
 
@@ -197,11 +188,12 @@
                     <g id="svg-stations"></g>
                     <g id="svg-trains"></g>
                     <g id="svg-labels"></g>
+                    <g id="svg-train-times"></g>
                     <g id="svg-user-location"></g>
                     <g id="svg-train-list"></g>
                 </svg>
             </div>
-            <p style="margin-top: 1rem; font-size: 0.8rem; color: #888;">* Experimentier-Modus: Zeit-Offset -10 Stunden aktiv.</p>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: #888;">* Interaktive Zeitschaltung aktiv. Der Standort wird bei Freigabe angezeigt.</p>
         </div>
     </div>
 
@@ -219,7 +211,6 @@
     let projectedStations = [];
     let mapBounds = { minLat: 0, maxLat: 0, minLng: 0, maxLng: 0 };
     
-    // Simulations-Logik
     let baseSimTime = new Date();
     let realTimeAtSet = Date.now();
 
@@ -232,7 +223,6 @@
             fahrplanData = await fpRes.json();
             bfData = await bfRes.json();
             
-            // Initialzeit auf jetzt setzen
             const timeInput = document.getElementById('sim-time-input');
             const now = new Date();
             timeInput.value = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
@@ -258,8 +248,8 @@
     function project(lat, lng) {
         const padding = 60;
         const width = 1000 - 2 * padding, height = 600 - 2 * padding;
-        const x = padding + (lng - mapBounds.minLng) / (mapBounds.maxLng - mapBounds.minLng) * width;
-        const y = padding + (1 - (lat - mapBounds.minLat) / (mapBounds.maxLat - mapBounds.minLat)) * height;
+        const x = padding + (lng - mapBounds.minLng) / (maxLng - mapBounds.minLng) * width;
+        const y = padding + (1 - (lat - mapBounds.minLat) / (maxLat - minLat)) * height;
         return { x, y };
     }
 
@@ -276,20 +266,15 @@
         const group = document.getElementById('svg-user-location');
         if (!group || !mapBounds.minLat) return;
         group.innerHTML = '';
-
         const { x, y } = project(lat, lng);
-        
-        // Puls-Effekt
         const pulse = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         pulse.setAttribute("cx", x); pulse.setAttribute("cy", y);
-        pulse.setAttribute("r", "12"); pulse.setAttribute("fill", "#3498db");
-        pulse.setAttribute("opacity", "0.4");
+        pulse.setAttribute("r", "12"); pulse.setAttribute("fill", "#3498db"); pulse.setAttribute("opacity", "0.4");
         const anim = document.createElementNS("http://www.w3.org/2000/svg", "animate");
         anim.setAttribute("attributeName", "r"); anim.setAttribute("values", "10;20;10");
         anim.setAttribute("dur", "2s"); anim.setAttribute("repeatCount", "indefinite");
         pulse.appendChild(anim);
         group.appendChild(pulse);
-
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         circle.setAttribute("cx", x); circle.setAttribute("cy", y);
         circle.setAttribute("r", "8"); circle.setAttribute("fill", "#2980b9");
@@ -304,13 +289,10 @@
 
     function updateLive() {
         const simTime = getSimTime();
-        
-        // Input-Feld nur aktualisieren, wenn es nicht gerade fokussiert ist
         const timeInput = document.getElementById('sim-time-input');
         if (document.activeElement !== timeInput) {
             timeInput.value = simTime.getHours().toString().padStart(2, '0') + ":" + simTime.getMinutes().toString().padStart(2, '0');
         }
-        
         renderRoute();
         renderTrains(simTime);
         updateHighlighting(simTime);
@@ -321,32 +303,22 @@
         document.getElementById('validity-text').innerText = fahrplanData.validity;
         const container = document.getElementById('timetable-container');
         container.innerHTML = '';
-
         fahrplanData.directions.forEach(dir => {
             const section = document.createElement('div');
             section.className = 'card';
-            let html = `<h2>${dir.from} &rarr; ${dir.to}</h2>`;
-            html += `<div style="overflow-x: auto;"><table><thead><tr><th>Station</th>`;
-            dir.trains.forEach(t => {
-                html += `<th>Zug ${t.id}${t.restriction ? `<span class="restriction-tag">${t.restriction}</span>` : ''}</th>`;
-            });
+            let html = `<h2>${dir.from} &rarr; ${dir.to}</h2><div style="overflow-x: auto;"><table><thead><tr><th>Station</th>`;
+            dir.trains.forEach(t => html += `<th>Zug ${t.id}${t.restriction ? `<span class="restriction-tag">${t.restriction}</span>` : ''}</th>`);
             html += `</tr></thead><tbody>`;
             dir.stations.forEach((station, sIdx) => {
                 html += `<tr><td><strong>${station}</strong></td>`;
-                dir.trains.forEach(t => {
-                    const time = t.times[sIdx];
-                    html += `<td data-time="${time}">${time}</td>`;
-                });
+                dir.trains.forEach(t => html += `<td data-time="${t.times[sIdx]}">${t.times[sIdx]}</td>`);
                 html += `</tr>`;
             });
             html += `</tbody></table></div>`;
-            section.innerHTML = html;
-            container.appendChild(section);
+            section.innerHTML = html; container.appendChild(section);
         });
-
-        const faresContainer = document.getElementById('fares-content');
         const fares = fahrplanData.fares;
-        faresContainer.innerHTML = `
+        document.getElementById('fares-content').innerHTML = `
             <div class="info-item"><h4>Kurzstrecke</h4><p>${fares.short.toFixed(2)} €</p></div>
             <div class="info-item"><h4>2 Zonen</h4><p>Einfach: ${fares.zone2.single.toFixed(2)} € / Rück: ${fares.zone2.return.toFixed(2)} €</p></div>
             <div class="info-item"><h4>3 Zonen</h4><p>Einfach: ${fares.zone3.single.toFixed(2)} € / Rück: ${fares.zone3.return.toFixed(2)} €</p></div>
@@ -359,44 +331,27 @@
         const svgStations = document.getElementById('svg-stations');
         const svgLabels = document.getElementById('svg-labels');
         svgLine.innerHTML = ''; svgStations.innerHTML = ''; svgLabels.innerHTML = '';
-        
-        const lats = bfData.map(b => b.lat);
-        const lngs = bfData.map(b => b.lng);
+        const lats = bfData.map(b => b.lat), lngs = bfData.map(b => b.lng);
         mapBounds = { minLat: Math.min(...lats), maxLat: Math.max(...lats), minLng: Math.min(...lngs), maxLng: Math.max(...lngs) };
-        
         projectedStations = bfData.map(bf => {
             const { x, y } = project(bf.lat, bf.lng);
             return { ...bf, x, y };
         });
-
         let pathData = "";
-        projectedStations.forEach((bf, i) => {
-            pathData += (i === 0 ? "M" : " L") + `${bf.x},${bf.y}`;
-        });
+        projectedStations.forEach((bf, i) => pathData += (i === 0 ? "M" : " L") + `${bf.x},${bf.y}`);
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", pathData);
-        path.setAttribute("fill", "none");
-        path.setAttribute("stroke", "#ccc");
-        path.setAttribute("stroke-width", "6");
-        path.setAttribute("stroke-linecap", "round");
+        path.setAttribute("d", pathData); path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "#ccc"); path.setAttribute("stroke-width", "6"); path.setAttribute("stroke-linecap", "round");
         svgLine.appendChild(path);
-        
         projectedStations.forEach((bf, i) => {
             const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            circle.setAttribute("cx", bf.x); circle.setAttribute("cy", bf.y);
-            circle.setAttribute("r", "7"); circle.setAttribute("fill", "#666");
+            circle.setAttribute("cx", bf.x); circle.setAttribute("cy", bf.y); circle.setAttribute("r", "7"); circle.setAttribute("fill", "#666");
             svgStations.appendChild(circle);
-            
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("x", bf.x);
-            const isTop = i % 2 === 0;
-            text.setAttribute("y", bf.y + (isTop ? -20 : 30));
-            text.setAttribute("text-anchor", "middle");
-            text.setAttribute("font-size", "12");
-            text.setAttribute("font-weight", "600");
-            text.setAttribute("fill", "#444");
-            text.textContent = bf.name;
-            svgLabels.appendChild(text);
+            text.setAttribute("x", bf.x); text.setAttribute("y", bf.y + (i % 2 === 0 ? -20 : 30));
+            text.setAttribute("text-anchor", "middle"); text.setAttribute("font-size", "12");
+            text.setAttribute("font-weight", "600"); text.setAttribute("fill", "#444");
+            text.textContent = bf.name; svgLabels.appendChild(text);
         });
     }
 
@@ -409,94 +364,81 @@
     function isTrainRunningToday(restriction, simDate) {
         if (!restriction) return true;
         const day = simDate.getDay(); 
-        if (restriction === 'A') {
-            return day >= 1 && day <= 5; 
-        }
-        return true;
+        return restriction === 'A' ? (day >= 1 && day <= 5) : true;
     }
 
     function renderTrains(simTime) {
         if (!fahrplanData || projectedStations.length === 0) return;
         const svgTrains = document.getElementById('svg-trains');
+        const svgTrainTimes = document.getElementById('svg-train-times');
         const svgTrainList = document.getElementById('svg-train-list');
-        svgTrains.innerHTML = '';
-        svgTrainList.innerHTML = '';
-
+        svgTrains.innerHTML = ''; svgTrainTimes.innerHTML = ''; svgTrainList.innerHTML = '';
         const nowMins = simTime.getHours() * 60 + simTime.getMinutes();
         const kwWest = projectedStations.find(s => s.name === "Kühlungsborn West");
-        
-        // Listen-Anker unter Kühlungsborn West
-        let listX = kwWest.x - 40;
-        let listY = kwWest.y + 80;
-
+        let listX = kwWest.x - 40, listY = kwWest.y + 80;
         const title = document.createElementNS("http://www.w3.org/2000/svg", "text");
         title.setAttribute("x", listX); title.setAttribute("y", listY);
         title.setAttribute("font-size", "14"); title.setAttribute("font-weight", "bold");
-        title.setAttribute("fill", varProp('--primary'));
-        title.textContent = "Aktive Züge:";
-        svgTrainList.appendChild(title);
-        listY += 20;
-
+        title.setAttribute("fill", varProp('--primary')); title.textContent = "Aktive Züge:";
+        svgTrainList.appendChild(title); listY += 20;
         let activeTrainsCount = 0;
 
         fahrplanData.directions.forEach((dir, dIdx) => {
             const isToDoberan = dIdx === 0;
-            const verticalOffset = isToDoberan ? -12 : 12;
-
             dir.trains.forEach(train => {
                 if (!isTrainRunningToday(train.restriction, simTime)) return;
                 const times = train.times.map(timeToMinutes);
                 let startIdx = -1, endIdx = -1;
-                for(let i=0; i<times.length; i++) {
-                    if(times[i] !== null) { if(startIdx === -1) startIdx = i; endIdx = i; }
-                }
-
+                for(let i=0; i<times.length; i++) if(times[i] !== null) { if(startIdx === -1) startIdx = i; endIdx = i; }
                 if(nowMins < times[startIdx] || nowMins > times[endIdx]) return;
-
                 let legStart = -1, legEnd = -1;
-                for(let i=0; i<times.length - 1; i++) {
-                    if(times[i] !== null && times[i+1] !== null) {
-                        if(nowMins >= times[i] && nowMins <= times[i+1]) { legStart = i; legEnd = i + 1; break; }
-                    }
-                }
-
+                for(let i=0; i<times.length - 1; i++) if(times[i] !== null && times[i+1] !== null) if(nowMins >= times[i] && nowMins <= times[i+1]) { legStart = i; legEnd = i + 1; break; }
                 if (legStart !== -1) {
                     activeTrainsCount++;
                     const p1 = projectedStations.find(s => s.name === dir.stations[legStart]);
                     const p2 = projectedStations.find(s => s.name === dir.stations[legEnd]);
                     const duration = times[legEnd] - times[legStart];
                     const factor = duration === 0 ? 0 : (nowMins - times[legStart]) / duration;
-                    const tx = p1.x + (p2.x - p1.x) * factor;
-                    const ty = p1.y + (p2.y - p1.y) * factor + verticalOffset;
-
+                    const tx = p1.x + (p2.x - p1.x) * factor, ty = p1.y + (p2.y - p1.y) * factor + (isToDoberan ? -12 : 12);
                     const triangle = document.createElementNS("http://www.w3.org/2000/svg", "path");
                     const size = 10;
-                    let d = isToDoberan ? `M ${tx-size},${ty-size} L ${tx+size},${ty} L ${tx-size},${ty+size} Z` : `M ${tx+size},${ty-size} L ${tx-size},${ty} L ${tx+size},${ty+size} Z`;
-                    triangle.setAttribute("d", d); triangle.setAttribute("fill", varProp('--primary'));
-                    svgTrains.appendChild(triangle);
+                    triangle.setAttribute("d", isToDoberan ? `M ${tx-size},${ty-size} L ${tx+size},${ty} L ${tx-size},${ty+size} Z` : `M ${tx+size},${ty-size} L ${tx-size},${ty} L ${tx+size},${ty+size} Z`);
+                    triangle.setAttribute("fill", varProp('--primary')); svgTrains.appendChild(triangle);
+
+                    dir.stations.forEach((stationName, sIdx) => {
+                        const timeStr = train.times[sIdx];
+                        if (!timeStr || timeStr === '-') return;
+                        const bf = projectedStations.find(s => s.name === stationName);
+                        const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        // Links vom Namen für Züge von Doberan (KW<-BD), Rechts für Züge nach Doberan (KW->BD)
+                        const xOffset = isToDoberan ? 60 : -60;
+                        timeLabel.setAttribute("x", bf.x + xOffset);
+                        timeLabel.setAttribute("y", bf.y + (sIdx % 2 === 0 ? -20 : 30));
+                        timeLabel.setAttribute("text-anchor", "middle");
+                        timeLabel.setAttribute("font-size", "10");
+                        timeLabel.setAttribute("font-weight", "600");
+                        timeLabel.setAttribute("fill", times[sIdx] < nowMins ? "#999" : varProp('--primary'));
+                        timeLabel.textContent = timeStr;
+                        svgTrainTimes.appendChild(timeLabel);
+                    });
 
                     const entry = document.createElementNS("http://www.w3.org/2000/svg", "text");
                     entry.setAttribute("x", listX); entry.setAttribute("y", listY);
                     entry.setAttribute("font-size", "12"); entry.setAttribute("fill", "#444");
                     entry.textContent = ` Zug ${train.id}: → ${dir.to} (Halt: ${dir.stations[legEnd]})`;
-                    svgTrainList.appendChild(entry);
-                    listY += 18;
+                    svgTrainList.appendChild(entry); listY += 18;
                 }
             });
         });
-
         if (activeTrainsCount === 0) {
             const none = document.createElementNS("http://www.w3.org/2000/svg", "text");
             none.setAttribute("x", listX); none.setAttribute("y", listY);
             none.setAttribute("font-size", "12"); none.setAttribute("fill", "#999");
-            none.textContent = "Kein Zugverkehr";
-            svgTrainList.appendChild(none);
+            none.textContent = "Kein Zugverkehr"; svgTrainList.appendChild(none);
         }
     }
 
-    function varProp(name) {
-        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    }
+    function varProp(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 
     function updateHighlighting(simTime) {
         const nowMinutes = simTime.getHours() * 60 + simTime.getMinutes();
@@ -521,70 +463,5 @@
 
     init();
 </script>
-
-    function varProp(name) {
-        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    }
-
-    function updateHighlighting() {
-        const now = new Date();
-        const nowMinutes = now.getHours() * 60 + now.getMinutes();
-
-        document.querySelectorAll('td[data-time]').forEach(td => {
-            td.classList.remove('next-train');
-            const timeStr = td.getAttribute('data-time');
-            if (timeStr && timeStr !== '-') {
-                const [h, m] = timeStr.split(':').map(Number);
-                const trainMinutes = h * 60 + m;
-                const diff = trainMinutes - nowMinutes;
-
-                if (diff >= 0 && diff <= 10) {
-                    td.classList.add('next-train');
-                }
-            }
-        });
-    }
-
-    function showTab(tabId) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
-        if (tabId === 'strecke') renderRoute();
-    }
-
-    init();
-</script>
-
-    function updateHighlighting() {
-        const now = new Date();
-        const nowMinutes = now.getHours() * 60 + now.getMinutes();
-
-        document.querySelectorAll('td[data-time]').forEach(td => {
-            td.classList.remove('next-train');
-            const timeStr = td.getAttribute('data-time');
-            if (timeStr && timeStr !== '-') {
-                const [h, m] = timeStr.split(':').map(Number);
-                const trainMinutes = h * 60 + m;
-                const diff = trainMinutes - nowMinutes;
-
-                // Innerhalb der nächsten 10 Minuten in der Zukunft
-                if (diff >= 0 && diff <= 10) {
-                    td.classList.add('next-train');
-                }
-            }
-        });
-    }
-
-    function showTab(tabId) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
-
-    init();
-</script>
-
 </body>
 </html>
