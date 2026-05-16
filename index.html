@@ -416,7 +416,9 @@
             svgStations.appendChild(hitArea);
 
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("x", bf.x); text.setAttribute("y", bf.y + (i % 2 === 0 ? -20 : 30));
+            let labelY = bf.y + (i % 2 === 0 ? -20 : 30);
+            if (bf.name === "Bad Doberan Goethestraße") labelY += 40;
+            text.setAttribute("x", bf.x); text.setAttribute("y", labelY);
             text.setAttribute("text-anchor", "middle"); text.setAttribute("font-size", "12");
             text.setAttribute("font-weight", "600"); text.setAttribute("fill", "#444");
             text.textContent = bf.name; svgLabels.appendChild(text);
@@ -591,7 +593,8 @@
                         const bf = projectedStations.find(s => s.name === stationName);
                         
                         const originalIdx = bfData.findIndex(b => b.name === stationName);
-                        const vertOffset = (originalIdx % 2 === 0 ? -20 : 30);
+                        let vertOffset = (originalIdx % 2 === 0 ? -20 : 30);
+                        if (stationName === "Bad Doberan Goethestraße") vertOffset += 40;
                         
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
                         let xOffset = isToDoberan ? 60 : -60;
