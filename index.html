@@ -34,9 +34,16 @@
         }
 
         .container {
-            max-width: 1000px;
+            width: 98%;
+            max-width: 1600px;
             margin: 0.5rem auto;
-            padding: 0 1rem;
+            padding: 0 0.5rem;
+        }
+
+        @media (min-width: 1800px) {
+            .container {
+                max-width: 1800px;
+            }
         }
 
         .tabs {
@@ -119,6 +126,10 @@
             border-bottom: 1px solid #eee;
         }
 
+        th:first-child, td:first-child {
+            text-align: left;
+        }
+
         th {
             background-color: var(--secondary);
             color: var(--primary);
@@ -141,6 +152,35 @@
             padding: 2px 4px;
             border-radius: 3px;
             margin-left: 4px;
+        }
+
+        /* Sub-Tabs */
+        .sub-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            padding: 4px;
+            background: #eee;
+            border-radius: 8px;
+            width: fit-content;
+        }
+
+        .sub-tab-btn {
+            padding: 0.3rem 0.8rem;
+            border: none;
+            background: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #666;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .sub-tab-btn.active {
+            background: var(--white);
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         input[type=range] {
@@ -201,7 +241,7 @@
 <body>
 
 <header>
-    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; padding: 0 1rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1600px; margin: 0 auto; padding: 0 1rem;">
         <div style="display: flex; align-items: center; gap: 1rem; color: white;">
             <h1 style="margin: 0; font-size: 1.4rem; white-space: nowrap;">Bäderbahn Molli</h1>
             <span id="validity-header" style="font-size: 0.85rem; opacity: 0.8; padding-top: 4px;"></span>
@@ -227,6 +267,7 @@
             <button class="tab-btn" onclick="showTab('fahrplan')">Fahrplan</button>
             <button class="tab-btn active" onclick="showTab('strecke')">Strecke</button>
             <button class="tab-btn" onclick="showTab('tarife')">Tarife</button>
+            <button class="tab-btn" onclick="showTab('hilfe')">Hilfe</button>
         </div>
         <span style="font-size: 0.75rem; color: #888; padding-bottom: 4px;">* Standort bei Freigabe &middot; Karte wird live aktualisiert</span>
     </div>
@@ -238,6 +279,11 @@
     <div id="strecke" class="content-section active">
         <div class="card">
             <div id="map-container" style="width: 100%; height: 430px; background: #f0f0f0; border-radius: 12px; position: relative; overflow: hidden; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);">
+                <style>
+                    #map-container { height: 430px !important; }
+                    @media (min-width: 1400px) { #map-container { height: 550px !important; } }
+                    @media (min-width: 1800px) { #map-container { height: 700px !important; } }
+                </style>
                 <svg id="route-svg" width="100%" height="100%" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
                     <g id="svg-route-line"></g>
                     <g id="svg-stations"></g>
@@ -256,6 +302,12 @@
     <div id="tarife" class="content-section">
         <div class="card">
             <div id="fares-content" class="info-grid"></div>
+        </div>
+    </div>
+
+    <div id="hilfe" class="content-section">
+        <div class="card" id="hilfe-content" style="max-width: 800px; margin: 0 auto; line-height: 1.8;">
+            <!-- Hilfe wird dynamisch geladen -->
         </div>
     </div>
 </div>
@@ -425,10 +477,38 @@
 
             initGeolocation();
             renderData();
+            loadHelp();
             updateLive();
             setInterval(updateLive, 30000); // Feste 30s Aktualisierung
         } catch (e) {
             console.error("Fehler beim Laden der Daten:", e);
+        }
+    }
+
+    async function loadHelp() {
+        try {
+            const res = await fetch('data/hilfe.md');
+            const text = await res.text();
+            
+            // Sehr einfacher Markdown-zu-HTML Konverter
+            let html = text
+                .replace(/^# (.*$)/gim, '<h2 style="margin-top: 1.5rem; border-left: none; padding-left: 0;">$1</h2>')
+                .replace(/^\* (.*$)/gim, '<li style="margin-left: 1.5rem;">$1</li>')
+                .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+                .replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" target="_blank" style="color: var(--primary);">$1</a>')
+                .replace(/\[(https?:\/\/[^\s\]]+)\]/gim, '<a href="$1" target="_blank" style="color: var(--primary);">$1</a>')
+                .replace(/(?<!href=")(https?:\/\/[^\s\)\],\]<>]+)/gim, '<a href="$1" target="_blank" style="color: var(--primary);">$1</a>')
+                .split(/\n\s*\n/)
+                .filter(p => p.trim().length > 0)
+                .map(p => p.trim().startsWith('<h') || p.trim().startsWith('<li') ? p : `<p style="margin-bottom: 1rem;">${p}</p>`)
+                .join('');
+            
+            // Listen korrekt umschließen
+            html = html.replace(/(<li.*<\/li>)/gms, '<ul style="margin-bottom: 1rem;">$1</ul>');
+            
+            document.getElementById('hilfe-content').innerHTML = html;
+        } catch (e) {
+            console.error("Fehler beim Laden der Hilfe:", e);
         }
     }
 
@@ -512,9 +592,26 @@
         document.getElementById('validity-header').innerText = fahrplanData.validity;
         const container = document.getElementById('timetable-container');
         container.innerHTML = '';
-        fahrplanData.directions.forEach(dir => {
+        
+        // Sub-Tab Navigation erstellen
+        const subNav = document.createElement('div');
+        subNav.className = 'sub-tabs';
+        
+        fahrplanData.directions.forEach((dir, i) => {
+            const btn = document.createElement('button');
+            btn.className = `sub-tab-btn ${i === 0 ? 'active' : ''}`;
+            btn.innerText = `${dir.from} ➔ ${dir.to}`;
+            btn.onclick = (e) => showSubTab(i, e.currentTarget);
+            subNav.appendChild(btn);
+        });
+        container.appendChild(subNav);
+
+        fahrplanData.directions.forEach((dir, i) => {
             const section = document.createElement('div');
-            section.className = 'card';
+            section.id = `timetable-dir-${i}`;
+            section.className = 'card timetable-section';
+            if (i !== 0) section.style.display = 'none';
+            
             let html = `<h2>${dir.from} &rarr; ${dir.to}</h2><div style="overflow-x: auto;"><table><thead><tr><th>Station</th>`;
             dir.trains.forEach(t => html += `<th>Zug ${t.id}${t.restriction ? `<span class="restriction-tag">${t.restriction}</span>` : ''}</th>`);
             html += `</tr></thead><tbody>`;
@@ -524,6 +621,17 @@
                 html += `</tr>`;
             });
             html += `</tbody></table></div>`;
+
+            if (fahrplanData.restrictions) {
+                html += `<div style="margin-top: 1.5rem; padding-top: 0.8rem; border-top: 1px solid #eee;">
+                            <h4 style="font-size: 0.85rem; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Verkehrshinweise</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 1rem;">`;
+                for (const [key, val] of Object.entries(fahrplanData.restrictions)) {
+                    html += `<div style="font-size: 0.9rem; color: #444;"><span class="restriction-tag">${key}</span> ${val}</div>`;
+                }
+                html += `</div></div>`;
+            }
+
             section.innerHTML = html; container.appendChild(section);
         });
         const fares = fahrplanData.fares;
@@ -532,6 +640,13 @@
             <div class="info-item"><h4>2 Zonen</h4><p>Einfach: ${fares.zone2.single.toFixed(2)} € / Rück: ${fares.zone2.return.toFixed(2)} €</p></div>
             <div class="info-item"><h4>3 Zonen</h4><p>Einfach: ${fares.zone3.single.toFixed(2)} € / Rück: ${fares.zone3.return.toFixed(2)} €</p></div>
         `;
+    }
+
+    function showSubTab(index, btn) {
+        document.querySelectorAll('.timetable-section').forEach(s => s.style.display = 'none');
+        document.getElementById(`timetable-dir-${index}`).style.display = 'block';
+        document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
     }
 
     function renderRoute() {
@@ -619,7 +734,7 @@
                 <tr style="border-bottom: 2px solid #ffeeba; color: #856404;">
                     <th style="padding: 2px; text-align: left;">Zeit</th>
                     <th style="padding: 2px; text-align: left;"></th>
-                    <th style="padding: 2px; text-align: left;">Ziel</th>
+                    <th style="padding: 2px; text-align: left; padding-left: 5px;">Ziel</th>
                 </tr>`;
                 
         if (departures.length === 0) {
@@ -652,7 +767,7 @@
                 html += `<tr style="border-bottom: 1px solid #ffeeba;">
                     <td style="padding: 2px; font-weight: bold; color: ${rowColor}; text-align: left;">${displayTime}</td>
                     <td style="padding: 2px; font-weight: bold; color: #d35400; text-align: left; font-size: 10px;">${relativeTime}</td>
-                    <td style="padding: 2px; color: ${textColor}; text-align: left;">${destStr}</td>
+                    <td style="padding: 2px; color: ${textColor}; text-align: left; padding-left: 5px;">${destStr}</td>
                 </tr>`;
             });
         }
@@ -840,7 +955,7 @@
                         <tr style="border-bottom: 2px solid #ccc; color: #666;">
                             <th style="padding: 3px; text-align: left;">Ank.</th>
                             <th style="padding: 3px; text-align: left;">Abf.</th>
-                            <th style="padding: 3px; text-align: left;">Bahnhof</th>
+                            <th style="padding: 3px; text-align: left; padding-left: 8px;">Bahnhof</th>
                         </tr>`;
                 dir.stations.forEach((stationName, sIdx) => {
                     const timeStr = train.times[sIdx];
@@ -850,7 +965,7 @@
                     let styleStr = isNextStop ? `font-weight: bold; color: ${dirColor}; background: rgba(${isToDoberan ? '230,126,34' : '52,152,219'}, 0.1);` : (isPast ? "color: #bbb;" : "color: #333;");
                     let ank = "", abf = "";
                     if (timeStr.includes('/')) { [ank, abf] = timeStr.split('/'); } else { if (sIdx === dir.stations.length - 1) ank = timeStr; else abf = timeStr; }
-                    tableHtml += `<tr style="border-bottom: 1px solid #eee; ${styleStr}"><td style="padding: 4px 3px;">${ank}</td><td style="padding: 4px 3px;">${abf}</td><td style="padding: 4px 3px;">${stationName}</td></tr>`;
+                    tableHtml += `<tr style="border-bottom: 1px solid #eee; ${styleStr}"><td style="padding: 4px 3px;">${ank}</td><td style="padding: 4px 3px;">${abf}</td><td style="padding: 4px 3px; text-align: left; padding-left: 8px;">${stationName}</td></tr>`;
                 });
                 tableHtml += `</table></div>`;
                 fo.innerHTML = tableHtml;
