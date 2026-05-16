@@ -442,12 +442,11 @@
                         const bf = projectedStations.find(s => s.name === stationName);
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
                         
-                        // Optimierte Positionierung: Konsequenter Abstand von 100 Einheiten
+                        // Optimierte Positionierung: Gleiche Höhe wie Bahnhofsname, nur horizontal versetzt
                         const xOffset = isToDoberan ? 100 : -100;
-                        const vertOffset = (sIdx % 2 === 0 ? -20 : 30);
                         
                         timeLabel.setAttribute("x", bf.x + xOffset);
-                        timeLabel.setAttribute("y", bf.y + vertOffset);
+                        timeLabel.setAttribute("y", bf.y + 5); // Leichte Baseline-Korrektur
                         timeLabel.setAttribute("text-anchor", isToDoberan ? "start" : "end");
                         timeLabel.setAttribute("font-size", "11");
                         timeLabel.setAttribute("font-weight", "bold");
