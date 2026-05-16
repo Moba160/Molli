@@ -635,7 +635,10 @@
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
                         let xOffset = isToDoberan ? 60 : -60;
                         if (isToDoberan) {
-                            if (["Steilküste", "Heiligendamm", "Rennbahn"].includes(stationName)) xOffset = 40;
+                            if (stationName === "Steilküste") xOffset = 30;
+                            if (stationName === "Heiligendamm") xOffset = 60;
+                            if (stationName === "Rennbahn") xOffset = 30;
+                            if (stationName === "Bad Doberan Goethestraße") xOffset = 90;
                         } else {
                             if (stationName === "Steilküste") xOffset += 25;
                             if (stationName === "Heiligendamm") xOffset += 12;
