@@ -375,65 +375,90 @@
         svgTrains.innerHTML = ''; svgTrainTimes.innerHTML = ''; svgTrainList.innerHTML = '';
         const nowMins = simTime.getHours() * 60 + simTime.getMinutes();
         const kwWest = projectedStations.find(s => s.name === "Kühlungsborn West");
+        
+        const colors = ['#e67e22', '#3498db']; // Orange für KW->BD, Blau für BD->KW
+        
         let listX = kwWest.x - 40, listY = kwWest.y + 80;
         const title = document.createElementNS("http://www.w3.org/2000/svg", "text");
         title.setAttribute("x", listX); title.setAttribute("y", listY);
-        title.setAttribute("font-size", "14"); title.setAttribute("font-weight", "bold");
+        title.setAttribute("font-size", "18"); title.setAttribute("font-weight", "bold");
         title.setAttribute("fill", varProp('--primary')); title.textContent = "Aktive Züge:";
-        svgTrainList.appendChild(title); listY += 20;
+        svgTrainList.appendChild(title); listY += 25;
         let activeTrainsCount = 0;
 
         fahrplanData.directions.forEach((dir, dIdx) => {
             const isToDoberan = dIdx === 0;
+            const dirColor = colors[dIdx];
+
             dir.trains.forEach(train => {
                 if (!isTrainRunningToday(train.restriction, simTime)) return;
                 const times = train.times.map(timeToMinutes);
                 let startIdx = -1, endIdx = -1;
                 for(let i=0; i<times.length; i++) if(times[i] !== null) { if(startIdx === -1) startIdx = i; endIdx = i; }
                 if(nowMins < times[startIdx] || nowMins > times[endIdx]) return;
+                
                 let legStart = -1, legEnd = -1;
                 for(let i=0; i<times.length - 1; i++) if(times[i] !== null && times[i+1] !== null) if(nowMins >= times[i] && nowMins <= times[i+1]) { legStart = i; legEnd = i + 1; break; }
+                
                 if (legStart !== -1) {
                     activeTrainsCount++;
                     const p1 = projectedStations.find(s => s.name === dir.stations[legStart]);
                     const p2 = projectedStations.find(s => s.name === dir.stations[legEnd]);
                     const duration = times[legEnd] - times[legStart];
                     const factor = duration === 0 ? 0 : (nowMins - times[legStart]) / duration;
-                    const tx = p1.x + (p2.x - p1.x) * factor, ty = p1.y + (p2.y - p1.y) * factor + (isToDoberan ? -12 : 12);
+                    
+                    const tx = p1.x + (p2.x - p1.x) * factor;
+                    const ty = p1.y + (p2.y - p1.y) * factor;
+                    
+                    const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+                    
+                    let yOffset = 0;
+                    if (dir.stations[legStart] === "Heiligendamm" || dir.stations[legEnd] === "Heiligendamm") {
+                        yOffset = isToDoberan ? -12 : 12;
+                    }
+
                     const triangle = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                    const size = 10;
-                    triangle.setAttribute("d", isToDoberan ? `M ${tx-size},${ty-size} L ${tx+size},${ty} L ${tx-size},${ty+size} Z` : `M ${tx+size},${ty-size} L ${tx-size},${ty} L ${tx+size},${ty+size} Z`);
-                    triangle.setAttribute("fill", varProp('--primary')); svgTrains.appendChild(triangle);
+                    const size = 12;
+                    const dPath = `M ${-size},${-size/1.5} L ${size},0 L ${-size},${size/1.5} Z`;
+                    triangle.setAttribute("d", dPath);
+                    triangle.setAttribute("fill", dirColor);
+                    triangle.setAttribute("transform", `translate(${tx},${ty + yOffset}) rotate(${angle})`);
+                    svgTrains.appendChild(triangle);
 
                     dir.stations.forEach((stationName, sIdx) => {
                         const timeStr = train.times[sIdx];
                         if (!timeStr || timeStr === '-') return;
                         const bf = projectedStations.find(s => s.name === stationName);
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                        // Links vom Namen für Züge von Doberan (KW<-BD), Rechts für Züge nach Doberan (KW->BD)
-                        const xOffset = isToDoberan ? 60 : -60;
-                        timeLabel.setAttribute("x", bf.x + xOffset);
-                        timeLabel.setAttribute("y", bf.y + (sIdx % 2 === 0 ? -20 : 30));
+                        
+                        const sideOffset = isToDoberan ? 50 : -50;
+                        const vertOffset = (sIdx % 2 === 0 ? -20 : 30);
+                        
+                        timeLabel.setAttribute("x", bf.x + sideOffset);
+                        timeLabel.setAttribute("y", bf.y + vertOffset);
                         timeLabel.setAttribute("text-anchor", "middle");
-                        timeLabel.setAttribute("font-size", "10");
-                        timeLabel.setAttribute("font-weight", "600");
-                        timeLabel.setAttribute("fill", times[sIdx] < nowMins ? "#999" : varProp('--primary'));
+                        timeLabel.setAttribute("font-size", "11");
+                        timeLabel.setAttribute("font-weight", "bold");
+                        
+                        timeLabel.setAttribute("fill", times[sIdx] < nowMins ? "#bbb" : dirColor);
                         timeLabel.textContent = timeStr;
                         svgTrainTimes.appendChild(timeLabel);
                     });
 
                     const entry = document.createElementNS("http://www.w3.org/2000/svg", "text");
                     entry.setAttribute("x", listX); entry.setAttribute("y", listY);
-                    entry.setAttribute("font-size", "12"); entry.setAttribute("fill", "#444");
-                    entry.textContent = ` Zug ${train.id}: → ${dir.to} (Halt: ${dir.stations[legEnd]})`;
-                    svgTrainList.appendChild(entry); listY += 18;
+                    entry.setAttribute("font-size", "15"); entry.setAttribute("fill", "#333");
+                    const nextTime = train.times[legEnd];
+                    entry.textContent = `Zug ${train.id}: nach ${dir.to} (Halt: ${dir.stations[legEnd]} um ${nextTime})`;
+                    svgTrainList.appendChild(entry); listY += 22;
                 }
             });
         });
+
         if (activeTrainsCount === 0) {
             const none = document.createElementNS("http://www.w3.org/2000/svg", "text");
             none.setAttribute("x", listX); none.setAttribute("y", listY);
-            none.setAttribute("font-size", "12"); none.setAttribute("fill", "#999");
+            none.setAttribute("font-size", "15"); none.setAttribute("fill", "#999");
             none.textContent = "Kein Zugverkehr"; svgTrainList.appendChild(none);
         }
     }
