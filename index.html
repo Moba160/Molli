@@ -390,6 +390,7 @@
             });
 
             window.addEventListener('keydown', (e) => {
+                const slider = document.getElementById('sim-time-slider');
                 if (e.key === 'ArrowLeft') {
                     const currentTime = getSimTime();
                     baseSimTime = new Date(currentTime.getTime() - 60000);
@@ -398,6 +399,20 @@
                 } else if (e.key === 'ArrowRight') {
                     const currentTime = getSimTime();
                     baseSimTime = new Date(currentTime.getTime() + 60000);
+                    realTimeAtSet = Date.now();
+                    updateLive();
+                } else if (e.key === 'ArrowUp') {
+                    const min = parseInt(slider.min);
+                    baseSimTime = new Date(); baseSimTime.setHours(Math.floor(min/60), min%60, 0, 0);
+                    realTimeAtSet = Date.now();
+                    updateLive();
+                } else if (e.key === 'ArrowDown') {
+                    const max = parseInt(slider.max);
+                    baseSimTime = new Date(); baseSimTime.setHours(Math.floor(max/60), max%60, 0, 0);
+                    realTimeAtSet = Date.now();
+                    updateLive();
+                } else if (e.key === 'Enter') {
+                    baseSimTime = new Date();
                     realTimeAtSet = Date.now();
                     updateLive();
                 }
