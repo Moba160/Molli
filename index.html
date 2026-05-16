@@ -525,7 +525,7 @@
                 const { train, legEnd } = activeTrains[dIdx];
                 
                 let listX = isToDoberan ? kwWest.x - 40 : bdBahnhof.x - 240;
-                let listY = isToDoberan ? kwWest.y + 120 : bdBahnhof.y - 280; // Links deutlich tiefer, rechts höher
+                let listY = isToDoberan ? kwWest.y + 120 : 40; // Rechts fest oben an den Rand setzen
                 
                 const fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
                 fo.setAttribute("x", listX);
