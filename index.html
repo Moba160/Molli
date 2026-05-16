@@ -448,8 +448,8 @@
             <div style="font-weight: bold; color: #856404; margin-bottom: 10px; font-size: 15px; text-align: center; border-bottom: 2px solid #ffeeba; padding-bottom: 5px;">Abfahrten: ${stationName}</div>
             <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
                 <tr style="border-bottom: 2px solid #ffeeba; color: #856404;">
-                    <th style="padding: 4px;">Zeit</th>
-                    <th style="padding: 4px;">Ziel</th>
+                    <th style="padding: 4px; text-align: left;">Zeit</th>
+                    <th style="padding: 4px; text-align: left;">Ziel</th>
                 </tr>`;
                 
         if (nextDeps.length === 0) {
@@ -457,8 +457,8 @@
         } else {
             nextDeps.forEach(dep => {
                 html += `<tr style="border-bottom: 1px solid #ffeeba;">
-                    <td style="padding: 5px 4px; font-weight: bold; color: ${dep.color};">${dep.time}</td>
-                    <td style="padding: 5px 4px; color: #333;">Zug ${dep.trainId} nach ${dep.to}</td>
+                    <td style="padding: 5px 4px; font-weight: bold; color: ${dep.color}; text-align: left;">${dep.time}</td>
+                    <td style="padding: 5px 4px; color: #333; text-align: left;">Zug ${dep.trainId} nach ${dep.to}</td>
                 </tr>`;
             });
         }
@@ -612,9 +612,9 @@
                     <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px;">Zug ${train.id} nach ${dir.to}</div>
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
                         <tr style="border-bottom: 2px solid #ccc;">
-                            <th style="padding: 3px;">Ank.</th>
-                            <th style="padding: 3px;">Abf.</th>
-                            <th style="padding: 3px;">Bahnhof</th>
+                            <th style="padding: 3px; text-align: left;">Ank.</th>
+                            <th style="padding: 3px; text-align: left;">Abf.</th>
+                            <th style="padding: 3px; text-align: left;">Bahnhof</th>
                         </tr>`;
 
                 dir.stations.forEach((stationName, sIdx) => {
@@ -636,9 +636,9 @@
                     }
 
                     tableHtml += `<tr style="border-bottom: 1px solid #eee; ${styleStr}">
-                        <td style="padding: 4px 3px;">${ank}</td>
-                        <td style="padding: 4px 3px;">${abf}</td>
-                        <td style="padding: 4px 3px;">${stationName}</td>
+                        <td style="padding: 4px 3px; text-align: left;">${ank}</td>
+                        <td style="padding: 4px 3px; text-align: left;">${abf}</td>
+                        <td style="padding: 4px 3px; text-align: left;">${stationName}</td>
                     </tr>`;
                 });
                 
