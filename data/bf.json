@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Kühlungsborn West",
+    "lat": 54.1506,
+    "lng": 11.7228
+  },
+  {
+    "name": "Kühlungsborn Mitte",
+    "lat": 54.1481,
+    "lng": 11.7483
+  },
+  {
+    "name": "Kühlungsborn Ost",
+    "lat": 54.1488,
+    "lng": 11.7601
+  },
+  {
+    "name": "Steilküste",
+    "lat": 54.1458,
+    "lng": 11.7820
+  },
+  {
+    "name": "Heiligendamm",
+    "lat": 54.1415,
+    "lng": 11.8415
+  },
+  {
+    "name": "Rennbahn",
+    "lat": 54.1165,
+    "lng": 11.8687
+  },
+  {
+    "name": "Bad Doberan Goethestraße",
+    "lat": 54.1086,
+    "lng": 11.8967
+  },
+  {
+    "name": "Bad Doberan Stadtmitte",
+    "lat": 54.1054,
+    "lng": 11.9026
+  },
+  {
+    "name": "Bad Doberan Bahnhof",
+    "lat": 54.1095,
+    "lng": 11.9099
+  }
+]
