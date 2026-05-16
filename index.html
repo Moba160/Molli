@@ -580,7 +580,8 @@
                         const vertOffset = (originalIdx % 2 === 0 ? -20 : 30);
                         
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                        const xOffset = isToDoberan ? 60 : -60;
+                        let xOffset = isToDoberan ? 60 : -60;
+                        if (!isToDoberan && stationName === "Steilküste") xOffset = -35;
                         
                         timeLabel.setAttribute("x", bf.x + xOffset);
                         timeLabel.setAttribute("y", bf.y + vertOffset);
