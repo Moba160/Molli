@@ -143,6 +143,55 @@
             margin-left: 4px;
         }
 
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #ccc;
+            border-radius: 2px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 2px solid white;
+        }
+        #slider-tooltip {
+            position: absolute;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            pointer-events: none;
+            display: none;
+            transform: translateX(-50%);
+            top: -30px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        #slider-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            margin-left: -4px;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--primary);
+        }
+
         @media (max-width: 600px) {
             th, td { padding: 0.5rem 0.25rem; font-size: 0.8rem; }
             .card { padding: 1rem; }
@@ -157,14 +206,17 @@
             <h1>Molli Bäderbahn</h1>
             <p id="validity-header" style="font-size: 0.9rem; opacity: 0.8;">Lädt Fahrplan...</p>
         </div>
-        <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; flex-grow: 1; max-width: 500px; margin-left: 20px;">
-            <button id="reset-time-btn" title="Auf Echtzeit zurücksetzen" style="background: none; border: none; cursor: pointer; color: white; padding: 0;">
+        <div style="display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; flex-grow: 1; max-width: 550px; margin-left: 20px;">
+            <button id="reset-time-btn" title="Auf Echtzeit zurücksetzen" style="background: none; border: none; cursor: pointer; color: white; padding: 0; display: flex; align-items: center;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             </button>
             
             <span id="sim-time-display" style="font-family: inherit; font-size: 1.2rem; font-weight: 600; min-width: 55px; text-align: center;"></span>
             
-            <input type="range" id="sim-time-slider" style="flex-grow: 1; cursor: pointer; accent-color: #888;">
+            <div style="flex-grow: 1; position: relative; display: flex; align-items: center; padding-top: 20px; padding-bottom: 5px;">
+                <div id="slider-tooltip">12:00</div>
+                <input type="range" id="sim-time-slider" style="width: 100%;" title="Zeit für Simulation verschieben">
+            </div>
         </div>
     </div>
 </header>
@@ -274,14 +326,41 @@
                     }
                 });
             }));
-            slider.min = minMins - 30; // 30 Min Puffer davor
-            slider.max = maxMins + 30; // 30 Min Puffer danach
+
+            // Startzeit begrenzen
+            const now = new Date();
+            const nowMins = now.getHours() * 60 + now.getMinutes();
+            if (nowMins < minMins) {
+                baseSimTime = new Date(); baseSimTime.setHours(Math.floor(minMins/60), minMins%60, 0, 0);
+            } else if (nowMins > maxMins) {
+                baseSimTime = new Date(); baseSimTime.setHours(Math.floor(maxMins/60), maxMins%60, 0, 0);
+            } else {
+                baseSimTime = now;
+            }
+            realTimeAtSet = Date.now();
+            slider.min = minMins;
+            slider.max = maxMins;
             
-            slider.addEventListener('mousedown', () => isDraggingSlider = true);
-            slider.addEventListener('touchstart', () => isDraggingSlider = true);
+            const tooltip = document.getElementById('slider-tooltip');
             
+            const updateTooltip = (val) => {
+                const min = parseInt(slider.min);
+                const max = parseInt(slider.max);
+                const percent = (val - min) / (max - min) * 100;
+                tooltip.style.left = `${percent}%`;
+                const h = Math.floor(val / 60);
+                const m = Math.round(val % 60);
+                tooltip.textContent = `${h}:${m.toString().padStart(2, '0')}`;
+            };
+
+            slider.addEventListener('mousedown', () => { isDraggingSlider = true; tooltip.style.display = 'block'; });
+            slider.addEventListener('touchstart', () => { isDraggingSlider = true; tooltip.style.display = 'block'; });
+            slider.addEventListener('mouseup', () => { isDraggingSlider = false; tooltip.style.display = 'none'; });
+            slider.addEventListener('touchend', () => { isDraggingSlider = false; tooltip.style.display = 'none'; });
+
             const applySliderTime = (e) => {
                 const totalMins = parseInt(e.target.value);
+                updateTooltip(totalMins);
                 const h = Math.floor(totalMins / 60);
                 const m = totalMins % 60;
                 
@@ -292,7 +371,10 @@
                 updateLive();
             };
             
-            slider.addEventListener('input', applySliderTime);
+            slider.addEventListener('input', (e) => {
+                updateTooltip(parseInt(e.target.value));
+                applySliderTime(e);
+            });
             slider.addEventListener('change', (e) => {
                 isDraggingSlider = false;
                 applySliderTime(e);
@@ -366,8 +448,19 @@
     }
 
     function getSimTime() {
-        const elapsedReal = Date.now() - realTimeAtSet;
-        return new Date(baseSimTime.getTime() + elapsedReal);
+        const t = new Date(baseSimTime.getTime() + (Date.now() - realTimeAtSet));
+        const mins = t.getHours() * 60 + t.getMinutes();
+        const slider = document.getElementById('sim-time-slider');
+        if (slider && slider.min && slider.max) {
+            const min = parseInt(slider.min);
+            const max = parseInt(slider.max);
+            if (mins < min) {
+                t.setHours(Math.floor(min/60), min%60, 0, 0);
+            } else if (mins > max) {
+                t.setHours(Math.floor(max/60), max%60, 0, 0);
+            }
+        }
+        return t;
     }
 
     function updateLive() {
