@@ -216,19 +216,19 @@
             pointer-events: none;
             display: none;
             transform: translateX(-50%);
-            top: -30px;
+            top: 28px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             z-index: 1000;
         }
         #slider-tooltip::after {
             content: '';
             position: absolute;
-            bottom: -4px;
+            top: -4px;
             left: 50%;
             margin-left: -4px;
             border-left: 4px solid transparent;
             border-right: 4px solid transparent;
-            border-top: 4px solid var(--primary);
+            border-bottom: 4px solid var(--primary);
         }
 
         @media (max-width: 600px) {
@@ -248,28 +248,20 @@
             <div id="time-controls-container" style="display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; flex-grow: 1; max-width: 780px; margin-left: 20px;">
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    <button id="today-btn" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; padding: 2px 6px; font-size: 0.8rem; cursor: pointer;">Heute</button>
+                    <button id="today-btn" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; padding: 2px 6px; font-size: 0.8rem; cursor: pointer;">Jetzt</button>
                     <input type="date" id="sim-date-picker" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; padding: 1px 4px; font-size: 0.85rem; font-family: inherit; outline: none; cursor: pointer; color-scheme: dark;">
                     <div id="active-restrictions-container" style="display: flex; gap: 4px; margin-left: 4px;"></div>
                 </div>
-                <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.3); margin: 0 4px;"></div>
-                <button id="reset-time-btn" title="Auf Echtzeit zurücksetzen" style="background: none; border: none; cursor: pointer; color: white; padding: 0; display: flex; align-items: center;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                </button>
-                <span id="sim-time-display" style="font-family: inherit; font-size: 1.2rem; font-weight: 600; min-width: 55px; text-align: center;"></span>
-                <div style="flex-grow: 1; position: relative; display: flex; align-items: center; padding-top: 20px; padding-bottom: 5px;">
+                <span id="sim-time-display" style="font-family: inherit; font-size: 1.2rem; font-weight: 600; min-width: 55px; text-align: center; margin-left: 8px;"></span>
+                <div style="flex-grow: 1; position: relative; display: flex; align-items: center;">
                     <div id="slider-tooltip">12:00</div>
                     <input type="range" id="sim-time-slider" style="width: 100%;" title="Zeit für Simulation verschieben">
                 </div>
                 <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.3); margin: 0 4px;"></div>
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <button id="play-pause-btn" title="Simulation abspielen" style="background: none; border: none; cursor: pointer; color: white; padding: 0; display: flex; align-items: center; outline: none;">
-                        <svg id="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon></svg>
-                        <svg id="stop-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><rect x="4" y="4" width="16" height="16" fill="currentColor" rx="2" ry="2"></rect></svg>
-                    </button>
-                    <div style="display: flex; align-items: center; gap: 2px; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; padding: 1px 4px;">
+                    <div title="Zeitraffer-Verhältnis (Simulationszeit : Echtzeit)&#13;1:1 = Echtzeit (Originalgeschwindigkeit)&#13;60:1 = 1 Minute in 1 Sekunde&#13;600:1 = 10 Minuten in 1 Sekunde" style="display: flex; align-items: center; gap: 2px; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; padding: 1px 4px;">
                         <button id="speed-down-btn" title="Zeitraffer verringern" style="background: none; border: none; color: white; cursor: pointer; padding: 0 4px; font-size: 0.8rem; font-weight: bold; outline: none;">&lt;</button>
-                        <span id="speed-display" style="font-size: 0.85rem; font-weight: bold; min-width: 28px; text-align: center; color: white; user-select: none;">1x</span>
+                        <span id="speed-display" style="font-size: 0.85rem; font-weight: bold; min-width: 32px; text-align: center; color: white; user-select: none;">1:1</span>
                         <button id="speed-up-btn" title="Zeitraffer erhöhen" style="background: none; border: none; color: white; cursor: pointer; padding: 0 4px; font-size: 0.8rem; font-weight: bold; outline: none;">&gt;</button>
                     </div>
                 </div>
@@ -389,8 +381,11 @@
     let baseSimTime = new Date();
     let realTimeAtSet = Date.now();
     let isDraggingSlider = false;
-    let isPlayActive = false;
-    let playSpeedFactor = 1;
+    let isRealTimeSync = true;
+    const speedPresets = [1, 60, 120, 180, 240, 300, 360, 420, 480, 540, 600];
+    let speedIndex = 0;
+    let followSimTime = true;
+    let isProgrammaticScroll = false;
 
     function interpolateMissingTimes() {
         if (!fahrplanData || !bfData) return;
@@ -476,24 +471,32 @@
                 tooltip.style.left = `${percent}%`;
                 const h = Math.floor(val / 60);
                 const m = Math.round(val % 60);
-                tooltip.textContent = `${h}.${m.toString().padStart(2, '0')}`;
+                tooltip.textContent = `${h.toString().padStart(2, '0')}.${m.toString().padStart(2, '0')}`;
             };
 
-            slider.addEventListener('mousedown', () => { isDraggingSlider = true; tooltip.style.display = 'block'; });
-            slider.addEventListener('touchstart', () => { isDraggingSlider = true; tooltip.style.display = 'block'; });
+            slider.addEventListener('mousedown', () => { 
+                isDraggingSlider = true; 
+                isRealTimeSync = false; 
+                tooltip.style.display = 'block'; 
+            });
+            slider.addEventListener('touchstart', () => { 
+                isDraggingSlider = true; 
+                isRealTimeSync = false; 
+                tooltip.style.display = 'block'; 
+            });
             slider.addEventListener('mouseup', () => { isDraggingSlider = false; tooltip.style.display = 'none'; });
             slider.addEventListener('touchend', () => { isDraggingSlider = false; tooltip.style.display = 'none'; });
 
             const applySliderTime = (e) => {
                 const totalMins = parseInt(e.target.value);
                 updateTooltip(totalMins);
-                const h = Math.floor(totalMins / 60);
-                const m = totalMins % 60;
-                
-                const newSim = new Date(baseSimTime.getTime());
-                newSim.setHours(h, m, 0, 0);
-                baseSimTime = newSim;
+                const m = parseInt(e.target.value);
+                const targetDate = new Date(baseSimTime.getTime());
+                targetDate.setHours(Math.floor(m / 60), m % 60, 0, 0);
+                baseSimTime = targetDate;
                 realTimeAtSet = Date.now();
+                isRealTimeSync = false;
+                followSimTime = true; // Dem Zeitslider folgen!
                 updateLive();
                 if (document.getElementById('bildfahrplan').classList.contains('active')) {
                     scrollToCurrentTime();
@@ -510,28 +513,44 @@
             });
             slider.addEventListener('touchend', () => isDraggingSlider = false);
 
-            const resetBtn = document.getElementById('reset-time-btn');
-            resetBtn.addEventListener('click', () => {
-                const now = new Date();
-                baseSimTime.setHours(now.getHours(), now.getMinutes(), 0, 0);
-                realTimeAtSet = Date.now();
-                updateLive();
-            });
 
             const datePicker = document.getElementById('sim-date-picker');
             const todayBtn = document.getElementById('today-btn');
 
             datePicker.addEventListener('change', (e) => {
-                const [y, m, d] = e.target.value.split('-');
-                baseSimTime.setFullYear(y, m - 1, d);
+                const [y, m, d] = e.target.value.split('-').map(Number);
+                
+                // Halte die aktuelle Simulationszeit fest
+                const currentSimTime = getSimTime();
+                const currentH = currentSimTime.getHours();
+                const currentM = currentSimTime.getMinutes();
+                
+                const newSim = new Date();
+                newSim.setFullYear(y, m - 1, d);
+                newSim.setHours(currentH, currentM, 0, 0); // Behalte die Uhrzeit bei
+                
+                baseSimTime = newSim;
+                realTimeAtSet = Date.now();
+                isRealTimeSync = false; // Manuelle Änderung schaltet Echtzeitsync ab
+                followSimTime = true; // Zeitlinie wieder fokussieren
+                
                 applyDateChanges();
+                if (document.getElementById('bildfahrplan').classList.contains('active')) {
+                    scrollToCurrentTime(true);
+                }
             });
 
             todayBtn.addEventListener('click', () => {
                 const today = new Date();
-                baseSimTime.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+                isRealTimeSync = true;
+                followSimTime = true; // Zeitlinie wieder fokussieren
+                baseSimTime = today;
+                realTimeAtSet = Date.now();
                 datePicker.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
                 applyDateChanges();
+                if (document.getElementById('bildfahrplan').classList.contains('active')) {
+                    scrollToCurrentTime(true);
+                }
             });
 
             window.addEventListener('keydown', (e) => {
@@ -544,26 +563,35 @@
                     const currentTime = getSimTime();
                     baseSimTime = new Date(currentTime.getTime() - 60000);
                     realTimeAtSet = Date.now();
+                    isRealTimeSync = false;
+                    followSimTime = true;
                     updateLive();
                 } else if (e.key === 'ArrowRight') {
                     const currentTime = getSimTime();
                     baseSimTime = new Date(currentTime.getTime() + 60000);
                     realTimeAtSet = Date.now();
+                    isRealTimeSync = false;
+                    followSimTime = true;
                     updateLive();
                 } else if (e.key === 'ArrowUp') {
                     const min = parseInt(slider.min);
                     baseSimTime = new Date(baseSimTime.getTime()); baseSimTime.setHours(Math.floor(min/60), min%60, 0, 0);
                     realTimeAtSet = Date.now();
+                    isRealTimeSync = false;
+                    followSimTime = true;
                     updateLive();
                 } else if (e.key === 'ArrowDown') {
                     const max = parseInt(slider.max);
                     baseSimTime = new Date(baseSimTime.getTime()); baseSimTime.setHours(Math.floor(max/60), max%60, 0, 0);
                     realTimeAtSet = Date.now();
+                    isRealTimeSync = false;
+                    followSimTime = true;
                     updateLive();
                 } else if (e.key === 'Enter') {
-                    const now = new Date();
-                    baseSimTime.setHours(now.getHours(), now.getMinutes(), 0, 0);
+                    isRealTimeSync = true;
+                    baseSimTime = new Date();
                     realTimeAtSet = Date.now();
+                    followSimTime = true;
                     updateLive();
                 }
                 
@@ -580,38 +608,47 @@
                  applyTimetable(loadedTimetables[0]);
              }
              
-             document.getElementById('play-pause-btn').addEventListener('click', () => {
-                 if (isPlayActive) {
-                     baseSimTime = getSimTime();
-                     isPlayActive = false;
-                 } else {
-                     baseSimTime = getSimTime();
-                     realTimeAtSet = Date.now();
-                     isPlayActive = true;
-                 }
-                 updatePlayPauseUI();
-                 updateLive();
-             });
+             // ZWL Scroll-Überwachung
+             const zwlScrollContainer = document.getElementById('zwl-container');
+             if (zwlScrollContainer) {
+                 zwlScrollContainer.addEventListener('scroll', () => {
+                     if (isProgrammaticScroll) {
+                         isProgrammaticScroll = false;
+                         return;
+                     }
+                     followSimTime = false;
+                 });
+                 zwlScrollContainer.addEventListener('wheel', () => { followSimTime = false; }, { passive: true });
+                 zwlScrollContainer.addEventListener('touchmove', () => { followSimTime = false; }, { passive: true });
+             }
              
              document.getElementById('speed-down-btn').addEventListener('click', () => {
-                 if (playSpeedFactor > 1) {
+                 if (speedIndex > 0) {
                      baseSimTime = getSimTime();
                      realTimeAtSet = Date.now();
-                     playSpeedFactor--;
-                     document.getElementById('speed-display').innerText = playSpeedFactor + "x";
+                     speedIndex--;
+                     followSimTime = true;
+                     document.getElementById('speed-display').innerText = speedPresets[speedIndex] + ":1";
+                     if (document.getElementById('bildfahrplan').classList.contains('active')) {
+                         scrollToCurrentTime(true);
+                     }
                  }
              });
              
              document.getElementById('speed-up-btn').addEventListener('click', () => {
-                 if (playSpeedFactor < 10) {
+                 if (speedIndex < speedPresets.length - 1) {
                      baseSimTime = getSimTime();
                      realTimeAtSet = Date.now();
-                     playSpeedFactor++;
-                     document.getElementById('speed-display').innerText = playSpeedFactor + "x";
+                     speedIndex++;
+                     followSimTime = true;
+                     document.getElementById('speed-display').innerText = speedPresets[speedIndex] + ":1";
+                     if (document.getElementById('bildfahrplan').classList.contains('active')) {
+                         scrollToCurrentTime(true);
+                     }
                  }
              });
              
-             setInterval(updateLive, 1000);
+             setInterval(updateLive, 50);
         } catch (e) {
             console.error("Fehler beim Laden der Daten:", e);
         }
@@ -685,6 +722,49 @@
         const [startStr, endStr] = fahrplanData.validity.split('-');
         const startDate = parseDateGerman(startStr);
         const endDate = parseDateGerman(endStr);
+        
+        // MV-Feiertage dynamisch ermitteln, die in der Fahrplanperiode liegen
+        if (fahrplanData.restrictions) {
+            const startY = startDate.getFullYear();
+            const endY = endDate.getFullYear();
+            const activeHolidays = [];
+            
+            for (let y = startY; y <= endY; y++) {
+                const allHolidays = getMVHolidaysList(y);
+                allHolidays.forEach(h => {
+                    const hDate = new Date(h.dateStr + "T00:00:00");
+                    if (hDate >= startDate && hDate <= endDate) {
+                        const day = hDate.getDate();
+                        const month = hDate.getMonth() + 1;
+                        const dateShort = `${day}.${month}.`;
+                        // Bei "1. Mai" und "3. Okt." ist das Datum bereits im Namen enthalten
+                        const displayName = (h.name === "1. Mai" || h.name === "3. Okt.") ? h.name : `${h.name} (${dateShort})`;
+                        activeHolidays.push({ date: hDate, name: displayName });
+                    }
+                });
+            }
+            
+            // Chronologisch sortieren
+            activeHolidays.sort((a, b) => a.date - b.date);
+            
+            // Eindeutige Namen in chronologischer Reihenfolge extrahieren
+            const uniqueNames = [];
+            activeHolidays.forEach(h => {
+                if (!uniqueNames.includes(h.name)) {
+                    uniqueNames.push(h.name);
+                }
+            });
+            
+            const holidayStr = uniqueNames.join(", ");
+            for (const [key, val] of Object.entries(fahrplanData.restrictions)) {
+                if (val.includes("nicht an Feiertagen") && !val.includes(":")) {
+                    fahrplanData.restrictions[key] = val.replace(
+                        "nicht an Feiertagen",
+                        `nicht an Feiertagen: ${holidayStr}`
+                    );
+                }
+            }
+        }
         const today = new Date();
         today.setHours(0,0,0,0);
         
@@ -775,10 +855,11 @@
     }
 
     function getSimTime() {
-        let elapsed = 0;
-        if (isPlayActive) {
-            elapsed = (Date.now() - realTimeAtSet) * playSpeedFactor;
+        if (isRealTimeSync) {
+            return new Date();
         }
+        // In Zeitraffer-Modus: speedPresets[speedIndex] ist das Verhältnis Simulationszeit : Echtzeit
+        const elapsed = (Date.now() - realTimeAtSet) * speedPresets[speedIndex];
         const t = new Date(baseSimTime.getTime() + elapsed);
         const mins = t.getHours() * 60 + t.getMinutes();
         const slider = document.getElementById('sim-time-slider');
@@ -789,30 +870,9 @@
                 t.setHours(Math.floor(min/60), min%60, 0, 0);
             } else if (mins > max) {
                 t.setHours(Math.floor(max/60), max%60, 0, 0);
-                if (isPlayActive) {
-                    isPlayActive = false;
-                    updatePlayPauseUI();
-                }
             }
         }
         return t;
-    }
-
-    function updatePlayPauseUI() {
-        const playIcon = document.getElementById('play-icon');
-        const stopIcon = document.getElementById('stop-icon');
-        const btn = document.getElementById('play-pause-btn');
-        if (playIcon && stopIcon && btn) {
-            if (isPlayActive) {
-                playIcon.style.display = 'none';
-                stopIcon.style.display = 'block';
-                btn.title = "Simulation stoppen";
-            } else {
-                playIcon.style.display = 'block';
-                stopIcon.style.display = 'none';
-                btn.title = "Simulation abspielen";
-            }
-        }
     }
 
     function updateLive() {
@@ -839,6 +899,9 @@
         const bildTab = document.getElementById('bildfahrplan');
         if (bildTab && bildTab.classList.contains('active')) {
             drawZWL();
+            if (followSimTime) {
+                scrollToCurrentTime(false); // seamless continuous auto-scroll
+            }
         }
     }
 
@@ -994,7 +1057,7 @@
         
         let departures = [];
         const simTime = getSimTime();
-        const nowMins = simTime.getHours() * 60 + simTime.getMinutes();
+        const nowMins = simTime.getHours() * 60 + simTime.getMinutes() + simTime.getSeconds() / 60;
         const colors = ['#e67e22', '#3498db'];
         
         fahrplanData.directions.forEach((dir, dIdx) => {
@@ -1093,10 +1156,97 @@
         return h * 60 + m;
     }
 
+    function getEasterSunday(y) {
+        const a = y % 19;
+        const b = Math.floor(y / 100);
+        const c = y % 100;
+        const d = Math.floor(b / 4);
+        const e = b % 4;
+        const f = Math.floor((b + 8) / 25);
+        const g = Math.floor((b - f + 1) / 3);
+        const h = (19 * a + b - d - g + 15) % 30;
+        const i = Math.floor(c / 4);
+        const k = c % 4;
+        const l = (32 + 2 * e + 2 * i - h - k) % 7;
+        const m = Math.floor((a + 11 * h + 22 * l) / 451);
+        const month = Math.floor((h + l - 7 * m + 114) / 31);
+        const day = ((h + l - 7 * m + 114) % 31) + 1;
+        return new Date(y, month - 1, day);
+    }
+
+    function getMVHolidays(y) {
+        const holidays = new Set();
+        
+        // Feste Feiertage in MV
+        holidays.add(`${y}-01-01`); // Neujahr
+        holidays.add(`${y}-03-08`); // Frauentag (seit 2023 gesetzlich in MV)
+        holidays.add(`${y}-05-01`); // Tag der Arbeit
+        holidays.add(`${y}-10-03`); // Tag der Deutschen Einheit
+        holidays.add(`${y}-10-31`); // Reformationstag (gesetzlich in MV)
+        holidays.add(`${y}-12-25`); // 1. Weihnachtsfeiertag
+        holidays.add(`${y}-12-26`); // 2. Weihnachtsfeiertag
+        
+        // Bewegliche Feiertage basierend auf Ostersonntag
+        const easter = getEasterSunday(y);
+        
+        const addDays = (date, days) => {
+            const res = new Date(date.getTime());
+            res.setDate(res.getDate() + days);
+            const mm = String(res.getMonth() + 1).padStart(2, '0');
+            const dd = String(res.getDate()).padStart(2, '0');
+            return `${y}-${mm}-${dd}`;
+        };
+        
+        holidays.add(addDays(easter, -2));  // Karfreitag
+        holidays.add(addDays(easter, 1));   // Ostermontag
+        holidays.add(addDays(easter, 39));  // Christi Himmelfahrt
+        holidays.add(addDays(easter, 50));  // Pfingstmontag
+        
+        return holidays;
+    }
+
+    function getMVHolidaysList(y) {
+        const list = [
+            { dateStr: `${y}-01-01`, name: "Neujahr" },
+            { dateStr: `${y}-03-08`, name: "Frauentag" },
+            { dateStr: `${y}-05-01`, name: "1. Mai" },
+            { dateStr: `${y}-10-03`, name: "3. Okt." },
+            { dateStr: `${y}-10-31`, name: "Reformationstag" },
+            { dateStr: `${y}-12-25`, name: "1. Weihnachtstag" },
+            { dateStr: `${y}-12-26`, name: "2. Weihnachtstag" }
+        ];
+        const easter = getEasterSunday(y);
+        const addDays = (days) => {
+            const res = new Date(easter.getTime());
+            res.setDate(res.getDate() + days);
+            const mm = String(res.getMonth() + 1).padStart(2, '0');
+            const dd = String(res.getDate()).padStart(2, '0');
+            return `${y}-${mm}-${dd}`;
+        };
+        list.push({ dateStr: addDays(-2), name: "Karfreitag" });
+        list.push({ dateStr: addDays(1), name: "Ostermontag" });
+        list.push({ dateStr: addDays(39), name: "Chr. Himmelfahrt" });
+        list.push({ dateStr: addDays(50), name: "Pfingstmontag" });
+        return list;
+    }
+
+    function isHoliday(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        const key = `${y}-${m}-${d}`;
+        return getMVHolidays(y).has(key);
+    }
+
     function isTrainRunningToday(restriction, simDate) {
         if (!restriction) return true;
         const day = simDate.getDay(); 
-        if (restriction === 'A') return (day >= 1 && day <= 5);
+        if (restriction === 'A') {
+            // Montag - Freitag, und NICHT an Feiertagen!
+            const isWeekday = (day >= 1 && day <= 5);
+            if (!isWeekday) return false;
+            return !isHoliday(simDate);
+        }
         if (restriction === 'Z') {
             const m = simDate.getMonth() + 1;
             const d = simDate.getDate();
@@ -1120,7 +1270,7 @@
         const svgTrainList = document.getElementById('svg-train-list');
         svgTrains.innerHTML = ''; svgTrainTimes.innerHTML = ''; svgTrainList.innerHTML = '';
         document.querySelectorAll('.train-info-card').forEach(el => el.remove());
-        const nowMins = simTime.getHours() * 60 + simTime.getMinutes();
+        const nowMins = simTime.getHours() * 60 + simTime.getMinutes() + simTime.getSeconds() / 60 + simTime.getMilliseconds() / 60000;
         const kwWest = projectedStations.find(s => s.name === "Kühlungsborn West");
         const bdBahnhof = projectedStations.find(s => s.name === "Bad Doberan Bahnhof");
         
@@ -1550,13 +1700,13 @@
         drawZWL();
     }
 
-    function scrollToCurrentTime() {
+    function scrollToCurrentTime(isSmooth = true) {
         const svg = document.getElementById('zwl-svg');
         const container = document.getElementById('zwl-container');
         if (!svg || !container) return;
         
         const simTime = getSimTime();
-        const nowMins = simTime.getHours() * 60 + simTime.getMinutes();
+        const nowMins = simTime.getHours() * 60 + simTime.getMinutes() + simTime.getSeconds() / 60 + simTime.getMilliseconds() / 60000;
         
         if (nowMins >= 360 && nowMins <= 1200) {
             const scaleSlider = document.getElementById('zwl-scale-slider');
@@ -1566,9 +1716,11 @@
             
             const redY = paddingTop + ((nowMins - 360) / (1200 - 360)) * gridHeight;
             const targetScrollTop = redY - (container.clientHeight / 2);
+            
+            isProgrammaticScroll = true;
             container.scrollTo({
                 top: targetScrollTop,
-                behavior: 'smooth'
+                behavior: isSmooth ? 'smooth' : 'auto'
             });
         }
     }
@@ -1680,7 +1832,7 @@
         const proportional = true;
         
         const simTime = getSimTime();
-        const nowMins = simTime.getHours() * 60 + simTime.getMinutes();
+        const nowMins = simTime.getHours() * 60 + simTime.getMinutes() + simTime.getSeconds() / 60 + simTime.getMilliseconds() / 60000;
         
         const standardStations = [
             "Kühlungsborn West",
@@ -2051,7 +2203,8 @@
                         isPast,
                         dIdx,
                         group,
-                        trainKey: tKey
+                        trainKey: tKey,
+                        restriction: train.restriction
                     });
                 });
                 
@@ -2221,7 +2374,20 @@
             svg.appendChild(timeLabel);
             
             if (l.restriction && l.isTerminus) {
-                let rX = (align === "end") ? finalX + 4 : finalX + 28;
+                let rX;
+                const rectW = 13;
+                const textW = 32; // Breite des Zeit-Texts (z. B. "06.40") ca. 32px bei FontSize 12
+                
+                if (l.isWest) {
+                    // Kühlungsborn West (links): das Icon steht IMMER links neben der Zeit
+                    rX = finalX - textW - rectW - 4;
+                } else if (l.isDoberan) {
+                    // Bad Doberan (rechts): das Icon steht IMMER rechts neben der Zeit
+                    rX = finalX + textW + 4;
+                } else {
+                    rX = finalX + 4;
+                }
+                
                 let rY = l.y - 10;
                 
                 const rGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
