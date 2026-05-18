@@ -245,13 +245,17 @@
             <h1 style="margin: 0; font-size: 1.4rem; white-space: nowrap;">Bäderbahn Molli</h1>
             <select id="validity-header" style="font-size: 0.85rem; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.1); color: white; outline: none; cursor: pointer; font-family: inherit; font-weight: 600; appearance: auto; margin-top: 4px;"></select>
         </div>
-        <div style="display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; flex-grow: 1; max-width: 550px; margin-left: 20px;">
+        <div id="time-controls-container" style="display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; flex-grow: 1; max-width: 650px; margin-left: 20px;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <button id="today-btn" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; padding: 2px 6px; font-size: 0.8rem; cursor: pointer;">Heute</button>
+                <input type="date" id="sim-date-picker" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; padding: 1px 4px; font-size: 0.85rem; font-family: inherit; outline: none; cursor: pointer; color-scheme: dark;">
+            </div>
+            <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.3); margin: 0 4px;"></div>
             <button id="reset-time-btn" title="Auf Echtzeit zurücksetzen" style="background: none; border: none; cursor: pointer; color: white; padding: 0; display: flex; align-items: center;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             </button>
-            
             <span id="sim-time-display" style="font-family: inherit; font-size: 1.2rem; font-weight: 600; min-width: 55px; text-align: center;"></span>
-            
             <div style="flex-grow: 1; position: relative; display: flex; align-items: center; padding-top: 20px; padding-bottom: 5px;">
                 <div id="slider-tooltip">12:00</div>
                 <input type="range" id="sim-time-slider" style="width: 100%;" title="Zeit für Simulation verschieben">
@@ -270,7 +274,6 @@
             <button class="tab-btn" onclick="showTab('tarife')">Tarife</button>
             <button class="tab-btn" onclick="showTab('hilfe')">Hilfe</button>
         </div>
-        <span style="font-size: 0.75rem; color: #888; padding-bottom: 4px;">* Standort bei Freigabe &middot; Karte wird live aktualisiert</span>
     </div>
 
     <div id="fahrplan" class="content-section">
@@ -491,9 +494,26 @@
 
             const resetBtn = document.getElementById('reset-time-btn');
             resetBtn.addEventListener('click', () => {
-                baseSimTime = new Date();
+                const now = new Date();
+                baseSimTime.setHours(now.getHours(), now.getMinutes(), 0, 0);
                 realTimeAtSet = Date.now();
                 updateLive();
+            });
+
+            const datePicker = document.getElementById('sim-date-picker');
+            const todayBtn = document.getElementById('today-btn');
+
+            datePicker.addEventListener('change', (e) => {
+                const [y, m, d] = e.target.value.split('-');
+                baseSimTime.setFullYear(y, m - 1, d);
+                applyDateChanges();
+            });
+
+            todayBtn.addEventListener('click', () => {
+                const today = new Date();
+                baseSimTime.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+                datePicker.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                applyDateChanges();
             });
 
             window.addEventListener('keydown', (e) => {
@@ -542,20 +562,14 @@
         }
     }
 
-    function applyTimetable(data) {
-        fahrplanData = data;
-        
-        // Remove existing train cards
+    function applyDateChanges() {
         document.querySelectorAll('.train-info-card').forEach(el => el.remove());
         
-        interpolateMissingTimes();
-        
         const slider = document.getElementById('sim-time-slider');
-        
         let minMins = 24 * 60, maxMins = 0;
-        const now = new Date();
+        
         fahrplanData.directions.forEach(dir => dir.trains.forEach(t => {
-            if (!isTrainRunningToday(t.restriction, now)) return;
+            if (!isTrainRunningToday(t.restriction, baseSimTime)) return;
             t.times.forEach(ts => {
                 if (ts && ts !== '-') {
                     const m = timeToMinutes(ts);
@@ -565,15 +579,15 @@
             });
         }));
 
-        // Startzeit begrenzen
-        const nowMins = now.getHours() * 60 + now.getMinutes();
-        if (nowMins < minMins) {
-            baseSimTime = new Date(); baseSimTime.setHours(Math.floor(minMins/60), minMins%60, 0, 0);
-        } else if (nowMins > maxMins) {
-            baseSimTime = new Date(); baseSimTime.setHours(Math.floor(maxMins/60), maxMins%60, 0, 0);
-        } else {
-            baseSimTime = now;
+        if (minMins > maxMins) { minMins = 360; maxMins = 1200; }
+        
+        const currentMins = baseSimTime.getHours() * 60 + baseSimTime.getMinutes();
+        if (currentMins < minMins) {
+            baseSimTime.setHours(Math.floor(minMins/60), minMins%60, 0, 0);
+        } else if (currentMins > maxMins) {
+            baseSimTime.setHours(Math.floor(maxMins/60), maxMins%60, 0, 0);
         }
+        
         realTimeAtSet = Date.now();
         slider.min = minMins;
         slider.max = maxMins;
@@ -583,6 +597,47 @@
         drawZWL();
         renderUmlaeufe();
         updateLive();
+    }
+
+    function parseDateGerman(dateStr) {
+        const parts = dateStr.trim().split('.');
+        if(parts.length === 3) {
+            let y = parseInt(parts[2]);
+            if(y < 100) y += 2000;
+            return new Date(y, parseInt(parts[1]) - 1, parseInt(parts[0]));
+        }
+        return new Date();
+    }
+
+    function applyTimetable(data) {
+        fahrplanData = data;
+        
+        const [startStr, endStr] = fahrplanData.validity.split('-');
+        const startDate = parseDateGerman(startStr);
+        const endDate = parseDateGerman(endStr);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        
+        let selectedDate = new Date(today.getTime());
+        const todayBtn = document.getElementById('today-btn');
+        const datePicker = document.getElementById('sim-date-picker');
+        
+        if (today >= startDate && today <= endDate) {
+            todayBtn.style.display = 'inline-block';
+        } else {
+            todayBtn.style.display = 'none';
+            selectedDate = new Date(startDate.getTime());
+        }
+        
+        datePicker.min = `${startDate.getFullYear()}-${String(startDate.getMonth()+1).padStart(2,'0')}-${String(startDate.getDate()).padStart(2,'0')}`;
+        datePicker.max = `${endDate.getFullYear()}-${String(endDate.getMonth()+1).padStart(2,'0')}-${String(endDate.getDate()).padStart(2,'0')}`;
+        datePicker.value = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth()+1).padStart(2,'0')}-${String(selectedDate.getDate()).padStart(2,'0')}`;
+
+        baseSimTime = new Date(selectedDate.getTime());
+        baseSimTime.setHours(today.getHours(), today.getMinutes(), 0, 0);
+        
+        interpolateMissingTimes();
+        applyDateChanges();
     }
 
     async function loadHelp() {
@@ -855,7 +910,7 @@
                 
                 const tMins = timeToMinutes(timeStr);
                 const isPast = tMins < nowMins;
-                departures.push({ time: timeStr, timeMins: tMins, to: dir.to, color: colors[dIdx], trainId: train.id, isPast, dIdx });
+                departures.push({ time: timeStr, timeMins: tMins, to: dir.to, color: colors[dIdx], trainId: train.id, isPast, dIdx, restriction: train.restriction });
             });
         });
         
@@ -903,13 +958,13 @@
                     destStr = `<span style="color: ${dep.color};">&#9664;</span> ${dep.to}`;
                 }
                 
-                let displayTime = dep.time;
-                if (isRennbahn && !displayTime.includes('(')) displayTime = `(${displayTime})`;
-
-                html += `<tr style="border-bottom: 1px solid #ffeeba;">
-                    <td style="padding: 2px; font-weight: bold; color: ${rowColor}; text-align: left;">${displayTime}</td>
-                    <td style="padding: 2px; font-weight: bold; color: #d35400; text-align: left; font-size: 10px;">${relativeTime}</td>
-                    <td style="padding: 2px; color: ${textColor}; text-align: left; padding-left: 5px;">${destStr}</td>
+                const restSpan = dep.restriction ? `<span class="restriction-tag" style="margin-left: 4px;">${dep.restriction}</span>` : "";
+                
+                html += `
+                <tr style="border-bottom: 1px solid rgba(0,0,0,0.05); ${dep.isPast ? 'opacity: 0.5;' : ''}">
+                    <td style="padding: 4px 2px; font-weight: bold; color: ${textColor};">${dep.time}</td>
+                    <td style="padding: 4px 2px; font-size: 10px; color: #999;">${relativeTime}</td>
+                    <td style="padding: 4px 2px; padding-left: 5px; color: ${textColor};">Zug ${dep.trainId}${restSpan} nach ${destStr}</td>
                 </tr>`;
             });
         }
@@ -940,7 +995,17 @@
     function isTrainRunningToday(restriction, simDate) {
         if (!restriction) return true;
         const day = simDate.getDay(); 
-        return restriction === 'A' ? (day >= 1 && day <= 5) : true;
+        if (restriction === 'A') return (day >= 1 && day <= 5);
+        if (restriction === 'Z') {
+            const m = simDate.getMonth() + 1;
+            const d = simDate.getDate();
+            const y = simDate.getFullYear();
+            if (y === 2025 && m === 11 && (d === 29 || d === 30)) return true;
+            if (y === 2025 && m === 12 && (d === 6 || d === 7)) return true;
+            if ((y === 2025 && m === 12 && d >= 28) || (y === 2026 && m === 1 && d <= 3)) return true;
+            return false;
+        }
+        return true;
     }
 
     function getLabelWidth(name) {
@@ -1129,8 +1194,9 @@
                     `;
                 }
                 
+                const restSpan = train.restriction ? `<span class="restriction-tag" style="margin-left: 6px; font-size: 10px;">${train.restriction}</span>` : "";
                 let tableHtml = `
-                    <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px; user-select: none;">Zug ${train.id} nach ${dir.to}</div>
+                    <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px; user-select: none;">Zug ${train.id}${restSpan} <span style="color:#444; font-weight:normal;">nach ${dir.to}</span></div>
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
                         <tr style="border-bottom: 2px solid #ccc; color: #666; user-select: none;">
                             <th style="padding: 3px; text-align: left;">Ank.</th>
@@ -1299,10 +1365,11 @@
             }
         }
         
-        let html = `<div style="font-weight: bold; font-size: 13px; margin-bottom: 4px; color: var(--accent);">${umlaufBadge}Zug ${train.id}</div>`;
+        const restSpan = train.restriction ? `<span class="restriction-tag" style="margin-left: 6px;">${train.restriction}</span>` : "";
+        let html = `<div style="font-weight: bold; font-size: 13px; margin-bottom: 4px; color: var(--accent);">${umlaufBadge}Zug ${train.id}${restSpan}</div>`;
         html += `<div>${dir.from} ${startTimeStr} - ${dir.to} ${endTimeStr}</div>`;
         if (train.restriction) {
-            html += `<div style="margin-top: 4px;"><span style="background: var(--primary); color: white; padding: 1px 4px; border-radius: 3px; font-size: 10px; font-weight: bold;">${train.restriction}</span> Montag - Freitag</div>`;
+            html += `<div style="margin-top: 4px;"><span style="background: var(--primary); color: white; padding: 1px 4px; border-radius: 3px; font-size: 10px; font-weight: bold;">${train.restriction}</span> siehe Verkehrshinweise</div>`;
         }
         
         zwlTooltip.innerHTML = html;
@@ -2038,6 +2105,35 @@
             
             timeLabel.textContent = l.labelText;
             svg.appendChild(timeLabel);
+            
+            if (l.restriction && (l.isWest || l.isDoberan)) {
+                let rX = l.isWest ? finalX + 4 : finalX + 28;
+                let rY = l.y - 10;
+                
+                const rGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                if (l.isPast) rGroup.setAttribute("opacity", "0.4");
+                
+                const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                bg.setAttribute("x", rX);
+                bg.setAttribute("y", rY);
+                bg.setAttribute("width", "13");
+                bg.setAttribute("height", "13");
+                bg.setAttribute("rx", "2");
+                bg.setAttribute("fill", "#000");
+                rGroup.appendChild(bg);
+                
+                const rt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                rt.setAttribute("x", rX + 6.5);
+                rt.setAttribute("y", rY + 10);
+                rt.setAttribute("text-anchor", "middle");
+                rt.setAttribute("font-size", "10");
+                rt.setAttribute("font-weight", "bold");
+                rt.setAttribute("fill", "#fff");
+                rt.textContent = l.restriction;
+                rGroup.appendChild(rt);
+                
+                svg.appendChild(rGroup);
+            }
         });
         
         // ------------------ TURNAROUND BRACKETS AT TERMINI ------------------
@@ -2481,6 +2577,14 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         event.currentTarget.classList.add('active');
+        
+        const timeControls = document.getElementById('time-controls-container');
+        if (['bildfahrplan', 'umlauf', 'strecke'].includes(tabId)) {
+            timeControls.style.display = 'flex';
+        } else {
+            timeControls.style.display = 'none';
+        }
+        
         if (tabId === 'strecke') renderRoute();
         if (tabId === 'bildfahrplan') {
             drawZWL();
