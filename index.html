@@ -1521,20 +1521,64 @@
             const stationBf = bfData.find(b => b.name === stationName);
             const labelText = stationBf && stationBf.km !== undefined ? `${formatKm(stationBf.km)} ${stationName}` : stationName;
             
-            const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            tick.setAttribute("x1", x);
-            tick.setAttribute("y1", "75");
-            tick.setAttribute("x2", x);
-            tick.setAttribute("y2", "90");
-            tick.setAttribute("stroke", "#ccc");
-            tick.setAttribute("stroke-width", "1.5");
-            headerSvg.appendChild(tick);
+            if (stationName === "Heiligendamm") {
+                // Tick 1 (Gleis 1)
+                const tick1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                tick1.setAttribute("x1", x - 5);
+                tick1.setAttribute("y1", "75");
+                tick1.setAttribute("x2", x - 5);
+                tick1.setAttribute("y2", "90");
+                tick1.setAttribute("stroke", "#ccc");
+                tick1.setAttribute("stroke-width", "1.5");
+                headerSvg.appendChild(tick1);
+                
+                // Label Gl. 1 (Links ausgerichtet, komplett kollisionsfrei)
+                const txt1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                txt1.setAttribute("x", x - 7);
+                txt1.setAttribute("y", "84");
+                txt1.setAttribute("text-anchor", "end");
+                txt1.setAttribute("font-size", "7.5");
+                txt1.setAttribute("font-weight", "bold");
+                txt1.setAttribute("fill", "#666");
+                txt1.textContent = "Gl. 1";
+                headerSvg.appendChild(txt1);
+
+                // Tick 2 (Gleis 2)
+                const tick2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                tick2.setAttribute("x1", x + 5);
+                tick2.setAttribute("y1", "75");
+                tick2.setAttribute("x2", x + 5);
+                tick2.setAttribute("y2", "90");
+                tick2.setAttribute("stroke", "#ccc");
+                tick2.setAttribute("stroke-width", "1.5");
+                headerSvg.appendChild(tick2);
+                
+                // Label Gl. 2 (Rechts ausgerichtet, komplett kollisionsfrei)
+                const txt2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                txt2.setAttribute("x", x + 7);
+                txt2.setAttribute("y", "84");
+                txt2.setAttribute("text-anchor", "start");
+                txt2.setAttribute("font-size", "7.5");
+                txt2.setAttribute("font-weight", "bold");
+                txt2.setAttribute("fill", "#666");
+                txt2.textContent = "Gl. 2";
+                headerSvg.appendChild(txt2);
+            } else {
+                const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                tick.setAttribute("x1", x);
+                tick.setAttribute("y1", "75");
+                tick.setAttribute("x2", x);
+                tick.setAttribute("y2", "90");
+                tick.setAttribute("stroke", "#ccc");
+                tick.setAttribute("stroke-width", "1.5");
+                headerSvg.appendChild(tick);
+            }
             
             const labelTop = document.createElementNS("http://www.w3.org/2000/svg", "text");
             labelTop.setAttribute("x", x);
-            labelTop.setAttribute("y", "70");
+            labelTop.setAttribute("y", stationName === "Heiligendamm" ? "64" : "70");
             labelTop.setAttribute("text-anchor", "start");
-            labelTop.setAttribute("transform", `rotate(-30, ${x}, 70)`);
+            labelTop.setAttribute("transform", `rotate(-30, ${x}, ${stationName === "Heiligendamm" ? 64 : 70})`);
             labelTop.setAttribute("font-size", "12");
             labelTop.setAttribute("font-weight", "bold");
             labelTop.setAttribute("fill", "#111");
@@ -1556,18 +1600,40 @@
         standardStations.forEach((stationName, idx) => {
             const x = getStationX(stationName);
             
-            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            line.setAttribute("x1", x);
-            line.setAttribute("y1", paddingTop);
-            line.setAttribute("x2", x);
-            line.setAttribute("y2", yEnd);
-            line.setAttribute("stroke", "#e5e5e5");
-            line.setAttribute("stroke-width", "1");
-            if (stationName === "Heiligendamm" || idx === 0 || idx === standardStations.length - 1) {
-                line.setAttribute("stroke", "#ccc");
-                line.setAttribute("stroke-width", "1.5");
+            if (stationName === "Heiligendamm") {
+                // Gleis 1
+                const line1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line1.setAttribute("x1", x - 5);
+                line1.setAttribute("y1", paddingTop);
+                line1.setAttribute("x2", x - 5);
+                line1.setAttribute("y2", yEnd);
+                line1.setAttribute("stroke", "#ccc");
+                line1.setAttribute("stroke-width", "1.5");
+                svg.appendChild(line1);
+                
+                // Gleis 2
+                const line2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line2.setAttribute("x1", x + 5);
+                line2.setAttribute("y1", paddingTop);
+                line2.setAttribute("x2", x + 5);
+                line2.setAttribute("y2", yEnd);
+                line2.setAttribute("stroke", "#ccc");
+                line2.setAttribute("stroke-width", "1.5");
+                svg.appendChild(line2);
+            } else {
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", x);
+                line.setAttribute("y1", paddingTop);
+                line.setAttribute("x2", x);
+                line.setAttribute("y2", yEnd);
+                line.setAttribute("stroke", "#e5e5e5");
+                line.setAttribute("stroke-width", "1");
+                if (idx === 0 || idx === standardStations.length - 1) {
+                    line.setAttribute("stroke", "#ccc");
+                    line.setAttribute("stroke-width", "1.5");
+                }
+                svg.appendChild(line);
             }
-            svg.appendChild(line);
         });
 
         
@@ -1594,7 +1660,10 @@
                 let visiblePoints = 0;
                 
                 points.forEach((p, pIdx) => {
-                    const x = getStationX(p.stationName);
+                    let x = getStationX(p.stationName);
+                    if (p.stationName === "Heiligendamm") {
+                        x += (dIdx === 0) ? 5 : -5;
+                    }
                     const y = getY(p.mins);
                     
                     if (pIdx === 0) {
@@ -1699,7 +1768,10 @@
                     const isHeiligendamm = (p.stationName === "Heiligendamm");
                     const isTerminus = isWest || isDoberan;
                     
-                    const x = getStationX(p.stationName);
+                    let x = getStationX(p.stationName);
+                    if (p.stationName === "Heiligendamm") {
+                        x += (dIdx === 0) ? 5 : -5;
+                    }
                     let y = getY(p.mins);
                     let labelText = "";
                     
@@ -1758,8 +1830,14 @@
                         const p1 = points[i];
                         const p2 = points[i+1];
                         if (nowMins >= p1.mins && nowMins <= p2.mins) {
-                            const x1 = getStationX(p1.stationName);
-                            const x2 = getStationX(p2.stationName);
+                            let x1 = getStationX(p1.stationName);
+                            if (p1.stationName === "Heiligendamm") {
+                                x1 += (dIdx === 0) ? 5 : -5;
+                            }
+                            let x2 = getStationX(p2.stationName);
+                            if (p2.stationName === "Heiligendamm") {
+                                x2 += (dIdx === 0) ? 5 : -5;
+                            }
                             const factor = (p2.mins - p1.mins === 0) ? 0 : (nowMins - p1.mins) / (p2.mins - p1.mins);
                             activeX = x1 + (x2 - x1) * factor;
                             break;
