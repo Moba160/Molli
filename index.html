@@ -265,6 +265,7 @@
     <div class="tabs" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--secondary); margin-bottom: 0.5rem;">
         <div style="display: flex; gap: 1rem;">
             <button class="tab-btn" onclick="showTab('fahrplan')">Fahrplan</button>
+            <button class="tab-btn" onclick="showTab('bildfahrplan')">Bildfahrplan</button>
             <button class="tab-btn active" onclick="showTab('strecke')">Strecke</button>
             <button class="tab-btn" onclick="showTab('tarife')">Tarife</button>
             <button class="tab-btn" onclick="showTab('hilfe')">Hilfe</button>
@@ -274,6 +275,32 @@
 
     <div id="fahrplan" class="content-section">
         <div id="timetable-container"></div>
+    </div>
+
+    <div id="bildfahrplan" class="content-section">
+        <div class="card">
+            <h2>Bildfahrplan (Zeit-Weg-Diagramm)</h2>
+            <div style="margin: 0.5rem 0 1rem 0; display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; cursor: pointer; font-size: 0.95rem;">
+                    <input type="checkbox" id="zwl-show-past" checked onchange="drawZWL()"> Vergangene Zugläufe anzeigen
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; cursor: pointer; font-size: 0.95rem;">
+                    <input type="checkbox" id="zwl-proportional" checked onchange="drawZWL()"> Bahnhöfe maßstäblich (Entfernung)
+                </label>
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                    <span style="font-weight: 600;">Zeitbereich:</span>
+                    <select id="zwl-time-range" onchange="drawZWL()" style="padding: 0.3rem 0.6rem; border-radius: 4px; border: 1px solid #ccc; font-family: inherit;">
+                        <option value="all">Ganzer Tag (06:00 - 20:00)</option>
+                        <option value="current" selected>Aktuelle 4 Stunden</option>
+                    </select>
+                </div>
+            </div>
+            <div id="zwl-container" style="width: 100%; overflow-x: auto; background: var(--white); border-radius: 8px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.05); padding: 10px 0;">
+                <svg id="zwl-svg" width="100%" height="650" style="min-width: 900px; display: block; margin: 0 auto; overflow: visible;">
+                    <!-- SVG elements will be drawn dynamically -->
+                </svg>
+            </div>
+        </div>
     </div>
 
     <div id="strecke" class="content-section active">
@@ -586,6 +613,12 @@
         renderRoute();
         renderTrains(simTime);
         updateHighlighting(simTime);
+        
+        // Update ZWL-Diagramm falls der Tab aktiv ist
+        const bildTab = document.getElementById('bildfahrplan');
+        if (bildTab && bildTab.classList.contains('active')) {
+            drawZWL();
+        }
     }
 
     function renderData() {
@@ -1008,12 +1041,492 @@
         });
     }
 
+    let zwlTooltip = null;
+
+    function showZWLTooltip(e, train, dir, points) {
+        if (!zwlTooltip) {
+            zwlTooltip = document.createElement('div');
+            zwlTooltip.style.position = 'absolute';
+            zwlTooltip.style.background = 'rgba(33, 33, 33, 0.95)';
+            zwlTooltip.style.color = 'white';
+            zwlTooltip.style.padding = '8px 12px';
+            zwlTooltip.style.borderRadius = '6px';
+            zwlTooltip.style.fontSize = '12px';
+            zwlTooltip.style.pointerEvents = 'none';
+            zwlTooltip.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
+            zwlTooltip.style.zIndex = '2000';
+            zwlTooltip.style.fontFamily = 'inherit';
+            zwlTooltip.style.border = '1px solid rgba(255,255,255,0.1)';
+            document.body.appendChild(zwlTooltip);
+        }
+        
+        const startTimeStr = train.times.find(t => t && t !== '-').replace(/[()]/g, '').split('/')[0];
+        const endTimeStr = [...train.times].reverse().find(t => t && t !== '-').replace(/[()]/g, '').split('/').pop();
+        
+        let html = `<div style="font-weight: bold; font-size: 13px; margin-bottom: 4px; color: var(--accent);">Zug ${train.id}</div>`;
+        html += `<div><strong>Richtung:</strong> ${dir.from} &rarr; ${dir.to}</div>`;
+        html += `<div><strong>Zeitraum:</strong> ${startTimeStr} - ${endTimeStr}</div>`;
+        if (train.restriction) {
+            html += `<div style="margin-top: 4px;"><span style="background: var(--primary); color: white; padding: 1px 4px; border-radius: 3px; font-size: 10px; font-weight: bold;">${train.restriction}</span> Montag - Freitag</div>`;
+        }
+        
+        zwlTooltip.innerHTML = html;
+        zwlTooltip.style.display = 'block';
+        moveZWLTooltip(e);
+    }
+
+    function moveZWLTooltip(e) {
+        if (zwlTooltip && zwlTooltip.style.display === 'block') {
+            zwlTooltip.style.left = `${e.pageX + 15}px`;
+            zwlTooltip.style.top = `${e.pageY + 15}px`;
+        }
+    }
+
+    function hideZWLTooltip() {
+        if (zwlTooltip) {
+            zwlTooltip.style.display = 'none';
+        }
+    }
+
+    function getTrainPoints(dir, train, minMins, maxMins, standardStations) {
+        let points = [];
+        dir.stations.forEach((stationName, idx) => {
+            let timeStr = train.times[idx];
+            if (!timeStr || timeStr === '-') return;
+            
+            timeStr = timeStr.replace(/[()]/g, '');
+            let stationIdx = standardStations.indexOf(stationName);
+            if (stationIdx === -1) return;
+            
+            if (timeStr.includes('/')) {
+                let [arrStr, depStr] = timeStr.split('/');
+                let arrMins = timeToMinutes(arrStr);
+                let depMins = timeToMinutes(depStr);
+                points.push({ stationIdx, mins: arrMins, type: 'arr', stationName });
+                points.push({ stationIdx, mins: depMins, type: 'dep', stationName });
+            } else {
+                let mins = timeToMinutes(timeStr);
+                points.push({ stationIdx, mins, type: 'single', stationName });
+            }
+        });
+        points.sort((a, b) => a.mins - b.mins);
+        return points;
+    }
+
+    function drawZWL() {
+        if (!fahrplanData || !bfData) return;
+        
+        const svg = document.getElementById('zwl-svg');
+        if (!svg) return;
+        svg.innerHTML = '';
+        
+        const width = 1000;
+        const height = 650;
+        const paddingLeft = 130;
+        const paddingRight = 60;
+        const paddingTop = 90;
+        const paddingBottom = 60;
+        
+        const xStart = paddingLeft;
+        const xEnd = width - paddingRight;
+        const yStart = paddingTop;
+        const yEnd = height - paddingBottom;
+        
+        const showPast = document.getElementById('zwl-show-past').checked;
+        const proportional = document.getElementById('zwl-proportional').checked;
+        const timeRangeOpt = document.getElementById('zwl-time-range').value;
+        
+        const simTime = getSimTime();
+        const nowMins = simTime.getHours() * 60 + simTime.getMinutes();
+        
+        const standardStations = [
+            "Kühlungsborn West",
+            "Kühlungsborn Mitte",
+            "Kühlungsborn Ost",
+            "Steilküste",
+            "Heiligendamm",
+            "Rennbahn",
+            "Bad Doberan Goethestraße",
+            "Bad Doberan Stadtmitte",
+            "Bad Doberan Bahnhof"
+        ];
+        
+        // Entfernungen berechnen
+        let cumDist = [0];
+        let totalDist = 0;
+        for (let i = 1; i < standardStations.length; i++) {
+            const s1 = bfData.find(b => b.name === standardStations[i-1]);
+            const s2 = bfData.find(b => b.name === standardStations[i]);
+            if (s1 && s2) {
+                let latDiff = s2.lat - s1.lat;
+                let lngDiff = (s2.lng - s1.lng) * Math.cos(s1.lat * Math.PI / 180);
+                let d = Math.sqrt(latDiff * latDiff + lngDiff * lngDiff) * 111.32;
+                totalDist += d;
+                cumDist.push(totalDist);
+            } else {
+                cumDist.push(cumDist[i-1] + 1.5);
+            }
+        }
+        
+        function getStationX(stationName) {
+            const idx = standardStations.indexOf(stationName);
+            if (idx === -1) return xStart;
+            if (proportional) {
+                return xStart + (cumDist[idx] / cumDist[cumDist.length - 1]) * (xEnd - xStart);
+            } else {
+                return xStart + (idx / (standardStations.length - 1)) * (xEnd - xStart);
+            }
+        }
+        
+        let minMins = 360; // 06:00
+        let maxMins = 1200; // 20:00
+        
+        if (timeRangeOpt === 'current') {
+            minMins = nowMins - 120;
+            maxMins = nowMins + 120;
+            if (minMins < 360) {
+                minMins = 360;
+                maxMins = 600;
+            } else if (maxMins > 1200) {
+                maxMins = 1200;
+                minMins = 960;
+            }
+        }
+        
+        function getY(mins) {
+            return yStart + ((mins - minMins) / (maxMins - minMins)) * (yEnd - yStart);
+        }
+        
+        // Gitter-Hintergrund
+        const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        bgRect.setAttribute("x", xStart);
+        bgRect.setAttribute("y", yStart);
+        bgRect.setAttribute("width", xEnd - xStart);
+        bgRect.setAttribute("height", yEnd - yStart);
+        bgRect.setAttribute("fill", "#fafafa");
+        bgRect.setAttribute("stroke", "#ddd");
+        bgRect.setAttribute("stroke-width", "2");
+        svg.appendChild(bgRect);
+        
+        // Vertikale Bahnhofs-Linien und Beschriftungen
+        standardStations.forEach((stationName, idx) => {
+            const x = getStationX(stationName);
+            
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", x);
+            line.setAttribute("y1", yStart);
+            line.setAttribute("x2", x);
+            line.setAttribute("y2", yEnd);
+            line.setAttribute("stroke", "#e5e5e5");
+            line.setAttribute("stroke-width", "1");
+            if (stationName === "Heiligendamm" || idx === 0 || idx === standardStations.length - 1) {
+                line.setAttribute("stroke", "#ccc");
+                line.setAttribute("stroke-width", "1.5");
+            }
+            svg.appendChild(line);
+            
+            // Label oben
+            const labelTop = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            labelTop.setAttribute("x", x);
+            labelTop.setAttribute("y", yStart - 10);
+            labelTop.setAttribute("text-anchor", "start");
+            labelTop.setAttribute("transform", `rotate(-30, ${x}, ${yStart - 10})`);
+            labelTop.setAttribute("font-size", "10");
+            labelTop.setAttribute("font-weight", "600");
+            labelTop.setAttribute("fill", "#444");
+            labelTop.textContent = stationName;
+            svg.appendChild(labelTop);
+            
+            // Label unten
+            const labelBottom = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            labelBottom.setAttribute("x", x);
+            labelBottom.setAttribute("y", yEnd + 15);
+            labelBottom.setAttribute("text-anchor", "end");
+            labelBottom.setAttribute("transform", `rotate(-30, ${x}, ${yEnd + 15})`);
+            labelBottom.setAttribute("font-size", "10");
+            labelBottom.setAttribute("font-weight", "600");
+            labelBottom.setAttribute("fill", "#444");
+            labelBottom.textContent = stationName;
+            svg.appendChild(labelBottom);
+        });
+        
+        // Horizontale Zeit-Linien und Beschriftungen
+        const startHour = Math.floor(minMins / 60);
+        const endHour = Math.ceil(maxMins / 60);
+        
+        for (let h = startHour; h <= endHour; h++) {
+            const hourMins = h * 60;
+            if (hourMins >= minMins && hourMins <= maxMins) {
+                const y = getY(hourMins);
+                
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", xStart);
+                line.setAttribute("y1", y);
+                line.setAttribute("x2", xEnd);
+                line.setAttribute("y2", y);
+                line.setAttribute("stroke", "#ccc");
+                line.setAttribute("stroke-width", "1.5");
+                svg.appendChild(line);
+                
+                const labelLeft = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                labelLeft.setAttribute("x", xStart - 15);
+                labelLeft.setAttribute("y", y + 4);
+                labelLeft.setAttribute("text-anchor", "end");
+                labelLeft.setAttribute("font-size", "12");
+                labelLeft.setAttribute("font-weight", "bold");
+                labelLeft.setAttribute("fill", "#333");
+                labelLeft.textContent = `${h.toString().padStart(2, '0')}:00`;
+                svg.appendChild(labelLeft);
+                
+                const labelRight = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                labelRight.setAttribute("x", xEnd + 15);
+                labelRight.setAttribute("y", y + 4);
+                labelRight.setAttribute("text-anchor", "start");
+                labelRight.setAttribute("font-size", "12");
+                labelRight.setAttribute("font-weight", "bold");
+                labelRight.setAttribute("fill", "#333");
+                labelRight.textContent = `${h.toString().padStart(2, '0')}:00`;
+                svg.appendChild(labelRight);
+            }
+            
+            const halfMins = h * 60 + 30;
+            if (halfMins >= minMins && halfMins <= maxMins) {
+                const y = getY(halfMins);
+                
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", xStart);
+                line.setAttribute("y1", y);
+                line.setAttribute("x2", xEnd);
+                line.setAttribute("y2", y);
+                line.setAttribute("stroke", "#e5e5e5");
+                line.setAttribute("stroke-width", "1");
+                line.setAttribute("stroke-dasharray", "4,4");
+                svg.appendChild(line);
+                
+                const labelLeft = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                labelLeft.setAttribute("x", xStart - 15);
+                labelLeft.setAttribute("y", y + 4);
+                labelLeft.setAttribute("text-anchor", "end");
+                labelLeft.setAttribute("font-size", "10");
+                labelLeft.setAttribute("fill", "#777");
+                labelLeft.textContent = `${h.toString().padStart(2, '0')}:30`;
+                svg.appendChild(labelLeft);
+            }
+        }
+        
+        // Zuglinien zeichnen
+        const colors = ['#e67e22', '#3498db'];
+        
+        fahrplanData.directions.forEach((dir, dIdx) => {
+            const dirColor = colors[dIdx];
+            
+            dir.trains.forEach(train => {
+                if (!isTrainRunningToday(train.restriction, simTime)) return;
+                
+                const points = getTrainPoints(dir, train, minMins, maxMins, standardStations);
+                if (points.length < 2) return;
+                
+                const lastPoint = points[points.length - 1];
+                const firstPoint = points[0];
+                const isPast = lastPoint.mins < nowMins;
+                const isFuture = firstPoint.mins > nowMins;
+                const isActive = !isPast && !isFuture;
+                
+                if (isPast && !showPast) return;
+                
+                let pathDesc = "";
+                let visiblePoints = 0;
+                
+                points.forEach((p, pIdx) => {
+                    const x = getStationX(p.stationName);
+                    const y = getY(p.mins);
+                    
+                    if (pIdx === 0) {
+                        pathDesc += `M ${x},${y}`;
+                    } else {
+                        pathDesc += ` L ${x},${y}`;
+                    }
+                    
+                    if (p.mins >= minMins && p.mins <= maxMins) {
+                        visiblePoints++;
+                    }
+                });
+                
+                if (visiblePoints === 0) return;
+                
+                const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                group.setAttribute("class", "zwl-train-group");
+                group.style.cursor = "pointer";
+                
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("d", pathDesc);
+                path.setAttribute("fill", "none");
+                path.setAttribute("stroke", dirColor);
+                path.setAttribute("stroke-width", isActive ? "3.5" : "2");
+                if (isPast) {
+                    path.setAttribute("stroke-opacity", "0.4");
+                    path.setAttribute("stroke-width", "1.5");
+                }
+                group.appendChild(path);
+                
+                const hoverPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                hoverPath.setAttribute("d", pathDesc);
+                hoverPath.setAttribute("fill", "none");
+                hoverPath.setAttribute("stroke", "transparent");
+                hoverPath.setAttribute("stroke-width", "15");
+                group.appendChild(hoverPath);
+                
+                const midIdx = Math.floor(points.length / 2);
+                const midPoint = points[midIdx];
+                if (midPoint.mins >= minMins && midPoint.mins <= maxMins) {
+                    const midX = getStationX(midPoint.stationName);
+                    const midY = getY(midPoint.mins);
+                    
+                    const labelBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                    labelBg.setAttribute("x", midX - 10);
+                    labelBg.setAttribute("y", midY - 8);
+                    labelBg.setAttribute("width", "20");
+                    labelBg.setAttribute("height", "15");
+                    labelBg.setAttribute("rx", "3");
+                    labelBg.setAttribute("fill", "white");
+                    labelBg.setAttribute("stroke", dirColor);
+                    labelBg.setAttribute("stroke-width", "1");
+                    if (isPast) labelBg.setAttribute("stroke-opacity", "0.4");
+                    group.appendChild(labelBg);
+                    
+                    const labelText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    labelText.setAttribute("x", midX);
+                    labelText.setAttribute("y", midY + 3);
+                    labelText.setAttribute("text-anchor", "middle");
+                    labelText.setAttribute("font-size", "10");
+                    labelText.setAttribute("font-weight", "bold");
+                    labelText.setAttribute("fill", dirColor);
+                    if (isPast) labelText.setAttribute("fill-opacity", "0.4");
+                    labelText.textContent = train.id;
+                    group.appendChild(labelText);
+                }
+                
+                if (isActive) {
+                    let activeX = null;
+                    let activeY = getY(nowMins);
+                    
+                    for (let i = 0; i < points.length - 1; i++) {
+                        const p1 = points[i];
+                        const p2 = points[i+1];
+                        if (nowMins >= p1.mins && nowMins <= p2.mins) {
+                            const x1 = getStationX(p1.stationName);
+                            const x2 = getStationX(p2.stationName);
+                            const factor = (p2.mins - p1.mins === 0) ? 0 : (nowMins - p1.mins) / (p2.mins - p1.mins);
+                            activeX = x1 + (x2 - x1) * factor;
+                            break;
+                        }
+                    }
+                    
+                    if (activeX !== null) {
+                        const pulse = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        pulse.setAttribute("cx", activeX);
+                        pulse.setAttribute("cy", activeY);
+                        pulse.setAttribute("r", "8");
+                        pulse.setAttribute("fill", dirColor);
+                        pulse.setAttribute("opacity", "0.5");
+                        
+                        const anim = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+                        anim.setAttribute("attributeName", "r");
+                        anim.setAttribute("values", "6;12;6");
+                        anim.setAttribute("dur", "1.5s");
+                        anim.setAttribute("repeatCount", "indefinite");
+                        pulse.appendChild(anim);
+                        group.appendChild(pulse);
+                        
+                        const core = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        core.setAttribute("cx", activeX);
+                        core.setAttribute("cy", activeY);
+                        core.setAttribute("r", "4.5");
+                        core.setAttribute("fill", "white");
+                        core.setAttribute("stroke", core.getAttribute("stroke") || dirColor);
+                        core.setAttribute("stroke-width", "2");
+                        group.appendChild(core);
+                    }
+                }
+                
+                group.addEventListener("mouseover", (e) => {
+                    path.setAttribute("stroke-width", isActive ? "5.5" : "4");
+                    showZWLTooltip(e, train, dir, points);
+                });
+                group.addEventListener("mousemove", (e) => {
+                    moveZWLTooltip(e);
+                });
+                group.addEventListener("mouseout", () => {
+                    path.setAttribute("stroke-width", isActive ? "3.5" : "2");
+                    if (isPast) path.setAttribute("stroke-width", "1.5");
+                    hideZWLTooltip();
+                });
+                
+                svg.appendChild(group);
+            });
+        });
+        
+        // Rote Linie für aktuelle Zeit
+        if (nowMins >= minMins && nowMins <= maxMins) {
+            const currentY = getY(nowMins);
+            
+            const timeLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            timeLine.setAttribute("x1", xStart);
+            timeLine.setAttribute("y1", currentY);
+            timeLine.setAttribute("x2", xEnd);
+            timeLine.setAttribute("y2", currentY);
+            timeLine.setAttribute("stroke", "#e74c3c");
+            timeLine.setAttribute("stroke-width", "2");
+            timeLine.setAttribute("stroke-dasharray", "2,2");
+            svg.appendChild(timeLine);
+            
+            const bubbleLeft = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            bubbleLeft.setAttribute("x", xStart - 52);
+            bubbleLeft.setAttribute("y", currentY - 9);
+            bubbleLeft.setAttribute("width", "48");
+            bubbleLeft.setAttribute("height", "18");
+            bubbleLeft.setAttribute("rx", "4");
+            bubbleLeft.setAttribute("fill", "#e74c3c");
+            svg.appendChild(bubbleLeft);
+            
+            const bubbleLeftText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            bubbleLeftText.setAttribute("x", xStart - 28);
+            bubbleLeftText.setAttribute("y", currentY + 4);
+            bubbleLeftText.setAttribute("text-anchor", "middle");
+            bubbleLeftText.setAttribute("font-size", "10");
+            bubbleLeftText.setAttribute("font-weight", "bold");
+            bubbleLeftText.setAttribute("fill", "white");
+            bubbleLeftText.textContent = `${simTime.getHours().toString().padStart(2, '0')}:${simTime.getMinutes().toString().padStart(2, '0')}`;
+            svg.appendChild(bubbleLeftText);
+            
+            const bubbleRight = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            bubbleRight.setAttribute("x", xEnd + 4);
+            bubbleRight.setAttribute("y", currentY - 9);
+            bubbleRight.setAttribute("width", "48");
+            bubbleRight.setAttribute("height", "18");
+            bubbleRight.setAttribute("rx", "4");
+            bubbleRight.setAttribute("fill", "#e74c3c");
+            svg.appendChild(bubbleRight);
+            
+            const bubbleRightText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            bubbleRightText.setAttribute("x", xEnd + 28);
+            bubbleRightText.setAttribute("y", currentY + 4);
+            bubbleRightText.setAttribute("text-anchor", "middle");
+            bubbleRightText.setAttribute("font-size", "10");
+            bubbleRightText.setAttribute("font-weight", "bold");
+            bubbleRightText.setAttribute("fill", "white");
+            bubbleRightText.textContent = `${simTime.getHours().toString().padStart(2, '0')}:${simTime.getMinutes().toString().padStart(2, '0')}`;
+            svg.appendChild(bubbleRightText);
+        }
+    }
+
     function showTab(tabId) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         event.currentTarget.classList.add('active');
         if (tabId === 'strecke') renderRoute();
+        if (tabId === 'bildfahrplan') drawZWL();
     }
 
     init();
