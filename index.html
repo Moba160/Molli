@@ -1397,35 +1397,7 @@
                 hoverPath.setAttribute("stroke-width", "15");
                 group.appendChild(hoverPath);
                 
-                const midIdx = Math.floor(points.length / 2);
-                const midPoint = points[midIdx];
-                if (midPoint.mins >= minMins && midPoint.mins <= maxMins) {
-                    const midX = getStationX(midPoint.stationName);
-                    const midY = getY(midPoint.mins);
-                    
-                    const labelBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-                    labelBg.setAttribute("x", midX - 10);
-                    labelBg.setAttribute("y", midY - 8);
-                    labelBg.setAttribute("width", "20");
-                    labelBg.setAttribute("height", "15");
-                    labelBg.setAttribute("rx", "3");
-                    labelBg.setAttribute("fill", "white");
-                    labelBg.setAttribute("stroke", dirColor);
-                    labelBg.setAttribute("stroke-width", "1");
-                    if (isPast) labelBg.setAttribute("stroke-opacity", "0.4");
-                    group.appendChild(labelBg);
-                    
-                    const labelText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                    labelText.setAttribute("x", midX);
-                    labelText.setAttribute("y", midY + 3);
-                    labelText.setAttribute("text-anchor", "middle");
-                    labelText.setAttribute("font-size", "10");
-                    labelText.setAttribute("font-weight", "bold");
-                    labelText.setAttribute("fill", dirColor);
-                    if (isPast) labelText.setAttribute("fill-opacity", "0.4");
-                    labelText.textContent = train.id;
-                    group.appendChild(labelText);
-                }
+
                 
                 if (isActive) {
                     let activeX = null;
