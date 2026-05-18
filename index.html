@@ -287,7 +287,12 @@
                     <span style="font-size: 0.85rem; font-weight: bold; color: var(--primary);" id="zwl-scale-label">1.0x</span>
                 </div>
                 <!-- Diagramm-Bereich -->
-                <div id="zwl-container" style="flex-grow: 1; overflow-x: auto; background: var(--white); border-radius: 12px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0;">
+                <div id="zwl-container" style="flex-grow: 1; overflow-x: auto; background: var(--white); border-radius: 12px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; display: flex; flex-direction: column;">
+                    <!-- Sticky Header-SVG für Bahnhofsnamen -->
+                    <svg id="zwl-header-svg" width="100%" height="90" style="min-width: 900px; display: block; margin: 0 auto; overflow: visible; position: sticky; top: 0; z-index: 10; background: var(--white); border-bottom: 1.5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                        <!-- Bahnhofsnamen werden dynamisch gezeichnet -->
+                    </svg>
+                    <!-- Haupt-SVG für das Diagramm -->
                     <svg id="zwl-svg" width="100%" height="1900" style="min-width: 900px; display: block; margin: 0 auto; overflow: visible;">
                         <!-- SVG-Elemente werden dynamisch gezeichnet -->
                     </svg>
@@ -1103,10 +1108,7 @@
             }
         });
         points.sort((a, b) => a.mins - b.mins);
-        return points;
-    }
-
-    function updateZWLScale() {
+         function updateZWLScale() {
         const slider = document.getElementById('zwl-scale-slider');
         const label = document.getElementById('zwl-scale-label');
         if (slider && label) {
@@ -1126,13 +1128,13 @@
             const scaleSlider = document.getElementById('zwl-scale-slider');
             const scaleVal = scaleSlider ? parseFloat(scaleSlider.value) : 1.0;
             const gridHeight = 1750 * scaleVal;
-            const paddingTop = 90;
+            const paddingTop = 15;
             
             const redY = paddingTop + ((nowMins - 360) / (1200 - 360)) * gridHeight;
             const svgRect = svg.getBoundingClientRect();
             const svgTop = svgRect.top + window.scrollY;
             
-            const targetScrollY = svgTop + redY - (window.innerHeight / 2);
+            const targetScrollY = svgTop + redY - (window.innerHeight / 2) + 45;
             window.scrollTo({
                 top: targetScrollY,
                 behavior: 'smooth'
@@ -1143,24 +1145,27 @@
     function drawZWL() {
         if (!fahrplanData || !bfData) return;
         
+        const headerSvg = document.getElementById('zwl-header-svg');
         const svg = document.getElementById('zwl-svg');
-        if (!svg) return;
+        if (!headerSvg || !svg) return;
+        
+        headerSvg.innerHTML = '';
         svg.innerHTML = '';
         
         const width = 1000;
         const paddingLeft = 130;
         const paddingRight = 60;
-        const paddingTop = 90;
-        const paddingBottom = 60;
         
         const xStart = paddingLeft;
         const xEnd = width - paddingRight;
-        const yStart = paddingTop;
         
         // Dynamische Skalierung der Höhe
         const scaleSlider = document.getElementById('zwl-scale-slider');
         const scaleVal = scaleSlider ? parseFloat(scaleSlider.value) : 1.0;
         const gridHeight = 1750 * scaleVal;
+        
+        const paddingTop = 15;
+        const paddingBottom = 40;
         const height = paddingTop + gridHeight + paddingBottom;
         const yEnd = paddingTop + gridHeight;
         
@@ -1215,13 +1220,46 @@
         let maxMins = 1200; // 20:00
         
         function getY(mins) {
-            return yStart + ((mins - minMins) / (maxMins - minMins)) * gridHeight;
+            return paddingTop + ((mins - minMins) / (maxMins - minMins)) * gridHeight;
         }
         
-        // Gitter-Hintergrund
+        // ------------------ HEADER SVG ZEICHNEN ------------------
+        const headerBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        headerBg.setAttribute("x", "0");
+        headerBg.setAttribute("y", "0");
+        headerBg.setAttribute("width", width);
+        headerBg.setAttribute("height", "90");
+        headerBg.setAttribute("fill", "white");
+        headerSvg.appendChild(headerBg);
+        
+        standardStations.forEach((stationName, idx) => {
+            const x = getStationX(stationName);
+            
+            const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            tick.setAttribute("x1", x);
+            tick.setAttribute("y1", "75");
+            tick.setAttribute("x2", x);
+            tick.setAttribute("y2", "90");
+            tick.setAttribute("stroke", "#ccc");
+            tick.setAttribute("stroke-width", "1.5");
+            headerSvg.appendChild(tick);
+            
+            const labelTop = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            labelTop.setAttribute("x", x);
+            labelTop.setAttribute("y", "70");
+            labelTop.setAttribute("text-anchor", "start");
+            labelTop.setAttribute("transform", `rotate(-30, ${x}, 70)`);
+            labelTop.setAttribute("font-size", "12");
+            labelTop.setAttribute("font-weight", "bold");
+            labelTop.setAttribute("fill", "#111");
+            labelTop.textContent = stationName;
+            headerSvg.appendChild(labelTop);
+        });
+        
+        // ------------------ HAUPT DIAGRAMM SVG ZEICHNEN ------------------
         const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
         bgRect.setAttribute("x", xStart);
-        bgRect.setAttribute("y", yStart);
+        bgRect.setAttribute("y", paddingTop);
         bgRect.setAttribute("width", xEnd - xStart);
         bgRect.setAttribute("height", gridHeight);
         bgRect.setAttribute("fill", "#fafafa");
@@ -1229,13 +1267,12 @@
         bgRect.setAttribute("stroke-width", "2");
         svg.appendChild(bgRect);
         
-        // Vertikale Bahnhofs-Linien und Beschriftungen
         standardStations.forEach((stationName, idx) => {
             const x = getStationX(stationName);
             
             const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
             line.setAttribute("x1", x);
-            line.setAttribute("y1", yStart);
+            line.setAttribute("y1", paddingTop);
             line.setAttribute("x2", x);
             line.setAttribute("y2", yEnd);
             line.setAttribute("stroke", "#e5e5e5");
@@ -1245,33 +1282,8 @@
                 line.setAttribute("stroke-width", "1.5");
             }
             svg.appendChild(line);
-            
-            // Label oben
-            const labelTop = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            labelTop.setAttribute("x", x);
-            labelTop.setAttribute("y", yStart - 10);
-            labelTop.setAttribute("text-anchor", "start");
-            labelTop.setAttribute("transform", `rotate(-30, ${x}, ${yStart - 10})`);
-            labelTop.setAttribute("font-size", "10");
-            labelTop.setAttribute("font-weight", "600");
-            labelTop.setAttribute("fill", "#444");
-            labelTop.textContent = stationName;
-            svg.appendChild(labelTop);
-            
-            // Label unten
-            const labelBottom = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            labelBottom.setAttribute("x", x);
-            labelBottom.setAttribute("y", yEnd + 15);
-            labelBottom.setAttribute("text-anchor", "end");
-            labelBottom.setAttribute("transform", `rotate(-30, ${x}, ${yEnd + 15})`);
-            labelBottom.setAttribute("font-size", "10");
-            labelBottom.setAttribute("font-weight", "600");
-            labelBottom.setAttribute("fill", "#444");
-            labelBottom.textContent = stationName;
-            svg.appendChild(labelBottom);
         });
         
-        // Horizontale Zeit-Linien und Beschriftungen
         const startHour = Math.floor(minMins / 60);
         const endHour = Math.ceil(maxMins / 60);
         
@@ -1335,7 +1347,6 @@
             }
         }
         
-        // Zuglinien zeichnen
         const colors = ['#e67e22', '#3498db'];
         
         fahrplanData.directions.forEach((dir, dIdx) => {
@@ -1396,8 +1407,6 @@
                 hoverPath.setAttribute("stroke", "transparent");
                 hoverPath.setAttribute("stroke-width", "15");
                 group.appendChild(hoverPath);
-                
-
                 
                 if (isActive) {
                     let activeX = null;
