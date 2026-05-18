@@ -151,6 +151,7 @@
             box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
             vertical-align: text-bottom;
             line-height: 1.2;
+            cursor: help;
         }
 
         /* Sub-Tabs */
@@ -586,7 +587,10 @@
         }
         const rc = document.getElementById('active-restrictions-container');
         if (rc) {
-            rc.innerHTML = activeRes.map(r => `<span style="background: #000; color: #fff; padding: 1px 4px; border-radius: 3px; font-size: 0.85rem; font-weight: bold; line-height: 1.2;">${r}</span>`).join('');
+            rc.innerHTML = activeRes.map(r => {
+                const desc = fahrplanData.restrictions ? (fahrplanData.restrictions[r] || "") : "";
+                return `<span class="restriction-tag" title="${desc}" style="background: #000; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; line-height: 1.2; margin-left: 4px;">${r}</span>`;
+            }).join('');
         }
         
         let minMins = 24 * 60, maxMins = 0;
@@ -822,7 +826,10 @@
             
             // Kein doppeltes H2 mehr! Direkt die Tabelle rendern.
             let html = `<div style="overflow-x: auto;"><table><thead><tr><th>Bahnhof</th>`;
-            dir.trains.forEach(t => html += `<th>Zug ${t.id}${t.restriction ? `<span class="restriction-tag">${t.restriction}</span>` : ''}</th>`);
+            dir.trains.forEach(t => {
+                const desc = fahrplanData.restrictions ? (fahrplanData.restrictions[t.restriction] || "") : "";
+                html += `<th>Zug ${t.id}${t.restriction ? `<span class="restriction-tag" title="${desc}">${t.restriction}</span>` : ''}</th>`;
+            });
             html += `</tr></thead><tbody>`;
             dir.stations.forEach((station, sIdx) => {
                 const stationBf = bfData.find(b => b.name === station);
@@ -952,13 +959,14 @@
             <div style="font-weight: bold; color: #856404; margin-bottom: 4px; font-size: 14px; text-align: center; border-bottom: 2px solid #ffeeba; padding-bottom: 2px;">${titleText}</div>
             <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; line-height: 1.1;">
                 <tr style="border-bottom: 2px solid #ffeeba; color: #856404;">
+                    <th style="padding: 2px; text-align: center; width: 20px;"></th>
                     <th style="padding: 2px; text-align: left;">Zeit</th>
                     <th style="padding: 2px; text-align: left;"></th>
                     <th style="padding: 2px; text-align: left; padding-left: 5px;">Ziel</th>
                 </tr>`;
                 
         if (departures.length === 0) {
-            html += `<tr><td colspan="3" style="padding: 4px; text-align: center; color: #856404;">Keine Züge heute</td></tr>`;
+            html += `<tr><td colspan="4" style="padding: 4px; text-align: center; color: #856404;">Keine Züge heute</td></tr>`;
         } else {
             departures.forEach(dep => {
                 const rowColor = dep.isPast ? '#999' : dep.color;
@@ -981,13 +989,15 @@
                     destStr = `<span style="color: ${dep.color};">&#9664;</span> ${dep.to}`;
                 }
                 
-                const restSpan = dep.restriction ? `<span class="restriction-tag" style="margin-left: 4px;">${dep.restriction}</span>` : "";
+                const desc = fahrplanData.restrictions ? (fahrplanData.restrictions[dep.restriction] || "") : "";
+                const restSpan = dep.restriction ? `<span class="restriction-tag" title="${desc}">${dep.restriction}</span>` : "";
                 
                 html += `
                 <tr style="border-bottom: 1px solid rgba(0,0,0,0.05); ${dep.isPast ? 'opacity: 0.5;' : ''}">
+                    <td style="padding: 4px 2px; text-align: center; vertical-align: middle;">${restSpan}</td>
                     <td style="padding: 4px 2px; font-weight: bold; color: ${textColor};">${dep.time}</td>
                     <td style="padding: 4px 2px; font-size: 10px; color: #999;">${relativeTime}</td>
-                    <td style="padding: 4px 2px; padding-left: 5px; color: ${textColor};">Zug ${dep.trainId}${restSpan} nach ${destStr}</td>
+                    <td style="padding: 4px 2px; padding-left: 5px; color: ${textColor};">Zug ${dep.trainId} nach ${destStr}</td>
                 </tr>`;
             });
         }
@@ -1217,7 +1227,8 @@
                     `;
                 }
                 
-                const restSpan = train.restriction ? `<span class="restriction-tag" style="margin-left: 6px; font-size: 10px;">${train.restriction}</span>` : "";
+                const desc = fahrplanData.restrictions ? (fahrplanData.restrictions[train.restriction] || "") : "";
+                const restSpan = train.restriction ? `<span class="restriction-tag" title="${desc}" style="margin-left: 6px; font-size: 10px;">${train.restriction}</span>` : "";
                 let tableHtml = `
                     <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px; user-select: none;">Zug ${train.id}${restSpan} <span style="color:#444; font-weight:normal;">nach ${dir.to}</span></div>
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
@@ -1388,8 +1399,7 @@
             }
         }
         
-        const restSpan = train.restriction ? `<span class="restriction-tag" style="margin-left: 6px;">${train.restriction}</span>` : "";
-        let html = `<div style="font-weight: bold; font-size: 13px; margin-bottom: 4px; color: var(--accent);">${umlaufBadge}Zug ${train.id}${restSpan}</div>`;
+        let html = `<div style="font-weight: bold; font-size: 13px; margin-bottom: 4px; color: var(--accent);">${umlaufBadge}Zug ${train.id}</div>`;
         html += `<div>${dir.from} ${startTimeStr} - ${dir.to} ${endTimeStr}</div>`;
         if (train.restriction) {
             const restrictionText = fahrplanData.restrictions ? (fahrplanData.restrictions[train.restriction] || "") : "";
@@ -2142,12 +2152,17 @@
             timeLabel.textContent = l.labelText;
             svg.appendChild(timeLabel);
             
-            if (l.restriction && (l.isWest || l.isDoberan)) {
-                let rX = l.isWest ? finalX + 4 : finalX + 28;
+            if (l.restriction && l.isTerminus) {
+                let rX = (align === "end") ? finalX + 4 : finalX + 28;
                 let rY = l.y - 10;
                 
                 const rGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
                 if (l.isPast) rGroup.setAttribute("opacity", "0.4");
+                rGroup.style.cursor = "help";
+                
+                const rTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
+                rTitle.textContent = fahrplanData.restrictions ? (fahrplanData.restrictions[l.restriction] || "") : "";
+                rGroup.appendChild(rTitle);
                 
                 const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                 bg.setAttribute("x", rX);
