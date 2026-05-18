@@ -139,13 +139,6 @@
 
         tr:hover { background-color: #f9f9f9; }
 
-        .next-train {
-            background-color: var(--highlight) !important;
-            color: white;
-            font-weight: bold;
-            border-radius: 4px;
-        }
-
         .restriction-tag {
             font-size: 0.7rem;
             background: var(--secondary);
@@ -266,6 +259,7 @@
         <div style="display: flex; gap: 1rem;">
             <button class="tab-btn" onclick="showTab('fahrplan')">Fahrplan</button>
             <button class="tab-btn" onclick="showTab('bildfahrplan')">Bildfahrplan</button>
+            <button class="tab-btn" id="umlauf-tab-btn" onclick="showTab('umlauf')">Umläufe</button>
             <button class="tab-btn active" onclick="showTab('strecke')">Strecke</button>
             <button class="tab-btn" onclick="showTab('tarife')">Tarife</button>
             <button class="tab-btn" onclick="showTab('hilfe')">Hilfe</button>
@@ -281,13 +275,35 @@
         <div class="card" style="position: relative; padding: 1.5rem;">
             <div style="display: flex; gap: 1rem; position: relative;">
                 <!-- Sticky-Steuerung für den vertikalen Maßstab -->
-                <div style="position: sticky; top: 100px; height: fit-content; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 12px 8px; background: rgba(255,255,255,0.95); border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); z-index: 100; min-width: 60px;">
-                    <span style="font-size: 0.65rem; font-weight: bold; writing-mode: vertical-lr; transform: rotate(180deg); color: #666; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; white-space: nowrap;">Zeitachse strecken</span>
-                    <input type="range" id="zwl-scale-slider" min="0.5" max="3.0" step="0.1" value="1.0" oninput="updateZWLScale()" style="writing-mode: vertical-lr; direction: rtl; appearance: slider-vertical; width: 24px; height: 250px; cursor: pointer; margin: 8px 0;">
-                    <span style="font-size: 0.85rem; font-weight: bold; color: var(--primary);" id="zwl-scale-label">1.0x</span>
+                <div style="position: sticky; top: 100px; height: fit-content; display: flex; flex-direction: column; align-items: center; padding: 16px 6px; background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.05); z-index: 100; min-width: 42px; box-sizing: border-box;">
+                    <span style="font-size: 0.6rem; font-weight: bold; writing-mode: vertical-lr; transform: rotate(180deg); color: #888; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; white-space: nowrap;">Zeitachse</span>
+                    
+                    <!-- Button zum Zurücksetzen auf Standard-Zoom (1.0x) -->
+                    <button id="zwl-reset-btn" onclick="resetZWLScale()" title="Auf Standardgröße zurücksetzen" 
+                            onmouseover="this.style.background='var(--primary)'; this.style.color='white'; this.style.transform='scale(1.1)';" 
+                            onmouseout="this.style.background='rgba(0,0,0,0.05)'; this.style.color='#333'; this.style.transform='scale(1)';"
+                            style="margin-bottom: 10px; border: none; background: rgba(0,0,0,0.05); color: #333; padding: 8px; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; outline: none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 4v6h-6" />
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                        </svg>
+                    </button>
+                    
+                    <input type="range" id="zwl-scale-slider" min="0.3" max="3.0" step="0.1" value="1.0" oninput="updateZWLScale()" style="writing-mode: vertical-lr; direction: rtl; appearance: slider-vertical; width: 16px; height: 200px; cursor: pointer; accent-color: var(--primary); margin: 4px 0;">
+                    
+                    <!-- Button zum Komprimieren auf Seitenhöhe -->
+                    <button id="zwl-fit-btn" onclick="fitZWLToHeight()" title="Auf Seitenhöhe komprimieren" 
+                            onmouseover="this.style.background='var(--primary)'; this.style.color='white'; this.style.transform='scale(1.1)';" 
+                            onmouseout="this.style.background='rgba(0,0,0,0.05)'; this.style.color='#333'; this.style.transform='scale(1)';"
+                            style="margin-top: 12px; border: none; background: rgba(0,0,0,0.05); color: #333; padding: 8px; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; outline: none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v8M8 6l4 4 4-4" />
+                            <path d="M12 22v-8M8 18l4-4 4 4" />
+                        </svg>
+                    </button>
                 </div>
                 <!-- Diagramm-Bereich -->
-                <div id="zwl-container" style="flex-grow: 1; overflow-x: auto; background: var(--white); border-radius: 12px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; display: flex; flex-direction: column;">
+                <div id="zwl-container" style="flex-grow: 1; overflow: auto; max-height: calc(100vh - 190px); background: var(--white); border-radius: 12px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; display: flex; flex-direction: column;">
                     <!-- Sticky Header-SVG für Bahnhofsnamen -->
                     <svg id="zwl-header-svg" width="100%" height="90" style="min-width: 900px; display: block; margin: 0 auto; overflow: visible; position: sticky; top: 0; z-index: 10; background: var(--white); border-bottom: 1.5px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
                         <!-- Bahnhofsnamen werden dynamisch gezeichnet -->
@@ -299,6 +315,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div id="umlauf" class="content-section">
+        <div id="umlauf-container" style="max-width: 950px; margin: 0 auto;"></div>
     </div>
 
     <div id="strecke" class="content-section active">
@@ -431,7 +451,7 @@
                 tooltip.style.left = `${percent}%`;
                 const h = Math.floor(val / 60);
                 const m = Math.round(val % 60);
-                tooltip.textContent = `${h}:${m.toString().padStart(2, '0')}`;
+                tooltip.textContent = `${h}.${m.toString().padStart(2, '0')}`;
             };
 
             slider.addEventListener('mousedown', () => { isDraggingSlider = true; tooltip.style.display = 'block'; });
@@ -504,6 +524,7 @@
             initGeolocation();
             renderData();
             loadHelp();
+            drawZWL(); // Compute once to populate Umläufe and set tab button text
             updateLive();
             setInterval(updateLive, 30000); // Feste 30s Aktualisierung
         } catch (e) {
@@ -601,7 +622,7 @@
         const m = simTime.getMinutes();
         
         if (display) {
-            display.innerText = h.toString().padStart(2, '0') + ":" + m.toString().padStart(2, '0');
+            display.innerText = h.toString().padStart(2, '0') + "." + m.toString().padStart(2, '0');
         }
         
         if (slider && !isDraggingSlider) {
@@ -610,7 +631,6 @@
 
         renderRoute();
         renderTrains(simTime);
-        updateHighlighting(simTime);
         
         // Update ZWL-Diagramm falls der Tab aktiv ist
         const bildTab = document.getElementById('bildfahrplan');
@@ -619,37 +639,70 @@
         }
     }
 
+    function formatKm(km) {
+        if (km === undefined || km === null) return '';
+        let str = km.toFixed(2).replace('.', ',');
+        if (str.endsWith(',00')) {
+            return str.substring(0, str.length - 3) + ',0';
+        }
+        if (str.endsWith('0')) {
+            return str.substring(0, str.length - 1);
+        }
+        return str;
+    }
+
     function renderData() {
         if (!fahrplanData) return;
         document.getElementById('validity-header').innerText = fahrplanData.validity;
         const container = document.getElementById('timetable-container');
         container.innerHTML = '';
         
-        // Sub-Tab Navigation erstellen
+        // Eine einzelne Karte für den gesamten Fahrplan erstellen
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.cssText = 'margin-bottom: 1rem; padding: 0; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); overflow: hidden;';
+        
+        const cardHeader = document.createElement('div');
+        cardHeader.style.cssText = 'background: #fdfdfd; padding: 0.8rem 1rem; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: flex-start; gap: 0.8rem;';
+        
+        // Sub-Tab Navigation erstellen und direkt in den Card-Header links einfügen
         const subNav = document.createElement('div');
         subNav.className = 'sub-tabs';
+        subNav.style.margin = '0';
+        subNav.style.display = 'flex';
         
         fahrplanData.directions.forEach((dir, i) => {
             const btn = document.createElement('button');
-            btn.className = `sub-tab-btn ${i === 0 ? 'active' : ''}`;
+            btn.className = `sub-tab-btn fahrplan-sub-tab-btn ${i === 0 ? 'active' : ''}`;
             btn.innerText = `${dir.from} ➔ ${dir.to}`;
             btn.onclick = (e) => showSubTab(i, e.currentTarget);
             subNav.appendChild(btn);
         });
-        container.appendChild(subNav);
-
+        cardHeader.appendChild(subNav);
+        card.appendChild(cardHeader);
+        
+        const cardBody = document.createElement('div');
+        cardBody.style.cssText = 'padding: 0.8rem;';
+        
         fahrplanData.directions.forEach((dir, i) => {
             const section = document.createElement('div');
             section.id = `timetable-dir-${i}`;
-            section.className = 'card timetable-section';
+            section.className = 'timetable-section';
             if (i !== 0) section.style.display = 'none';
             
-            let html = `<h2>${dir.from} &rarr; ${dir.to}</h2><div style="overflow-x: auto;"><table><thead><tr><th>Station</th>`;
+            // Kein doppeltes H2 mehr! Direkt die Tabelle rendern.
+            let html = `<div style="overflow-x: auto;"><table><thead><tr><th>Bahnhof</th>`;
             dir.trains.forEach(t => html += `<th>Zug ${t.id}${t.restriction ? `<span class="restriction-tag">${t.restriction}</span>` : ''}</th>`);
             html += `</tr></thead><tbody>`;
             dir.stations.forEach((station, sIdx) => {
-                html += `<tr><td><strong>${station}</strong></td>`;
-                dir.trains.forEach(t => html += `<td data-time="${t.times[sIdx]}">${t.times[sIdx]}</td>`);
+                const stationBf = bfData.find(b => b.name === station);
+                const kmStr = stationBf && stationBf.km !== undefined ? `<span style="color: #888; font-size: 0.8rem; font-weight: normal; margin-left: 6px;">km ${formatKm(stationBf.km)}</span>` : '';
+                html += `<tr><td><strong>${station}</strong>${kmStr}</td>`;
+                dir.trains.forEach(t => {
+                    const tVal = t.times[sIdx] || '';
+                    const displayTime = tVal ? tVal.replace(':', '.') : '';
+                    html += `<td data-time="${tVal}">${displayTime}</td>`;
+                });
                 html += `</tr>`;
             });
             html += `</tbody></table></div>`;
@@ -664,20 +717,25 @@
                 html += `</div></div>`;
             }
 
-            section.innerHTML = html; container.appendChild(section);
+            section.innerHTML = html;
+            cardBody.appendChild(section);
         });
+        
+        card.appendChild(cardBody);
+        container.appendChild(card);
+        
         const fares = fahrplanData.fares;
         document.getElementById('fares-content').innerHTML = `
-            <div class="info-item"><h4>Kurzstrecke</h4><p>${fares.short.toFixed(2)} €</p></div>
-            <div class="info-item"><h4>2 Zonen</h4><p>Einfach: ${fares.zone2.single.toFixed(2)} € / Rück: ${fares.zone2.return.toFixed(2)} €</p></div>
-            <div class="info-item"><h4>3 Zonen</h4><p>Einfach: ${fares.zone3.single.toFixed(2)} € / Rück: ${fares.zone3.return.toFixed(2)} €</p></div>
+            <div class="info-item"><h4>Kurzstrecke</h4><p>${fares.short.toFixed(2).replace('.', ',')} €</p></div>
+            <div class="info-item"><h4>2 Zonen</h4><p>Einfach: ${fares.zone2.single.toFixed(2).replace('.', ',')} € / Rück: ${fares.zone2.return.toFixed(2).replace('.', ',')} €</p></div>
+            <div class="info-item"><h4>3 Zonen</h4><p>Einfach: ${fares.zone3.single.toFixed(2).replace('.', ',')} € / Rück: ${fares.zone3.return.toFixed(2).replace('.', ',')} €</p></div>
         `;
     }
 
     function showSubTab(index, btn) {
         document.querySelectorAll('.timetable-section').forEach(s => s.style.display = 'none');
         document.getElementById(`timetable-dir-${index}`).style.display = 'block';
-        document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.fahrplan-sub-tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
     }
 
@@ -843,6 +901,7 @@
         const svgTrainTimes = document.getElementById('svg-train-times');
         const svgTrainList = document.getElementById('svg-train-list');
         svgTrains.innerHTML = ''; svgTrainTimes.innerHTML = ''; svgTrainList.innerHTML = '';
+        document.querySelectorAll('.train-info-card').forEach(el => el.remove());
         const nowMins = simTime.getHours() * 60 + simTime.getMinutes();
         const kwWest = projectedStations.find(s => s.name === "Kühlungsborn West");
         const bdBahnhof = projectedStations.find(s => s.name === "Bad Doberan Bahnhof");
@@ -976,19 +1035,57 @@
             
             if (activeTrains[dIdx]) {
                 const { train, legEnd } = activeTrains[dIdx];
-                let listX = isToDoberan ? 0 : 740;
-                let listY = isToDoberan ? kwWest.y + 95 : bdBahnhof.y - 425;
-                const fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
-                fo.setAttribute("x", listX); fo.setAttribute("y", listY);
-                fo.setAttribute("width", "260"); fo.setAttribute("height", "400");
-                let tableHtml = `<div xmlns="http://www.w3.org/1999/xhtml" style="font-family: inherit; background: rgba(255,255,255,0.9); padding: 8px; border-radius: 6px; border: 2px solid ${dirColor}; box-shadow: 0 2px 5px rgba(0,0,0,0.1); box-sizing: border-box;">
-                    <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px;">Zug ${train.id} nach ${dir.to}</div>
+                
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'train-info-card';
+                cardDiv.dataset.trainId = train.id;
+                
+                // Position abfragen falls bereits verschoben
+                window.draggedTrainPositions = window.draggedTrainPositions || {};
+                const savedPos = window.draggedTrainPositions[train.id];
+                if (savedPos) {
+                    cardDiv.style.cssText = `
+                        position: absolute;
+                        top: ${savedPos.top}px;
+                        left: ${savedPos.left}px;
+                        width: 260px;
+                        background: rgba(255,255,255,0.95);
+                        padding: 8px;
+                        border-radius: 8px;
+                        border: 2px solid ${dirColor};
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+                        box-sizing: border-box;
+                        z-index: 10;
+                        backdrop-filter: blur(8px);
+                        -webkit-backdrop-filter: blur(8px);
+                    `;
+                } else {
+                    cardDiv.style.cssText = `
+                        position: absolute;
+                        top: 0px; /* Dynamisch zentriert */
+                        ${isToDoberan ? 'left: 15px;' : 'right: 15px;'}
+                        width: 260px;
+                        background: rgba(255,255,255,0.95);
+                        padding: 8px;
+                        border-radius: 8px;
+                        border: 2px solid ${dirColor};
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+                        box-sizing: border-box;
+                        z-index: 10;
+                        backdrop-filter: blur(8px);
+                        -webkit-backdrop-filter: blur(8px);
+                    `;
+                }
+                
+                let tableHtml = `
+                    <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px; user-select: none;">Zug ${train.id} nach ${dir.to}</div>
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
-                        <tr style="border-bottom: 2px solid #ccc; color: #666;">
+                        <tr style="border-bottom: 2px solid #ccc; color: #666; user-select: none;">
                             <th style="padding: 3px; text-align: left;">Ank.</th>
                             <th style="padding: 3px; text-align: left;">Abf.</th>
                             <th style="padding: 3px; text-align: left; padding-left: 8px;">Bahnhof</th>
                         </tr>`;
+                
                 dir.stations.forEach((stationName, sIdx) => {
                     const timeStr = train.times[sIdx];
                     if (!timeStr || timeStr === '-') return;
@@ -999,9 +1096,22 @@
                     if (timeStr.includes('/')) { [ank, abf] = timeStr.split('/'); } else { if (sIdx === dir.stations.length - 1) ank = timeStr; else abf = timeStr; }
                     tableHtml += `<tr style="border-bottom: 1px solid #eee; ${styleStr}"><td style="padding: 4px 3px;">${ank}</td><td style="padding: 4px 3px;">${abf}</td><td style="padding: 4px 3px; text-align: left; padding-left: 8px;">${stationName}</td></tr>`;
                 });
-                tableHtml += `</table></div>`;
-                fo.innerHTML = tableHtml;
-                svgTrainList.appendChild(fo);
+                
+                tableHtml += `</table>`;
+                cardDiv.innerHTML = tableHtml;
+                
+                const container = document.getElementById('map-container');
+                container.appendChild(cardDiv);
+                
+                // Dynamische vertikale Zentrierung
+                if (!savedPos) {
+                    const containerRect = container.getBoundingClientRect();
+                    const cardRect = cardDiv.getBoundingClientRect();
+                    const initialTop = Math.max(5, (containerRect.height - cardRect.height) / 2);
+                    cardDiv.style.top = initialTop + "px";
+                }
+                
+                makeElementDraggable(cardDiv, container, train.id);
             }
         });
 
@@ -1024,20 +1134,86 @@
         });
     }
 
-    function varProp(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    function makeElementDraggable(elmnt, container, trainId) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        
+        elmnt.style.cursor = 'move';
+        elmnt.addEventListener('mousedown', dragMouseDown);
+        elmnt.addEventListener('touchstart', dragTouchStart, { passive: false });
 
-    function updateHighlighting(simTime) {
-        const nowMinutes = simTime.getHours() * 60 + simTime.getMinutes();
-        document.querySelectorAll('td[data-time]').forEach(td => {
-            td.classList.remove('next-train');
-            const timeStr = td.getAttribute('data-time');
-            if (timeStr && timeStr !== '-') {
-                const mins = timeToMinutes(timeStr, 'arr');
-                const diff = mins - nowMinutes;
-                if (diff >= 0 && diff <= 10) td.classList.add('next-train');
+        function dragMouseDown(e) {
+            e = e || window.event;
+            // Draggen ignorieren, wenn man direkt auf Knöpfe, Links oder in die Tabelle klickt
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'A' || e.target.closest('table')) return;
+            e.preventDefault();
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.addEventListener('mouseup', closeDragElement);
+            document.addEventListener('mousemove', elementDrag);
+        }
+
+        function dragTouchStart(e) {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'A' || e.target.closest('table')) return;
+            const touch = e.touches[0];
+            pos3 = touch.clientX;
+            pos4 = touch.clientY;
+            document.addEventListener('touchend', closeDragElement);
+            document.addEventListener('touchmove', elementTouchDrag, { passive: false });
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            
+            updatePosition(elmnt.offsetTop - pos2, elmnt.offsetLeft - pos1);
+        }
+
+        function elementTouchDrag(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            pos1 = pos3 - touch.clientX;
+            pos2 = pos4 - touch.clientY;
+            pos3 = touch.clientX;
+            pos4 = touch.clientY;
+            
+            updatePosition(elmnt.offsetTop - pos2, elmnt.offsetLeft - pos1);
+        }
+
+        function updatePosition(newTop, newLeft) {
+            if (container) {
+                const rect = container.getBoundingClientRect();
+                const elmntRect = elmnt.getBoundingClientRect();
+                
+                // Top/Bottom Grenzen einhalten
+                if (newTop < 5) newTop = 5;
+                else if (newTop + elmntRect.height > rect.height - 5) newTop = rect.height - elmntRect.height - 5;
+                
+                // Links/Rechts Grenzen einhalten
+                if (newLeft < 5) newLeft = 5;
+                else if (newLeft + elmntRect.width > rect.width - 5) newLeft = rect.width - elmntRect.width - 5;
             }
-        });
+            
+            elmnt.style.top = newTop + "px";
+            elmnt.style.left = newLeft + "px";
+            elmnt.style.right = "auto"; // Vorherige relative Ausrichtung löschen
+            
+            window.draggedTrainPositions = window.draggedTrainPositions || {};
+            window.draggedTrainPositions[trainId] = { top: newTop, left: newLeft };
+        }
+
+        function closeDragElement() {
+            document.removeEventListener('mouseup', closeDragElement);
+            document.removeEventListener('mousemove', elementDrag);
+            document.removeEventListener('touchend', closeDragElement);
+            document.removeEventListener('touchmove', elementTouchDrag);
+        }
     }
+
+    function varProp(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 
     let zwlTooltip = null;
 
@@ -1058,12 +1234,21 @@
             document.body.appendChild(zwlTooltip);
         }
         
-        const startTimeStr = train.times.find(t => t && t !== '-').replace(/[()]/g, '').split('/')[0];
-        const endTimeStr = [...train.times].reverse().find(t => t && t !== '-').replace(/[()]/g, '').split('/').pop();
+        const startTimeStr = train.times.find(t => t && t !== '-').replace(/[()]/g, '').split('/')[0].replace(':', '.');
+        const endTimeStr = [...train.times].reverse().find(t => t && t !== '-').replace(/[()]/g, '').split('/').pop().replace(':', '.');
         
-        let html = `<div style="font-weight: bold; font-size: 13px; margin-bottom: 4px; color: var(--accent);">Zug ${train.id}</div>`;
-        html += `<div><strong>Richtung:</strong> ${dir.from} &rarr; ${dir.to}</div>`;
-        html += `<div><strong>Zeitraum:</strong> ${startTimeStr} - ${endTimeStr}</div>`;
+        let umlaufBadge = "";
+        if (window.zwlUmlaufGroups && window.zwlUmlaufGroups.length > 1) {
+            const dIdx = fahrplanData.directions.indexOf(dir);
+            const trainKey = `${dIdx}_${train.id}`;
+            const gIdx = window.zwlUmlaufGroups.findIndex(g => g.includes(trainKey));
+            if (gIdx !== -1) {
+                umlaufBadge = `<span style="float: right; background: #7f8c8d; color: white; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">Umlauf ${gIdx + 1}</span>`;
+            }
+        }
+        
+        let html = `<div style="font-weight: bold; font-size: 13px; margin-bottom: 4px; color: var(--accent);">${umlaufBadge}Zug ${train.id}</div>`;
+        html += `<div>${dir.from} ${startTimeStr} - ${dir.to} ${endTimeStr}</div>`;
         if (train.restriction) {
             html += `<div style="margin-top: 4px;"><span style="background: var(--primary); color: white; padding: 1px 4px; border-radius: 3px; font-size: 10px; font-weight: bold;">${train.restriction}</span> Montag - Freitag</div>`;
         }
@@ -1108,18 +1293,46 @@
             }
         });
         points.sort((a, b) => a.mins - b.mins);
-         function updateZWLScale() {
+        return points;
+    }
+
+    function updateZWLScale() {
         const slider = document.getElementById('zwl-scale-slider');
-        const label = document.getElementById('zwl-scale-label');
-        if (slider && label) {
-            label.textContent = `${parseFloat(slider.value).toFixed(1)}x`;
+        if (slider) {
             drawZWL();
         }
     }
 
+    function resetZWLScale() {
+        const slider = document.getElementById('zwl-scale-slider');
+        if (slider) {
+            slider.value = 1.0;
+            drawZWL();
+        }
+    }
+
+    function fitZWLToHeight() {
+        const container = document.getElementById('zwl-container');
+        const slider = document.getElementById('zwl-scale-slider');
+        if (!container || !slider) return;
+        
+        const containerHeight = container.clientHeight;
+        const paddingTop = 15;
+        const paddingBottom = 40;
+        
+        // Berechne den optimalen Maßstab
+        // height = paddingTop + 1750 * scaleVal + paddingBottom
+        // scaleVal = (height - paddingTop - paddingBottom) / 1750
+        const scaleVal = (containerHeight - paddingTop - paddingBottom) / 1750;
+        
+        slider.value = Math.max(0.3, Math.min(3.0, scaleVal));
+        drawZWL();
+    }
+
     function scrollToCurrentTime() {
         const svg = document.getElementById('zwl-svg');
-        if (!svg) return;
+        const container = document.getElementById('zwl-container');
+        if (!svg || !container) return;
         
         const simTime = getSimTime();
         const nowMins = simTime.getHours() * 60 + simTime.getMinutes();
@@ -1131,12 +1344,9 @@
             const paddingTop = 15;
             
             const redY = paddingTop + ((nowMins - 360) / (1200 - 360)) * gridHeight;
-            const svgRect = svg.getBoundingClientRect();
-            const svgTop = svgRect.top + window.scrollY;
-            
-            const targetScrollY = svgTop + redY - (window.innerHeight / 2) + 45;
-            window.scrollTo({
-                top: targetScrollY,
+            const targetScrollTop = redY - (container.clientHeight / 2);
+            container.scrollTo({
+                top: targetScrollTop,
                 behavior: 'smooth'
             });
         }
@@ -1151,6 +1361,80 @@
         
         headerSvg.innerHTML = '';
         svg.innerHTML = '';
+        
+        let allLabels = [];
+        let westEvents = [];
+        let doberanEvents = [];
+        let umlaufEdges = [];
+
+        function getConnectedUmlaufTrains(startKey) {
+            let visited = new Set();
+            let queue = [startKey];
+            visited.add(startKey);
+            
+            while (queue.length > 0) {
+                const current = queue.shift();
+                for (const edge of umlaufEdges) {
+                    if (edge[0] === current && !visited.has(edge[1])) {
+                        visited.add(edge[1]);
+                        queue.push(edge[1]);
+                    } else if (edge[1] === current && !visited.has(edge[0])) {
+                        visited.add(edge[0]);
+                        queue.push(edge[0]);
+                    }
+                }
+            }
+            return visited;
+        }
+
+        function highlightUmlauf(startKey) {
+            const activeKeys = getConnectedUmlaufTrains(startKey);
+            
+            document.querySelectorAll(".zwl-train-group").forEach(g => {
+                const key = g.getAttribute("data-train-key");
+                const p = g.querySelector("path:not([stroke='transparent'])");
+                if (!p) return;
+                
+                if (activeKeys.has(key)) {
+                    g.style.opacity = "1";
+                    p.setAttribute("stroke-width", "5.5");
+                } else {
+                    g.style.opacity = "0.15";
+                }
+            });
+            
+            document.querySelectorAll(".zwl-turnaround-line").forEach(line => {
+                const keysStr = line.getAttribute("data-train-keys");
+                if (!keysStr) return;
+                const [key1, key2] = keysStr.split(",");
+                
+                if (activeKeys.has(key1) || activeKeys.has(key2)) {
+                    line.style.opacity = "1";
+                    line.setAttribute("stroke", "#2c3e50"); // darker bold gray
+                    line.setAttribute("stroke-width", "3.5");
+                } else {
+                    line.style.opacity = "0.15";
+                }
+            });
+        }
+
+        function resetUmlaufHighlight() {
+            document.querySelectorAll(".zwl-train-group").forEach(g => {
+                g.style.opacity = "1";
+                const p = g.querySelector("path:not([stroke='transparent'])");
+                if (!p) return;
+                
+                const isPast = g.getAttribute("data-is-past") === "true";
+                const isActive = g.getAttribute("data-is-active") === "true";
+                p.setAttribute("stroke-width", isPast ? "1.5" : (isActive ? "3.5" : "2"));
+            });
+            
+            document.querySelectorAll(".zwl-turnaround-line").forEach(line => {
+                line.style.opacity = "1";
+                line.setAttribute("stroke", "#bdc3c7"); // subtle grey
+                line.setAttribute("stroke-width", "2.5");
+            });
+        }
         
         const width = 1000;
         const paddingLeft = 130;
@@ -1234,6 +1518,8 @@
         
         standardStations.forEach((stationName, idx) => {
             const x = getStationX(stationName);
+            const stationBf = bfData.find(b => b.name === stationName);
+            const labelText = stationBf && stationBf.km !== undefined ? `${formatKm(stationBf.km)} ${stationName}` : stationName;
             
             const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
             tick.setAttribute("x1", x);
@@ -1252,7 +1538,7 @@
             labelTop.setAttribute("font-size", "12");
             labelTop.setAttribute("font-weight", "bold");
             labelTop.setAttribute("fill", "#111");
-            labelTop.textContent = stationName;
+            labelTop.textContent = labelText;
             headerSvg.appendChild(labelTop);
         });
         
@@ -1283,69 +1569,7 @@
             }
             svg.appendChild(line);
         });
-        
-        const startHour = Math.floor(minMins / 60);
-        const endHour = Math.ceil(maxMins / 60);
-        
-        for (let h = startHour; h <= endHour; h++) {
-            const hourMins = h * 60;
-            if (hourMins >= minMins && hourMins <= maxMins) {
-                const y = getY(hourMins);
-                
-                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", xStart);
-                line.setAttribute("y1", y);
-                line.setAttribute("x2", xEnd);
-                line.setAttribute("y2", y);
-                line.setAttribute("stroke", "#ccc");
-                line.setAttribute("stroke-width", "1.5");
-                svg.appendChild(line);
-                
-                const labelLeft = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                labelLeft.setAttribute("x", xStart - 15);
-                labelLeft.setAttribute("y", y + 4);
-                labelLeft.setAttribute("text-anchor", "end");
-                labelLeft.setAttribute("font-size", "12");
-                labelLeft.setAttribute("font-weight", "bold");
-                labelLeft.setAttribute("fill", "#333");
-                labelLeft.textContent = `${h.toString().padStart(2, '0')}:00`;
-                svg.appendChild(labelLeft);
-                
-                const labelRight = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                labelRight.setAttribute("x", xEnd + 15);
-                labelRight.setAttribute("y", y + 4);
-                labelRight.setAttribute("text-anchor", "start");
-                labelRight.setAttribute("font-size", "12");
-                labelRight.setAttribute("font-weight", "bold");
-                labelRight.setAttribute("fill", "#333");
-                labelRight.textContent = `${h.toString().padStart(2, '0')}:00`;
-                svg.appendChild(labelRight);
-            }
-            
-            const halfMins = h * 60 + 30;
-            if (halfMins >= minMins && halfMins <= maxMins) {
-                const y = getY(halfMins);
-                
-                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", xStart);
-                line.setAttribute("y1", y);
-                line.setAttribute("x2", xEnd);
-                line.setAttribute("y2", y);
-                line.setAttribute("stroke", "#e5e5e5");
-                line.setAttribute("stroke-width", "1");
-                line.setAttribute("stroke-dasharray", "4,4");
-                svg.appendChild(line);
-                
-                const labelLeft = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                labelLeft.setAttribute("x", xStart - 15);
-                labelLeft.setAttribute("y", y + 4);
-                labelLeft.setAttribute("text-anchor", "end");
-                labelLeft.setAttribute("font-size", "10");
-                labelLeft.setAttribute("fill", "#777");
-                labelLeft.textContent = `${h.toString().padStart(2, '0')}:30`;
-                svg.appendChild(labelLeft);
-            }
-        }
+
         
         const colors = ['#e67e22', '#3498db'];
         
@@ -1386,8 +1610,12 @@
                 
                 if (visiblePoints === 0) return;
                 
+                const trainKey = `${dIdx}_${train.id}`;
                 const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
                 group.setAttribute("class", "zwl-train-group");
+                group.setAttribute("data-train-key", trainKey);
+                group.setAttribute("data-is-past", isPast.toString());
+                group.setAttribute("data-is-active", isActive.toString());
                 group.style.cursor = "pointer";
                 
                 const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -1407,6 +1635,120 @@
                 hoverPath.setAttribute("stroke", "transparent");
                 hoverPath.setAttribute("stroke-width", "15");
                 group.appendChild(hoverPath);
+                
+                // Uhrzeitbeschriftung an den Kreuzungspunkten
+                const hdStops = points.filter(p => p.stationName === "Heiligendamm");
+                let processedHeiligendamm = false;
+                
+                points.forEach((p, pIdx) => {
+                    if (p.mins < minMins || p.mins > maxMins) return;
+                    
+                    const tKey = `${dIdx}_${train.id}`;
+                    if (p.stationName === "Kühlungsborn West") {
+                        const idx = dir.stations.indexOf(p.stationName);
+                        const type = (idx === 0) ? 'dep' : 'arr';
+                        let slope = 0;
+                        if (type === 'dep') {
+                            const pNext = points[pIdx + 1];
+                            if (pNext) {
+                                const xDep = getStationX("Kühlungsborn West");
+                                const xNext = getStationX(pNext.stationName);
+                                const yDep = getY(p.mins);
+                                const yNext = getY(pNext.mins);
+                                slope = (yNext - yDep) / (xNext - xDep);
+                            }
+                        } else {
+                            const pPrev = points[pIdx - 1];
+                            if (pPrev) {
+                                const xArr = getStationX("Kühlungsborn West");
+                                const xPrev = getStationX(pPrev.stationName);
+                                const yArr = getY(p.mins);
+                                const yPrev = getY(pPrev.mins);
+                                slope = (yArr - yPrev) / (xArr - xPrev);
+                            }
+                        }
+                        westEvents.push({ type, mins: p.mins, slope, trainKey: tKey });
+                    } else if (p.stationName === "Bad Doberan Bahnhof") {
+                        const idx = dir.stations.indexOf(p.stationName);
+                        const type = (idx === 0) ? 'dep' : 'arr';
+                        let slope = 0;
+                        if (type === 'dep') {
+                            const pNext = points[pIdx + 1];
+                            if (pNext) {
+                                const xDep = getStationX("Bad Doberan Bahnhof");
+                                const xNext = getStationX(pNext.stationName);
+                                const yDep = getY(p.mins);
+                                const yNext = getY(pNext.mins);
+                                slope = (yNext - yDep) / (xNext - xDep);
+                            }
+                        } else {
+                            const pPrev = points[pIdx - 1];
+                            if (pPrev) {
+                                const xArr = getStationX("Bad Doberan Bahnhof");
+                                const xPrev = getStationX(pPrev.stationName);
+                                const yArr = getY(p.mins);
+                                const yPrev = getY(pPrev.mins);
+                                slope = (yArr - yPrev) / (xArr - xPrev);
+                            }
+                        }
+                        doberanEvents.push({ type, mins: p.mins, slope, trainKey: tKey });
+                    }
+                    
+                    const isWest = (p.stationName === "Kühlungsborn West");
+                    const isDoberan = (p.stationName === "Bad Doberan Bahnhof");
+                    const isHeiligendamm = (p.stationName === "Heiligendamm");
+                    const isTerminus = isWest || isDoberan;
+                    
+                    const x = getStationX(p.stationName);
+                    let y = getY(p.mins);
+                    let labelText = "";
+                    
+                    if (isHeiligendamm) {
+                        if (processedHeiligendamm) return; // skip since already merged
+                        processedHeiligendamm = true;
+                        
+                        if (hdStops.length === 2) {
+                            const arrMins = hdStops[0].mins;
+                            const depMins = hdStops[1].mins;
+                            
+                            const arrHrs = Math.floor(arrMins / 60);
+                            const arrMinsPart = Math.floor(arrMins % 60);
+                            const depHrs = Math.floor(depMins / 60);
+                            const depMinsPart = Math.floor(depMins % 60);
+                            
+                            labelText = `${arrHrs.toString().padStart(2, '0')}.${arrMinsPart.toString().padStart(2, '0')} - ${depHrs.toString().padStart(2, '0')}.${depMinsPart.toString().padStart(2, '0')}`;
+                            y = getY(arrMins);
+                        } else {
+                            const hrs = Math.floor(p.mins / 60);
+                            const minsPart = Math.floor(p.mins % 60);
+                            labelText = `${hrs.toString().padStart(2, '0')}.${minsPart.toString().padStart(2, '0')}`;
+                        }
+                    } else if (isTerminus) {
+                        const hrs = Math.floor(p.mins / 60);
+                        const minsPart = Math.floor(p.mins % 60);
+                        labelText = `${hrs.toString().padStart(2, '0')}.${minsPart.toString().padStart(2, '0')}`;
+                    } else {
+                        labelText = Math.floor(p.mins % 60).toString().padStart(2, '0');
+                    }
+                    
+                    let offsetY = (isWest || isDoberan) ? 4 : (isHeiligendamm ? (dIdx === 0 ? -8 : 4) : -8);
+                    
+                    allLabels.push({
+                        stationName: p.stationName,
+                        x,
+                        y: y + offsetY,
+                        isWest,
+                        isDoberan,
+                        isHeiligendamm,
+                        isTerminus,
+                        labelText,
+                        dirColor,
+                        isPast,
+                        dIdx,
+                        group,
+                        trainKey: tKey
+                    });
+                });
                 
                 if (isActive) {
                     let activeX = null;
@@ -1452,21 +1794,283 @@
                 }
                 
                 group.addEventListener("mouseover", (e) => {
-                    path.setAttribute("stroke-width", isActive ? "5.5" : "4");
+                    highlightUmlauf(trainKey);
                     showZWLTooltip(e, train, dir, points);
                 });
                 group.addEventListener("mousemove", (e) => {
                     moveZWLTooltip(e);
                 });
                 group.addEventListener("mouseout", () => {
-                    path.setAttribute("stroke-width", isActive ? "3.5" : "2");
-                    if (isPast) path.setAttribute("stroke-width", "1.5");
+                    resetUmlaufHighlight();
                     hideZWLTooltip();
                 });
                 
                 svg.appendChild(group);
             });
         });
+        
+        // ------------------ OVERLAP RESOLUTION FOR LABELS ------------------
+        const stations = [...new Set(allLabels.map(l => l.stationName))];
+        stations.forEach(stationName => {
+            const group = allLabels.filter(l => l.stationName === stationName);
+            if (group.length <= 1) return;
+            
+            // Sort by Y coordinate
+            group.sort((a, b) => a.y - b.y);
+            
+            const isTerminus = group[0].isTerminus;
+            const isHeiligendamm = group[0].isHeiligendamm;
+            const minDistance = isTerminus ? 15 : (isHeiligendamm ? 13 : 11);
+            
+            for (let pass = 0; pass < 25; pass++) {
+                let changed = false;
+                for (let i = 0; i < group.length - 1; i++) {
+                    const l1 = group[i];
+                    const l2 = group[i+1];
+                    const diff = l2.y - l1.y;
+                    if (diff < minDistance) {
+                        const overlap = minDistance - diff;
+                        l1.y -= overlap / 2;
+                        l2.y += overlap / 2;
+                        changed = true;
+                    }
+                }
+                if (!changed) break;
+            }
+        });
+        
+        // ------------------ RENDER LABELS ------------------
+        allLabels.forEach(l => {
+            const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            
+            let finalX = l.x;
+            let align = "middle";
+            let fontSize = "9";
+            
+            if (l.isWest) {
+                finalX = l.x - 20;
+                align = "end";
+                fontSize = "12";
+            } else if (l.isDoberan) {
+                finalX = l.x + 20;
+                align = "start";
+                fontSize = "12";
+            } else if (l.isHeiligendamm) {
+                finalX = l.x + (l.dIdx === 0 ? -8 : 8);
+                align = l.dIdx === 0 ? "end" : "start";
+                fontSize = "10.5";
+            } else {
+                finalX = l.x;
+                align = "middle";
+                fontSize = "9";
+            }
+            
+            timeLabel.setAttribute("x", finalX);
+            timeLabel.setAttribute("y", l.y);
+            timeLabel.setAttribute("text-anchor", align);
+            timeLabel.setAttribute("font-size", fontSize);
+            
+            timeLabel.setAttribute("font-weight", "bold");
+            timeLabel.setAttribute("fill", l.dirColor);
+            if (l.isPast) {
+                timeLabel.setAttribute("fill-opacity", "0.4");
+            }
+            timeLabel.setAttribute("paint-order", "stroke");
+            timeLabel.setAttribute("stroke", "white");
+            timeLabel.setAttribute("stroke-width", "3.5");
+            timeLabel.setAttribute("stroke-linejoin", "round");
+            
+            if (l.isWest || l.isDoberan) {
+                timeLabel.setAttribute("pointer-events", "auto");
+                timeLabel.style.cursor = "pointer";
+                
+                timeLabel.addEventListener("mouseover", (e) => {
+                    highlightUmlauf(l.trainKey);
+                    const [dIdxStr, tId] = l.trainKey.split("_");
+                    const dIdx = parseInt(dIdxStr);
+                    const dir = fahrplanData.directions[dIdx];
+                    const train = dir.trains.find(t => t.id === tId);
+                    if (train) {
+                        const points = getTrainPoints(dir, train, minMins, maxMins, standardStations);
+                        showZWLTooltip(e, train, dir, points);
+                    }
+                });
+                timeLabel.addEventListener("mousemove", (e) => {
+                    moveZWLTooltip(e);
+                });
+                timeLabel.addEventListener("mouseout", () => {
+                    resetUmlaufHighlight();
+                    hideZWLTooltip();
+                });
+            } else {
+                timeLabel.setAttribute("pointer-events", "none");
+            }
+            
+            timeLabel.textContent = l.labelText;
+            svg.appendChild(timeLabel);
+        });
+        
+        // ------------------ TURNAROUND BRACKETS AT TERMINI ------------------
+        westEvents.sort((a, b) => a.mins - b.mins);
+        for (let i = 0; i < westEvents.length - 1; i++) {
+            const e1 = westEvents[i];
+            const e2 = westEvents[i+1];
+            if (e1.type === 'arr' && e2.type === 'dep') {
+                const y1 = getY(e1.mins);
+                const y2 = getY(e2.mins);
+                const x = getStationX("Kühlungsborn West");
+                const offsetX = -10;
+                
+                const y1_out = y1 + (e1.slope || 0) * offsetX;
+                const y2_out = y2 + (e2.slope || 0) * offsetX;
+                
+                // Add relation to edges list
+                umlaufEdges.push([e1.trainKey, e2.trainKey]);
+                
+                const turnaroundLine = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                const pathData = `M ${x} ${y1} L ${x + offsetX} ${y1_out} L ${x + offsetX} ${y2_out} L ${x} ${y2}`;
+                turnaroundLine.setAttribute("d", pathData);
+                turnaroundLine.setAttribute("fill", "none");
+                turnaroundLine.setAttribute("stroke", "#bdc3c7"); // Light subtle grey
+                turnaroundLine.setAttribute("stroke-width", "2.5");
+                turnaroundLine.setAttribute("stroke-dasharray", "1,4");
+                turnaroundLine.setAttribute("stroke-linecap", "round");
+                turnaroundLine.setAttribute("class", "zwl-turnaround-line");
+                turnaroundLine.setAttribute("data-train-keys", `${e1.trainKey},${e2.trainKey}`);
+                
+                const turnaroundHover = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                turnaroundHover.setAttribute("d", pathData);
+                turnaroundHover.setAttribute("fill", "none");
+                turnaroundHover.setAttribute("stroke", "transparent");
+                turnaroundHover.setAttribute("stroke-width", "16");
+                turnaroundHover.style.cursor = "pointer";
+                
+                turnaroundHover.addEventListener("mouseover", (e) => {
+                    highlightUmlauf(e1.trainKey);
+                    const [dIdxStr, tId] = e1.trainKey.split("_");
+                    const dIdx = parseInt(dIdxStr);
+                    const dir = fahrplanData.directions[dIdx];
+                    const train = dir.trains.find(t => t.id === tId);
+                    if (train) {
+                        const points = getTrainPoints(dir, train, minMins, maxMins, standardStations);
+                        showZWLTooltip(e, train, dir, points);
+                    }
+                });
+                turnaroundHover.addEventListener("mousemove", (e) => {
+                    moveZWLTooltip(e);
+                });
+                turnaroundHover.addEventListener("mouseout", () => {
+                    resetUmlaufHighlight();
+                    hideZWLTooltip();
+                });
+                
+                svg.appendChild(turnaroundLine);
+                svg.appendChild(turnaroundHover);
+            }
+        }
+        
+        doberanEvents.sort((a, b) => a.mins - b.mins);
+        for (let i = 0; i < doberanEvents.length - 1; i++) {
+            const e1 = doberanEvents[i];
+            const e2 = doberanEvents[i+1];
+            if (e1.type === 'arr' && e2.type === 'dep') {
+                const y1 = getY(e1.mins);
+                const y2 = getY(e2.mins);
+                const x = getStationX("Bad Doberan Bahnhof");
+                const offsetX = 10;
+                
+                const y1_out = y1 + (e1.slope || 0) * offsetX;
+                const y2_out = y2 + (e2.slope || 0) * offsetX;
+                
+                // Add relation to edges list
+                umlaufEdges.push([e1.trainKey, e2.trainKey]);
+                
+                const turnaroundLine = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                const pathData = `M ${x} ${y1} L ${x + offsetX} ${y1_out} L ${x + offsetX} ${y2_out} L ${x} ${y2}`;
+                turnaroundLine.setAttribute("d", pathData);
+                turnaroundLine.setAttribute("fill", "none");
+                turnaroundLine.setAttribute("stroke", "#bdc3c7"); // Light subtle grey
+                turnaroundLine.setAttribute("stroke-width", "2.5");
+                turnaroundLine.setAttribute("stroke-dasharray", "1,4");
+                turnaroundLine.setAttribute("stroke-linecap", "round");
+                turnaroundLine.setAttribute("class", "zwl-turnaround-line");
+                turnaroundLine.setAttribute("data-train-keys", `${e1.trainKey},${e2.trainKey}`);
+                
+                const turnaroundHover = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                turnaroundHover.setAttribute("d", pathData);
+                turnaroundHover.setAttribute("fill", "none");
+                turnaroundHover.setAttribute("stroke", "transparent");
+                turnaroundHover.setAttribute("stroke-width", "16");
+                turnaroundHover.style.cursor = "pointer";
+                
+                turnaroundHover.addEventListener("mouseover", (e) => {
+                    highlightUmlauf(e1.trainKey);
+                    const [dIdxStr, tId] = e1.trainKey.split("_");
+                    const dIdx = parseInt(dIdxStr);
+                    const dir = fahrplanData.directions[dIdx];
+                    const train = dir.trains.find(t => t.id === tId);
+                    if (train) {
+                        const points = getTrainPoints(dir, train, minMins, maxMins, standardStations);
+                        showZWLTooltip(e, train, dir, points);
+                    }
+                });
+                turnaroundHover.addEventListener("mousemove", (e) => {
+                    moveZWLTooltip(e);
+                });
+                turnaroundHover.addEventListener("mouseout", () => {
+                    resetUmlaufHighlight();
+                    hideZWLTooltip();
+                });
+                
+                svg.appendChild(turnaroundLine);
+                svg.appendChild(turnaroundHover);
+            }
+        }
+        
+        // Build window.zwlUmlaufGroups
+        const allTrainKeys = [];
+        fahrplanData.directions.forEach((dir, dIdx) => {
+            dir.trains.forEach(t => {
+                if (isTrainRunningToday(t.restriction, simTime)) {
+                    allTrainKeys.push(`${dIdx}_${t.id}`);
+                }
+            });
+        });
+        
+        let remainingKeys = new Set(allTrainKeys);
+        const localGroups = [];
+        while (remainingKeys.size > 0) {
+            const startKey = remainingKeys.values().next().value;
+            const connected = getConnectedUmlaufTrains(startKey);
+            localGroups.push([...connected]);
+            connected.forEach(key => remainingKeys.delete(key));
+        }
+        
+        function getUmlaufStartTime(groupKeys) {
+            let minTime = Infinity;
+            groupKeys.forEach(key => {
+                const [dIdx, tId] = key.split("_");
+                const dir = fahrplanData.directions[parseInt(dIdx)];
+                const train = dir.trains.find(t => t.id === tId);
+                if (train) {
+                    train.times.forEach(ts => {
+                        if (ts && ts !== '-') {
+                            const m = timeToMinutes(ts);
+                            if (m < minTime) minTime = m;
+                        }
+                    });
+                }
+            });
+            return minTime;
+        }
+        localGroups.sort((a, b) => getUmlaufStartTime(a) - getUmlaufStartTime(b));
+        window.zwlUmlaufGroups = localGroups;
+        
+        // Dynamisch den Tab-Button-Text anpassen
+        const tabBtn = document.getElementById('umlauf-tab-btn');
+        if (tabBtn) {
+            tabBtn.innerText = localGroups.length === 1 ? 'Umlauf' : 'Umläufe';
+        }
         
         // Rote Linie für aktuelle Zeit
         if (nowMins >= minMins && nowMins <= maxMins) {
@@ -1498,7 +2102,7 @@
             bubbleLeftText.setAttribute("font-size", "10");
             bubbleLeftText.setAttribute("font-weight", "bold");
             bubbleLeftText.setAttribute("fill", "white");
-            bubbleLeftText.textContent = `${simTime.getHours().toString().padStart(2, '0')}:${simTime.getMinutes().toString().padStart(2, '0')}`;
+            bubbleLeftText.textContent = `${simTime.getHours().toString().padStart(2, '0')}.${simTime.getMinutes().toString().padStart(2, '0')}`;
             svg.appendChild(bubbleLeftText);
             
             const bubbleRight = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -1517,9 +2121,229 @@
             bubbleRightText.setAttribute("font-size", "10");
             bubbleRightText.setAttribute("font-weight", "bold");
             bubbleRightText.setAttribute("fill", "white");
-            bubbleRightText.textContent = `${simTime.getHours().toString().padStart(2, '0')}:${simTime.getMinutes().toString().padStart(2, '0')}`;
+            bubbleRightText.textContent = `${simTime.getHours().toString().padStart(2, '0')}.${simTime.getMinutes().toString().padStart(2, '0')}`;
             svg.appendChild(bubbleRightText);
         }
+    }
+
+    function renderActiveUmlaufBody(ud) {
+        const body = document.getElementById('umlauf-card-body');
+        if (!body) return;
+        
+        body.innerHTML = `
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; white-space: nowrap;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #eee; color: #7f8c8d; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                            <th style="padding: 0.6rem 0.6rem; text-align: left; white-space: nowrap;">Zug</th>
+                            <th style="padding: 0.6rem 0.6rem; text-align: left; white-space: nowrap;">Start</th>
+                            <th style="padding: 0.6rem 0.6rem; text-align: left; white-space: nowrap;">Heiligendamm</th>
+                            <th style="padding: 0.6rem 0.6rem; text-align: left; white-space: nowrap;">Ziel</th>
+                            <th style="padding: 0.6rem 0.6rem; text-align: left; white-space: nowrap;">Dauer</th>
+                            <th style="padding: 0.6rem 0.6rem; text-align: left; white-space: nowrap;">Wendezeit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${ud.tableRows}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    function renderUmlaeufe() {
+        const container = document.getElementById('umlauf-container');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        const tabBtn = document.getElementById('umlauf-tab-btn');
+        if (tabBtn) {
+            const count = window.zwlUmlaufGroups ? window.zwlUmlaufGroups.length : 0;
+            tabBtn.innerText = count === 1 ? 'Umlauf' : 'Umläufe';
+        }
+        
+        if (!window.zwlUmlaufGroups || window.zwlUmlaufGroups.length === 0) {
+            // Falls ZWL noch nicht gezeichnet wurde, aufrufen
+            drawZWL();
+        }
+        
+        if (!window.zwlUmlaufGroups || window.zwlUmlaufGroups.length === 0) {
+            container.innerHTML = '<div style="color: #666; font-style: italic; text-align: center;">Keine Zugumläufe für den aktuellen Tag vorhanden.</div>';
+            return;
+        }
+        
+        const dirColors = ['#e67e22', '#3498db'];
+        let umlaufDataList = [];
+        
+        window.zwlUmlaufGroups.forEach((groupKeys, gIdx) => {
+            let fahrten = [];
+            
+            groupKeys.forEach(key => {
+                const [dIdxStr, tId] = key.split("_");
+                const dIdx = parseInt(dIdxStr);
+                const dir = fahrplanData.directions[dIdx];
+                const train = dir.trains.find(t => t.id === tId);
+                
+                if (train) {
+                    let firstIdx = -1;
+                    let lastIdx = -1;
+                    train.times.forEach((tVal, idx) => {
+                        if (tVal && tVal !== '-') {
+                            if (firstIdx === -1) firstIdx = idx;
+                            lastIdx = idx;
+                        }
+                    });
+                    
+                    if (firstIdx !== -1 && lastIdx !== -1) {
+                        const depTimeStr = train.times[firstIdx].replace(/[()]/g, '').split('/')[0];
+                        const arrTimeStr = train.times[lastIdx].replace(/[()]/g, '').split('/').pop();
+                        const depMins = timeToMinutes(train.times[firstIdx], 'dep');
+                        const arrMins = timeToMinutes(train.times[lastIdx], 'arr');
+                        
+                        const hIdx = dir.stations.findIndex(s => s.includes("Heiligendamm"));
+                        let hTimeStr = '-';
+                        if (hIdx !== -1 && train.times[hIdx] && train.times[hIdx] !== '-') {
+                            let clean = train.times[hIdx].replace(/[()]/g, '');
+                            if (clean.includes('/')) {
+                                const parts = clean.split('/');
+                                hTimeStr = `${parts[0]} - ${parts[1]}`;
+                            } else {
+                                hTimeStr = clean;
+                            }
+                        }
+                        
+                        fahrten.push({
+                            trainId: train.id,
+                            dIdx,
+                            dirColor: dirColors[dIdx],
+                            from: dir.stations[firstIdx],
+                            to: dir.stations[lastIdx],
+                            depTimeStr,
+                            arrTimeStr,
+                            hTimeStr,
+                            depMins,
+                            arrMins,
+                            duration: arrMins - depMins
+                        });
+                    }
+                }
+            });
+            
+            fahrten.sort((a, b) => a.depMins - b.depMins);
+            
+            let tableRows = '';
+            fahrten.forEach((f, fIdx) => {
+                let wendezeitStr = '-';
+                if (fIdx < fahrten.length - 1) {
+                    const nextF = fahrten[fIdx + 1];
+                    const wMins = nextF.depMins - f.arrMins;
+                    wendezeitStr = `${wMins} min`;
+                } else {
+                    wendezeitStr = '<span style="color: #95a5a6; font-style: italic; font-size: 0.8rem;">Dienstende</span>';
+                }
+                
+                tableRows += `
+                    <tr style="border-bottom: 1px solid #f2f2f2; transition: background 0.15s ease;" onmouseover="this.style.background='rgba(0,0,0,0.02)';" onmouseout="this.style.background='none';">
+                        <td style="padding: 0.5rem 0.6rem; font-weight: bold; color: ${f.dirColor}; text-align: left; white-space: nowrap;">Zug ${f.trainId}</td>
+                        <td style="padding: 0.5rem 0.6rem; color: #333; text-align: left; white-space: nowrap;"><strong>${f.depTimeStr}</strong> <span style="font-weight: normal; color: #555; margin-left: 4px;">${f.from}</span></td>
+                        <td style="padding: 0.5rem 0.6rem; color: #333; text-align: left; font-weight: 500; white-space: nowrap;">${f.hTimeStr}</td>
+                        <td style="padding: 0.5rem 0.6rem; color: #333; text-align: left; white-space: nowrap;"><strong>${f.arrTimeStr}</strong> <span style="font-weight: normal; color: #555; margin-left: 4px;">${f.to}</span></td>
+                        <td style="padding: 0.5rem 0.6rem; color: #666; font-weight: 500; text-align: left; white-space: nowrap;">${f.duration} min</td>
+                        <td style="padding: 0.5rem 0.6rem; font-weight: 600; color: #27ae60; text-align: left; white-space: nowrap;">${wendezeitStr}</td>
+                    </tr>
+                `;
+            });
+            
+            const totalFahrzeit = fahrten.reduce((sum, f) => sum + f.duration, 0);
+            const tfHrs = Math.floor(totalFahrzeit / 60);
+            const tfMins = totalFahrzeit % 60;
+            const fahrzeitTimeStr = `${tfHrs}h ${tfMins}min reine Fahrzeit`;
+            
+            let einsatzTimeStr = '-';
+            if (fahrten.length > 0) {
+                const startMins = fahrten[0].depMins;
+                const endMins = fahrten[fahrten.length - 1].arrMins;
+                const einsatzMins = endMins - startMins;
+                const hrs = Math.floor(einsatzMins / 60);
+                const mins = einsatzMins % 60;
+                einsatzTimeStr = `${hrs}h ${mins}min`;
+            }
+            
+            umlaufDataList.push({
+                gIdx,
+                fahrten,
+                tableRows,
+                totalFahrzeit,
+                fahrzeitTimeStr,
+                einsatzTimeStr
+            });
+        });
+        
+        // Einzelne Karte als Container erstellen
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.cssText = 'margin-bottom: 1rem; padding: 0; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); overflow: hidden;';
+        
+        const cardHeader = document.createElement('div');
+        cardHeader.style.cssText = 'background: #fdfdfd; padding: 0.8rem 1rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem;';
+        
+        // Left Area: Sub-tabs navigation on the left
+        const leftArea = document.createElement('div');
+        leftArea.id = 'umlauf-header-left';
+        cardHeader.appendChild(leftArea);
+        
+        // Right Area: Active Umlauf statistics on the right
+        const rightArea = document.createElement('div');
+        rightArea.id = 'umlauf-header-right';
+        cardHeader.appendChild(rightArea);
+        
+        card.appendChild(cardHeader);
+        
+        const cardBody = document.createElement('div');
+        cardBody.id = 'umlauf-card-body';
+        cardBody.style.cssText = 'padding: 0.8rem;';
+        card.appendChild(cardBody);
+        
+        container.appendChild(card);
+        
+        // Helper to update stats on the right side
+        function updateHeaderStats(ud) {
+            rightArea.innerHTML = `
+                <div style="display: flex; gap: 0.8rem; font-size: 0.8rem; color: #666; font-weight: 500;">
+                    <span style="background: rgba(0,0,0,0.04); padding: 2px 6px; border-radius: 4px;">${ud.fahrten.length} ${ud.fahrten.length === 1 ? 'Fahrt' : 'Fahrten'}</span>
+                    <span style="background: rgba(0,0,0,0.04); padding: 2px 6px; border-radius: 4px;">${ud.fahrzeitTimeStr}</span>
+                    <span style="background: rgba(0,0,0,0.04); padding: 2px 6px; border-radius: 4px;">Im Einsatz ${ud.einsatzTimeStr}</span>
+                </div>
+            `;
+        }
+        
+        // Build sub-tabs container in leftArea (acts as both navigation and heading)
+        const subNav = document.createElement('div');
+        subNav.className = 'sub-tabs';
+        subNav.style.margin = '0';
+        subNav.style.display = 'flex';
+        
+        umlaufDataList.forEach((ud, idx) => {
+            const btn = document.createElement('button');
+            btn.className = `sub-tab-btn umlauf-sub-tab-btn ${idx === 0 ? 'active' : ''}`;
+            btn.innerText = `Umlauf ${idx + 1}`;
+            if (window.zwlUmlaufGroups.length > 1) {
+                btn.onclick = (e) => {
+                    document.querySelectorAll('.umlauf-sub-tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderActiveUmlaufBody(ud);
+                    updateHeaderStats(ud);
+                };
+            } else {
+                btn.style.cursor = 'default';
+            }
+            subNav.appendChild(btn);
+        });
+        leftArea.appendChild(subNav);
+        
+        // Initial render of first active Umlauf
+        renderActiveUmlaufBody(umlaufDataList[0]);
+        updateHeaderStats(umlaufDataList[0]);
     }
 
     function showTab(tabId) {
@@ -1531,6 +2355,9 @@
         if (tabId === 'bildfahrplan') {
             drawZWL();
             setTimeout(scrollToCurrentTime, 100);
+        }
+        if (tabId === 'umlauf') {
+            renderUmlaeufe();
         }
     }
 
