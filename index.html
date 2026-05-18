@@ -2258,14 +2258,12 @@
                 }
                 
                 group.addEventListener("mouseover", (e) => {
-                    highlightUmlauf(trainKey);
                     showZWLTooltip(e, train, dir, points);
                 });
                 group.addEventListener("mousemove", (e) => {
                     moveZWLTooltip(e);
                 });
                 group.addEventListener("mouseout", () => {
-                    resetUmlaufHighlight();
                     hideZWLTooltip();
                 });
                 
