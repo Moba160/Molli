@@ -151,7 +151,6 @@
             box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
             vertical-align: text-bottom;
             line-height: 1.2;
-            cursor: help;
         }
 
         /* Sub-Tabs */
@@ -246,23 +245,35 @@
             <h1 style="margin: 0; font-size: 1.4rem; white-space: nowrap;">Bäderbahn Molli</h1>
             <select id="validity-header" style="font-size: 0.85rem; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.1); color: white; outline: none; cursor: pointer; font-family: inherit; font-weight: 600; appearance: auto; margin-top: 4px;"></select>
         </div>
-        <div id="time-controls-container" style="display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; flex-grow: 1; max-width: 650px; margin-left: 20px;">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                <button id="today-btn" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; padding: 2px 6px; font-size: 0.8rem; cursor: pointer;">Heute</button>
-                <input type="date" id="sim-date-picker" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; padding: 1px 4px; font-size: 0.85rem; font-family: inherit; outline: none; cursor: pointer; color-scheme: dark;">
-                <div id="active-restrictions-container" style="display: flex; gap: 4px; margin-left: 4px;"></div>
+            <div id="time-controls-container" style="display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; flex-grow: 1; max-width: 780px; margin-left: 20px;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <button id="today-btn" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; padding: 2px 6px; font-size: 0.8rem; cursor: pointer;">Heute</button>
+                    <input type="date" id="sim-date-picker" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; padding: 1px 4px; font-size: 0.85rem; font-family: inherit; outline: none; cursor: pointer; color-scheme: dark;">
+                    <div id="active-restrictions-container" style="display: flex; gap: 4px; margin-left: 4px;"></div>
+                </div>
+                <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.3); margin: 0 4px;"></div>
+                <button id="reset-time-btn" title="Auf Echtzeit zurücksetzen" style="background: none; border: none; cursor: pointer; color: white; padding: 0; display: flex; align-items: center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </button>
+                <span id="sim-time-display" style="font-family: inherit; font-size: 1.2rem; font-weight: 600; min-width: 55px; text-align: center;"></span>
+                <div style="flex-grow: 1; position: relative; display: flex; align-items: center; padding-top: 20px; padding-bottom: 5px;">
+                    <div id="slider-tooltip">12:00</div>
+                    <input type="range" id="sim-time-slider" style="width: 100%;" title="Zeit für Simulation verschieben">
+                </div>
+                <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.3); margin: 0 4px;"></div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <button id="play-pause-btn" title="Simulation abspielen" style="background: none; border: none; cursor: pointer; color: white; padding: 0; display: flex; align-items: center; outline: none;">
+                        <svg id="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon></svg>
+                        <svg id="stop-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><rect x="4" y="4" width="16" height="16" fill="currentColor" rx="2" ry="2"></rect></svg>
+                    </button>
+                    <div style="display: flex; align-items: center; gap: 2px; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; padding: 1px 4px;">
+                        <button id="speed-down-btn" title="Zeitraffer verringern" style="background: none; border: none; color: white; cursor: pointer; padding: 0 4px; font-size: 0.8rem; font-weight: bold; outline: none;">&lt;</button>
+                        <span id="speed-display" style="font-size: 0.85rem; font-weight: bold; min-width: 28px; text-align: center; color: white; user-select: none;">1x</span>
+                        <button id="speed-up-btn" title="Zeitraffer erhöhen" style="background: none; border: none; color: white; cursor: pointer; padding: 0 4px; font-size: 0.8rem; font-weight: bold; outline: none;">&gt;</button>
+                    </div>
+                </div>
             </div>
-            <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.3); margin: 0 4px;"></div>
-            <button id="reset-time-btn" title="Auf Echtzeit zurücksetzen" style="background: none; border: none; cursor: pointer; color: white; padding: 0; display: flex; align-items: center;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            </button>
-            <span id="sim-time-display" style="font-family: inherit; font-size: 1.2rem; font-weight: 600; min-width: 55px; text-align: center;"></span>
-            <div style="flex-grow: 1; position: relative; display: flex; align-items: center; padding-top: 20px; padding-bottom: 5px;">
-                <div id="slider-tooltip">12:00</div>
-                <input type="range" id="sim-time-slider" style="width: 100%;" title="Zeit für Simulation verschieben">
-            </div>
-        </div>
     </div>
 </header>
 
@@ -378,6 +389,8 @@
     let baseSimTime = new Date();
     let realTimeAtSet = Date.now();
     let isDraggingSlider = false;
+    let isPlayActive = false;
+    let playSpeedFactor = 1;
 
     function interpolateMissingTimes() {
         if (!fahrplanData || !bfData) return;
@@ -563,12 +576,42 @@
 
             initGeolocation();
             loadHelp();
-            
             if (loadedTimetables.length > 0) {
-                applyTimetable(loadedTimetables[0]);
-            }
-            
-            setInterval(updateLive, 30000);
+                 applyTimetable(loadedTimetables[0]);
+             }
+             
+             document.getElementById('play-pause-btn').addEventListener('click', () => {
+                 if (isPlayActive) {
+                     baseSimTime = getSimTime();
+                     isPlayActive = false;
+                 } else {
+                     baseSimTime = getSimTime();
+                     realTimeAtSet = Date.now();
+                     isPlayActive = true;
+                 }
+                 updatePlayPauseUI();
+                 updateLive();
+             });
+             
+             document.getElementById('speed-down-btn').addEventListener('click', () => {
+                 if (playSpeedFactor > 1) {
+                     baseSimTime = getSimTime();
+                     realTimeAtSet = Date.now();
+                     playSpeedFactor--;
+                     document.getElementById('speed-display').innerText = playSpeedFactor + "x";
+                 }
+             });
+             
+             document.getElementById('speed-up-btn').addEventListener('click', () => {
+                 if (playSpeedFactor < 10) {
+                     baseSimTime = getSimTime();
+                     realTimeAtSet = Date.now();
+                     playSpeedFactor++;
+                     document.getElementById('speed-display').innerText = playSpeedFactor + "x";
+                 }
+             });
+             
+             setInterval(updateLive, 1000);
         } catch (e) {
             console.error("Fehler beim Laden der Daten:", e);
         }
@@ -732,7 +775,11 @@
     }
 
     function getSimTime() {
-        const t = new Date(baseSimTime.getTime() + (Date.now() - realTimeAtSet));
+        let elapsed = 0;
+        if (isPlayActive) {
+            elapsed = (Date.now() - realTimeAtSet) * playSpeedFactor;
+        }
+        const t = new Date(baseSimTime.getTime() + elapsed);
         const mins = t.getHours() * 60 + t.getMinutes();
         const slider = document.getElementById('sim-time-slider');
         if (slider && slider.min && slider.max) {
@@ -742,9 +789,30 @@
                 t.setHours(Math.floor(min/60), min%60, 0, 0);
             } else if (mins > max) {
                 t.setHours(Math.floor(max/60), max%60, 0, 0);
+                if (isPlayActive) {
+                    isPlayActive = false;
+                    updatePlayPauseUI();
+                }
             }
         }
         return t;
+    }
+
+    function updatePlayPauseUI() {
+        const playIcon = document.getElementById('play-icon');
+        const stopIcon = document.getElementById('stop-icon');
+        const btn = document.getElementById('play-pause-btn');
+        if (playIcon && stopIcon && btn) {
+            if (isPlayActive) {
+                playIcon.style.display = 'none';
+                stopIcon.style.display = 'block';
+                btn.title = "Simulation stoppen";
+            } else {
+                playIcon.style.display = 'block';
+                stopIcon.style.display = 'none';
+                btn.title = "Simulation abspielen";
+            }
+        }
     }
 
     function updateLive() {
@@ -2158,7 +2226,6 @@
                 
                 const rGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
                 if (l.isPast) rGroup.setAttribute("opacity", "0.4");
-                rGroup.style.cursor = "help";
                 
                 const rTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
                 rTitle.textContent = fahrplanData.restrictions ? (fahrplanData.restrictions[l.restriction] || "") : "";
