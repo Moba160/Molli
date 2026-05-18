@@ -242,8 +242,11 @@
 <header>
     <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1920px; margin: 0 auto; padding: 0 1rem;">
         <div style="display: flex; align-items: center; gap: 1rem; color: white;">
+            <a href="https://www.molli-bahn.de" target="_blank" title="Zu www.molli-bahn.de wechseln" style="display: flex; align-items: center;">
+                <img src="data/logo.jpg" style="height: 2.2rem; border-radius: 4px; object-fit: contain; cursor: pointer;">
+            </a>
             <h1 style="margin: 0; font-size: 1.4rem; white-space: nowrap;">Bäderbahn Molli</h1>
-            <select id="validity-header" style="font-size: 0.85rem; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.1); color: white; outline: none; cursor: pointer; font-family: inherit; font-weight: 600; appearance: auto; margin-top: 4px;"></select>
+            <select id="validity-header" style="font-size: 0.85rem; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.1); color: white; outline: none; cursor: pointer; font-family: inherit; font-weight: 600; appearance: auto;"></select>
         </div>
             <div id="time-controls-container" style="display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; flex-grow: 1; max-width: 780px; margin-left: 20px;">
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -546,6 +549,8 @@
                 followSimTime = true; // Zeitlinie wieder fokussieren
                 baseSimTime = today;
                 realTimeAtSet = Date.now();
+                speedIndex = 0;
+                document.getElementById('speed-display').innerText = "1:1";
                 datePicker.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
                 applyDateChanges();
                 if (document.getElementById('bildfahrplan').classList.contains('active')) {
@@ -591,6 +596,8 @@
                     isRealTimeSync = true;
                     baseSimTime = new Date();
                     realTimeAtSet = Date.now();
+                    speedIndex = 0;
+                    document.getElementById('speed-display').innerText = "1:1";
                     followSimTime = true;
                     updateLive();
                 }
@@ -855,21 +862,27 @@
     }
 
     function getSimTime() {
+        let t;
         if (isRealTimeSync) {
-            return new Date();
+            t = new Date();
+        } else {
+            // In Zeitraffer-Modus: speedPresets[speedIndex] ist das Verhältnis Simulationszeit : Echtzeit
+            const elapsed = (Date.now() - realTimeAtSet) * speedPresets[speedIndex];
+            t = new Date(baseSimTime.getTime() + elapsed);
         }
-        // In Zeitraffer-Modus: speedPresets[speedIndex] ist das Verhältnis Simulationszeit : Echtzeit
-        const elapsed = (Date.now() - realTimeAtSet) * speedPresets[speedIndex];
-        const t = new Date(baseSimTime.getTime() + elapsed);
-        const mins = t.getHours() * 60 + t.getMinutes();
+        
         const slider = document.getElementById('sim-time-slider');
         if (slider && slider.min && slider.max) {
             const min = parseInt(slider.min);
             const max = parseInt(slider.max);
-            if (mins < min) {
-                t.setHours(Math.floor(min/60), min%60, 0, 0);
-            } else if (mins > max) {
+            const mins = t.getHours() * 60 + t.getMinutes();
+            if (mins < min || mins > max) {
                 t.setHours(Math.floor(max/60), max%60, 0, 0);
+                if (isRealTimeSync) {
+                    isRealTimeSync = false;
+                    baseSimTime = new Date(t.getTime());
+                    realTimeAtSet = Date.now();
+                }
             }
         }
         return t;
@@ -963,15 +976,52 @@
             });
             html += `</tr></thead><tbody>`;
             dir.stations.forEach((station, sIdx) => {
+                const isBadDoberan = station.includes("Bad Doberan Bahnhof");
+                
+                if (isBadDoberan && i === 1) {
+                    let hasRostock = dir.trains.some(t => t.connFrom && t.connFrom.Rostock);
+                    if (hasRostock) {
+                        html += `<tr style="font-style: italic; color: #555; font-size: 0.85em;"><td><i>Anschluss von Rostock</i></td>`;
+                        dir.trains.forEach(t => { html += `<td><i>${(t.connFrom && t.connFrom.Rostock) ? t.connFrom.Rostock.replace(':', '.') : ''}</i></td>`; });
+                        html += `</tr>`;
+                    }
+                    let hasWismar = dir.trains.some(t => t.connFrom && t.connFrom.Wismar);
+                    if (hasWismar) {
+                        html += `<tr style="font-style: italic; color: #555; font-size: 0.85em;"><td><i>Anschluss von Wismar</i></td>`;
+                        dir.trains.forEach(t => { html += `<td><i>${(t.connFrom && t.connFrom.Wismar) ? t.connFrom.Wismar.replace(':', '.') : ''}</i></td>`; });
+                        html += `</tr>`;
+                    }
+                }
+                
                 const stationBf = bfData.find(b => b.name === station);
                 const kmStr = stationBf && stationBf.km !== undefined ? `<span style="color: #888; font-size: 0.8rem; font-weight: normal; margin-left: 6px;">km ${formatKm(stationBf.km)}</span>` : '';
-                html += `<tr><td><strong>${station}</strong>${kmStr}</td>`;
+                
+                let tdStyle = "";
+                if (isBadDoberan && i === 1) tdStyle = "border-top: 2px solid #333;";
+                if (isBadDoberan && i === 0) tdStyle = "border-bottom: 2px solid #333;";
+                
+                html += `<tr><td style="${tdStyle}"><strong>${station}</strong>${kmStr}</td>`;
                 dir.trains.forEach(t => {
                     const tVal = t.times[sIdx] || '';
                     const displayTime = tVal ? tVal.replace(':', '.') : '';
-                    html += `<td data-time="${tVal}">${displayTime}</td>`;
+                    html += `<td style="${tdStyle}" data-time="${tVal}">${displayTime}</td>`;
                 });
                 html += `</tr>`;
+                
+                if (isBadDoberan && i === 0) {
+                    let hasRostock = dir.trains.some(t => t.connTo && t.connTo.Rostock);
+                    if (hasRostock) {
+                        html += `<tr style="font-style: italic; color: #555; font-size: 0.85em;"><td><i>Anschluss nach Rostock</i></td>`;
+                        dir.trains.forEach(t => { html += `<td><i>${(t.connTo && t.connTo.Rostock) ? t.connTo.Rostock.replace(':', '.') : ''}</i></td>`; });
+                        html += `</tr>`;
+                    }
+                    let hasWismar = dir.trains.some(t => t.connTo && t.connTo.Wismar);
+                    if (hasWismar) {
+                        html += `<tr style="font-style: italic; color: #555; font-size: 0.85em;"><td><i>Anschluss nach Wismar</i></td>`;
+                        dir.trains.forEach(t => { html += `<td><i>${(t.connTo && t.connTo.Wismar) ? t.connTo.Wismar.replace(':', '.') : ''}</i></td>`; });
+                        html += `</tr>`;
+                    }
+                }
             });
             html += `</tbody></table></div>`;
 
@@ -992,12 +1042,63 @@
         card.appendChild(cardBody);
         container.appendChild(card);
         
-        const fares = fahrplanData.fares;
-        document.getElementById('fares-content').innerHTML = `
-            <div class="info-item"><h4>Kurzstrecke</h4><p>${fares.short.toFixed(2).replace('.', ',')} €</p></div>
-            <div class="info-item"><h4>2 Zonen</h4><p>Einfach: ${fares.zone2.single.toFixed(2).replace('.', ',')} € / Rück: ${fares.zone2.return.toFixed(2).replace('.', ',')} €</p></div>
-            <div class="info-item"><h4>3 Zonen</h4><p>Einfach: ${fares.zone3.single.toFixed(2).replace('.', ',')} € / Rück: ${fares.zone3.return.toFixed(2).replace('.', ',')} €</p></div>
+        let isSummer = fahrplanData.validity.includes("28.03.2026");
+        
+        let tHTML = `
+            <h3 style="margin-top:0; color:var(--primary);">Tarifzonen</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-bottom: 2rem; text-align: left;">
+                <tr style="border-bottom: 2px solid #ccc;"><th style="padding: 8px;">Stadtverkehr<br>Kühlungsborn & Bad Doberan</th><th style="padding: 8px;">Kurzstrecke</th></tr>
+                <tr style="border-bottom: 1px solid #eee; background: rgba(0,0,0,0.02);"><td style="padding: 8px;">Bad Doberan - Heiligendamm</td><td style="padding: 8px; color: #b00000; font-weight: bold;">2 Zonen</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Bad Doberan - Steilküste</td><td style="padding: 8px; color: #b00000; font-weight: bold;">2 Zonen</td></tr>
+                <tr style="border-bottom: 1px solid #eee; background: rgba(0,0,0,0.02);"><td style="padding: 8px;">Kühlungsborn - Steilküste</td><td style="padding: 8px; color: #b00000; font-weight: bold;">2 Zonen</td></tr>
+                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Kühlungsborn - Heiligendamm</td><td style="padding: 8px; color: #b00000; font-weight: bold;">2 Zonen</td></tr>
+                <tr style="border-bottom: 1px solid #eee; background: rgba(0,0,0,0.02);"><td style="padding: 8px;">Bad Doberan - Kühlungsborn</td><td style="padding: 8px; color: #b00000; font-weight: bold;">3 Zonen</td></tr>
+            </table>
+
+            <h3 style="margin-top:0; color:var(--primary);">Fahrpreise</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: center;">
+                <tr style="border-bottom: 2px solid #b00000; color: #333;">
+                    <th style="padding: 8px; text-align: left;"></th>
+                    <th colspan="2" style="padding: 8px; border-left: 1px solid #ccc;">2 Zonen<br><span style="font-weight: normal; font-size: 0.8rem;">Einfach &nbsp;|&nbsp; Rück</span></th>
+                    <th colspan="2" style="padding: 8px; border-left: 1px solid #ccc;">3 Zonen<br><span style="font-weight: normal; font-size: 0.8rem;">Einfach &nbsp;|&nbsp; Rück</span></th>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee; background: rgba(0,0,0,0.02);">
+                    <td style="padding: 8px; text-align: left; font-weight: bold;">Erwachsene</td>
+                    <td style="padding: 8px; border-left: 1px solid #ccc;">9,00</td><td style="padding: 8px;">13,00</td>
+                    <td style="padding: 8px; border-left: 1px solid #ccc;">${isSummer ? '13,00' : '12,50'}</td><td style="padding: 8px;">${isSummer ? '19,00' : '18,50'}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 8px; text-align: left; font-weight: bold;">Kind (6-14 Jahre)</td>
+                    <td style="padding: 8px; border-left: 1px solid #ccc;">7,50</td><td style="padding: 8px;">10,50</td>
+                    <td style="padding: 8px; border-left: 1px solid #ccc;">${isSummer ? '11,00' : '10,50'}</td><td style="padding: 8px;">${isSummer ? '15,00' : '14,50'}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee; background: rgba(0,0,0,0.02);">
+                    <td style="padding: 8px; text-align: left; font-weight: bold;">Familie <span style="font-weight: normal; font-size: 0.75rem;"><br>(2 Erwachsene + max. 3 Kinder)</span></td>
+                    <td style="padding: 8px; border-left: 1px solid #ccc;">21,00</td><td style="padding: 8px;">31,00</td>
+                    <td style="padding: 8px; border-left: 1px solid #ccc;">${isSummer ? '29,00' : '28,00'}</td><td style="padding: 8px;">${isSummer ? '44,00' : '43,00'}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 8px; text-align: left; font-weight: bold;">Gruppe ab 15 Personen</td>
+                    <td style="padding: 8px; border-left: 1px solid #ccc;">9,00</td><td style="padding: 8px;">13,00</td>
+                    <td style="padding: 8px; border-left: 1px solid #ccc;">${isSummer ? '11,50' : '11,00'}</td><td style="padding: 8px;">${isSummer ? '16,50' : '16,00'}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee; background: rgba(0,0,0,0.02);">
+                    <td style="padding: 8px; text-align: left; font-weight: bold;">Kinder ab 15 Personen</td>
+                    <td style="padding: 8px; border-left: 1px solid #ccc;">7,50</td><td style="padding: 8px;">10,50</td>
+                    <td style="padding: 8px; border-left: 1px solid #ccc;">${isSummer ? '8,50' : '8,00'}</td><td style="padding: 8px;">11,00</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 8px; text-align: left; font-weight: bold;">Zehnerkarte</td>
+                    <td colspan="2" style="padding: 8px; border-left: 1px solid #ccc; text-align: center;">65,00</td>
+                    <td colspan="2" style="padding: 8px; border-left: 1px solid #ccc; text-align: center;">90,00</td>
+                </tr>
+            </table>
+            <div style="margin-top: 1rem; font-size: 0.85rem; color: #555;">
+                <p><strong>Kurzstrecke einfache Fahrt:</strong> ${isSummer ? '7,00 €' : '6,50 €'}</p>
+            </div>
         `;
+        document.getElementById('fares-content').innerHTML = tHTML;
+        document.getElementById('fares-content').className = "";
     }
 
     function showSubTab(index, btn) {
@@ -1036,8 +1137,13 @@
             hitArea.setAttribute("r", "20");
             hitArea.setAttribute("fill", "transparent");
             hitArea.style.cursor = "pointer";
-            hitArea.addEventListener("mouseover", () => showStationBoard(bf.name));
-            hitArea.addEventListener("mouseout", hideStationBoard);
+            hitArea.addEventListener("mouseover", () => {
+                cancelHideBoardTimer();
+                showStationBoard(bf.name);
+            });
+            hitArea.addEventListener("mouseout", () => {
+                startHideBoardTimer();
+            });
             svgHitAreas.appendChild(hitArea);
 
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -1050,7 +1156,41 @@
         });
     }
 
+    let currentStationBoardName = null;
+    let stationBoardFilter = null;
+    let hideStationBoardTimeout = null;
+
+    window.startHideBoardTimer = function() {
+        if (hideStationBoardTimeout) clearTimeout(hideStationBoardTimeout);
+        hideStationBoardTimeout = setTimeout(() => {
+            hideStationBoard();
+        }, 2000);
+    };
+
+    window.cancelHideBoardTimer = function() {
+        if (hideStationBoardTimeout) {
+            clearTimeout(hideStationBoardTimeout);
+            hideStationBoardTimeout = null;
+        }
+    };
+
+    window.toggleStationFilter = function(dIdx) {
+        if (stationBoardFilter === dIdx) {
+            stationBoardFilter = null;
+        } else {
+            stationBoardFilter = dIdx;
+        }
+        if (currentStationBoardName) {
+            showStationBoard(currentStationBoardName);
+        }
+    };
+
     function showStationBoard(stationName) {
+        cancelHideBoardTimer();
+        if (currentStationBoardName !== stationName) {
+            stationBoardFilter = null;
+            currentStationBoardName = stationName;
+        }
         const boardGroup = document.getElementById('svg-station-board');
         if (!boardGroup) return;
         boardGroup.innerHTML = '';
@@ -1061,6 +1201,7 @@
         const colors = ['#e67e22', '#3498db'];
         
         fahrplanData.directions.forEach((dir, dIdx) => {
+            if (stationBoardFilter !== null && stationBoardFilter !== dIdx) return;
             const sIdx = dir.stations.indexOf(stationName);
             if (sIdx === -1) return;
             
@@ -1078,22 +1219,30 @@
         departures.sort((a, b) => a.timeMins - b.timeMins);
         
         const fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
-        fo.setAttribute("x", "350"); // Mittig im ViewBox (1000 Breit -> Mitte 500 -> Width 300 -> X=350)
+        fo.setAttribute("x", "0"); 
         fo.setAttribute("y", "25"); 
-        fo.setAttribute("width", "300");
+        fo.setAttribute("width", "1000"); // Volle Breite der SVG viewBox
         fo.setAttribute("height", "550");
         
         const isRennbahn = (stationName === "Rennbahn");
-        const titleText = isRennbahn ? `Durchfahrtstafel: ${stationName}` : `Abfahrten: ${stationName}`;
+        const titleText = isRennbahn ? `Durchfahrten: ${stationName}` : `Abfahrten: ${stationName}`;
 
-        let html = `<div xmlns="http://www.w3.org/1999/xhtml" style="font-family: inherit; background: rgba(255, 243, 205, 0.95); padding: 6px 10px; border-radius: 8px; border: 2px solid #ffeeba; box-shadow: 0 4px 12px rgba(0,0,0,0.2); box-sizing: border-box; max-height: 550px; overflow-y: auto;">
-            <div style="font-weight: bold; color: #856404; margin-bottom: 4px; font-size: 14px; text-align: center; border-bottom: 2px solid #ffeeba; padding-bottom: 2px;">${titleText}</div>
-            <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; line-height: 1.1;">
+        const arrow1 = `<span onclick="toggleStationFilter(1)" title="${stationBoardFilter === 1 ? 'Richtungsfilter zurücksetzen' : 'Filtern auf diese Richtung'}" style="cursor: pointer; padding: 0 4px; border-radius: 4px; color: #3498db; background: ${stationBoardFilter === 1 ? 'rgba(52,152,219,0.2)' : 'transparent'};">&#9664;</span>`;
+        const arrow0 = `<span onclick="toggleStationFilter(0)" title="${stationBoardFilter === 0 ? 'Richtungsfilter zurücksetzen' : 'Filtern auf diese Richtung'}" style="cursor: pointer; padding: 0 4px; border-radius: 4px; color: #e67e22; background: ${stationBoardFilter === 0 ? 'rgba(230,126,34,0.2)' : 'transparent'};">&#9654;</span>`;
+
+        let html = `<div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; justify-content: center; align-items: flex-start; width: 100%; height: 100%; pointer-events: none;">
+            <div style="font-family: inherit; background: rgba(255, 243, 205, 0.95); padding: 6px 10px; border-radius: 8px; border: 2px solid #ffeeba; box-shadow: 0 4px 12px rgba(0,0,0,0.2); box-sizing: border-box; max-height: 550px; overflow-y: auto; pointer-events: auto; width: max-content;" onmouseenter="cancelHideBoardTimer()" onmouseleave="startHideBoardTimer()">
+            <div style="font-weight: bold; color: #856404; margin-bottom: 2px; font-size: 14px; text-align: center; border-bottom: 2px solid #ffeeba; padding-bottom: 2px; display: flex; justify-content: space-between; align-items: center;">
+                ${arrow1}
+                <span style="margin: 0 8px;">${titleText}</span>
+                ${arrow0}
+            </div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; line-height: 1.1; white-space: nowrap;">
                 <tr style="border-bottom: 2px solid #ffeeba; color: #856404;">
-                    <th style="padding: 2px; text-align: center; width: 20px;"></th>
-                    <th style="padding: 2px; text-align: left;">Zeit</th>
-                    <th style="padding: 2px; text-align: left;"></th>
-                    <th style="padding: 2px; text-align: left; padding-left: 5px;">Ziel</th>
+                    <th style="padding: 1px 2px; text-align: center; width: 20px;"></th>
+                    <th style="padding: 1px 2px; text-align: left;">Zeit</th>
+                    <th style="padding: 1px 2px; text-align: left;"></th>
+                    <th style="padding: 1px 2px; text-align: left; padding-left: 5px;">Ziel</th>
                 </tr>`;
                 
         if (departures.length === 0) {
@@ -1105,42 +1254,43 @@
                 
                 let relativeTime = "";
                 if (!dep.isPast) {
-                    const diffMins = dep.timeMins - nowMins;
+                    const diffMins = Math.round(dep.timeMins - nowMins);
                     if (diffMins <= 120 && diffMins >= 0) {
-                        const h = Math.floor(diffMins / 60);
-                        const m = diffMins % 60;
-                        relativeTime = `in ${h}:${m.toString().padStart(2, '0')}`;
+                        if (diffMins >= 60) {
+                            const h = Math.floor(diffMins / 60);
+                            const m = diffMins % 60;
+                            relativeTime = `in ${h}h ${m}min`;
+                        } else {
+                            relativeTime = `in ${diffMins} min`;
+                        }
                     }
-                }
-                
-                let destStr = "";
-                if (dep.dIdx === 0) {
-                    destStr = `${dep.to} <span style="color: ${dep.color};">&#9654;</span>`;
-                } else {
-                    destStr = `<span style="color: ${dep.color};">&#9664;</span> ${dep.to}`;
                 }
                 
                 const desc = fahrplanData.restrictions ? (fahrplanData.restrictions[dep.restriction] || "") : "";
                 const restSpan = dep.restriction ? `<span class="restriction-tag" title="${desc}">${dep.restriction}</span>` : "";
+                const arrow = `<span style="color: ${dep.color}; margin-right: 4px;">${dep.dIdx === 0 ? '&#9654;' : '&#9664;'}</span>`;
                 
                 html += `
-                <tr style="border-bottom: 1px solid rgba(0,0,0,0.05); ${dep.isPast ? 'opacity: 0.5;' : ''}">
-                    <td style="padding: 4px 2px; text-align: center; vertical-align: middle;">${restSpan}</td>
-                    <td style="padding: 4px 2px; font-weight: bold; color: ${textColor};">${dep.time}</td>
-                    <td style="padding: 4px 2px; font-size: 10px; color: #999;">${relativeTime}</td>
-                    <td style="padding: 4px 2px; padding-left: 5px; color: ${textColor};">Zug ${dep.trainId} nach ${destStr}</td>
+                <tr style="${dep.isPast ? 'opacity: 0.5;' : ''}">
+                    <td style="padding: 2px; text-align: center; vertical-align: middle;">${restSpan}</td>
+                    <td style="padding: 2px; font-weight: bold; text-align: left; color: ${textColor};">${dep.time}</td>
+                    <td style="padding: 2px; font-size: 10px; text-align: left; color: #999;">${relativeTime}</td>
+                    <td style="padding: 2px; padding-left: 5px; text-align: left; color: ${textColor};">${arrow}Zug ${dep.trainId} nach ${dep.to}</td>
                 </tr>`;
             });
         }
         
-        html += `</table></div>`;
+        html += `</table></div></div>`;
         fo.innerHTML = html;
         boardGroup.appendChild(fo);
     }
 
     function hideStationBoard() {
+        cancelHideBoardTimer();
         const boardGroup = document.getElementById('svg-station-board');
         if (boardGroup) boardGroup.innerHTML = '';
+        currentStationBoardName = null;
+        stationBoardFilter = null;
     }
 
     function timeToMinutes(timeStr, type = 'dep') {
@@ -1285,11 +1435,17 @@
             dir.trains.forEach(train => {
                 if (!isTrainRunningToday(train.restriction, simTime)) return;
                 
-                const timesArr = train.times.map(t => timeToMinutes(t, 'arr'));
                 const timesDep = train.times.map(t => timeToMinutes(t, 'dep'));
-                
                 let startIdx = -1, endIdx = -1;
-                for(let i=0; i<timesArr.length; i++) if(timesArr[i] !== null || timesDep[i] !== null) { if(startIdx === -1) startIdx = i; endIdx = i; }
+                for(let i=0; i<timesDep.length; i++) if(timesDep[i] !== null) { if(startIdx === -1) startIdx = i; endIdx = i; }
+                
+                const timesArr = train.times.map((t, idx) => {
+                    let mins = timeToMinutes(t, 'arr');
+                    if (mins !== null && idx > startIdx && idx < endIdx && !dir.stations[idx].includes("Heiligendamm") && !t.includes('/')) {
+                        mins -= 59 / 60;
+                    }
+                    return mins;
+                });
                 
                 if (nowMins < timesArr[startIdx]) {
                     futureTrains.push({ train, dir, dIdx, startTime: timesArr[startIdx], startStation: dir.stations[startIdx] });
@@ -1394,10 +1550,28 @@
                     for(let i=0; i<times.length; i++) if(times[i] !== null) { sIdx = i; break; }
                     if (nowMins < times[sIdx]) {
                         if (!nextTrain || times[sIdx] < nextTrain.startTime) {
-                            nextTrain = { train, legEnd: sIdx, startTime: times[sIdx] };
+                            nextTrain = { train, legEnd: sIdx, startTime: times[sIdx], isFutureDay: false };
                         }
                     }
                 });
+                if (!nextTrain) {
+                    for (let dayOffset = 1; dayOffset <= 7; dayOffset++) {
+                        const nextDay = new Date(simTime.getTime() + dayOffset * 86400000);
+                        dir.trains.forEach(train => {
+                            if (!isTrainRunningToday(train.restriction, nextDay)) return;
+                            const times = train.times.map(t => timeToMinutes(t, 'arr'));
+                            let sIdx = -1;
+                            for(let i=0; i<times.length; i++) if(times[i] !== null) { sIdx = i; break; }
+                            const futureMins = times[sIdx] + dayOffset * 1440;
+                            if (nowMins < futureMins) {
+                                if (!nextTrain || futureMins < nextTrain.startTime) {
+                                    nextTrain = { train, legEnd: sIdx, startTime: futureMins, isFutureDay: true };
+                                }
+                            }
+                        });
+                        if (nextTrain) break;
+                    }
+                }
                 if (nextTrain) activeTrains[dIdx] = nextTrain;
             }
             
@@ -1447,19 +1621,43 @@
                 
                 const desc = fahrplanData.restrictions ? (fahrplanData.restrictions[train.restriction] || "") : "";
                 const restSpan = train.restriction ? `<span class="restriction-tag" title="${desc}" style="margin-left: 6px; font-size: 10px;">${train.restriction}</span>` : "";
+                
+                let inMinStr = "";
+                if (activeTrains[dIdx].startTime && activeTrains[dIdx].startTime > nowMins) {
+                    let wait = Math.round(activeTrains[dIdx].startTime - nowMins);
+                    if (wait > 0) {
+                        let waitText = "";
+                        if (wait <= 120) {
+                            waitText = `in ${wait} min`;
+                        } else {
+                            const h = Math.floor(wait / 60);
+                            const m = wait % 60;
+                            waitText = `in ${h}:${m.toString().padStart(2, '0')} h`;
+                        }
+                        inMinStr = `<div style="font-size: 12px; color: #777; margin-top: 1px;">${waitText}</div>`;
+                    }
+                }
+                
+                const lightDirColor = isToDoberan ? "rgba(230,126,34,0.15)" : "rgba(52,152,219,0.15)";
                 let tableHtml = `
-                    <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px; user-select: none;">Zug ${train.id}${restSpan} <span style="color:#444; font-weight:normal;">nach ${dir.to}</span></div>
+                    <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px; user-select: none; display: flex; align-items: flex-start; gap: 6px;">
+                        <div>Zug ${train.id}${restSpan}</div>
+                        <div style="color: #444; font-weight: normal;">
+                            <div>nach ${dir.to}</div>
+                            ${inMinStr}
+                        </div>
+                    </div>
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
-                        <tr style="border-bottom: 2px solid #ccc; color: #666; user-select: none;">
-                            <th style="padding: 3px; text-align: left;">Ank.</th>
-                            <th style="padding: 3px; text-align: left;">Abf.</th>
-                            <th style="padding: 3px; text-align: left; padding-left: 8px;">Bahnhof</th>
+                        <tr style="border-bottom: 2px solid ${dirColor}; color: ${dirColor}; user-select: none;">
+                            <th style="padding: 3px; text-align: left; background-color: ${lightDirColor}; color: ${dirColor};">Ank.</th>
+                            <th style="padding: 3px; text-align: left; background-color: ${lightDirColor}; color: ${dirColor};">Abf.</th>
+                            <th style="padding: 3px; text-align: left; padding-left: 8px; background-color: ${lightDirColor}; color: ${dirColor};">Bahnhof</th>
                         </tr>`;
                 
                 dir.stations.forEach((stationName, sIdx) => {
                     const timeStr = train.times[sIdx];
                     if (!timeStr || timeStr === '-') return;
-                    const isPast = (timeToMinutes(timeStr, 'dep') < nowMins);
+                    const isPast = activeTrains[dIdx].isFutureDay ? false : (timeToMinutes(timeStr, 'dep') < nowMins);
                     const isNextStop = (sIdx === legEnd);
                     let styleStr = isNextStop ? `font-weight: bold; color: ${dirColor}; background: rgba(${isToDoberan ? '230,126,34' : '52,152,219'}, 0.1);` : (isPast ? "color: #bbb;" : "color: #333;");
                     let ank = "", abf = "";
@@ -1485,23 +1683,73 @@
             }
         });
 
-        futureTrains.sort((a, b) => a.startTime - b.startTime);
-        let nextListX = 500; let nextListY = 520;
-        const nextTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        nextTitle.setAttribute("x", nextListX); nextTitle.setAttribute("y", nextListY);
-        nextTitle.setAttribute("text-anchor", "middle"); nextTitle.setAttribute("font-size", "14");
-        nextTitle.setAttribute("font-weight", "bold"); nextTitle.setAttribute("fill", "#b00000");
-        nextTitle.textContent = "Nächste Züge";
-        svgTrainList.appendChild(nextTitle);
-        futureTrains.slice(0, 2).forEach((ft, i) => {
-            const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            txt.setAttribute("x", nextListX); txt.setAttribute("y", nextListY + 20 + (i * 18));
-            txt.setAttribute("text-anchor", "middle"); txt.setAttribute("font-size", "12");
-            txt.setAttribute("fill", colors[ft.dIdx]);
-            const timeStr = ft.train.times.find(t => t && t !== '-').split('/')[0];
-            txt.textContent = `${timeStr} ab ${ft.startStation} nach ${ft.dir.to}`;
-            svgTrainList.appendChild(txt);
+        let connTexts = [];
+        fahrplanData.directions.forEach(dir => {
+            dir.trains.forEach(t => {
+                if (!isTrainRunningToday(t.restriction, simTime)) return;
+                
+                const bdIdx = dir.stations.findIndex(s => s === "Bad Doberan Bahnhof");
+                if (bdIdx === -1) return;
+                
+                let molliTimeStr = t.times[bdIdx];
+                if (!molliTimeStr || molliTimeStr === '-') return;
+                
+                const formatDBTime = (timeStr, isAnk) => {
+                    let mins = timeToMinutes(timeStr);
+                    let ank = isAnk ? mins : mins - 1;
+                    let abf = isAnk ? mins + 1 : mins;
+                    let ankS = String(Math.floor(ank/60)).padStart(2,'0') + "." + String(ank%60).padStart(2,'0');
+                    let abfS = String(Math.floor(abf/60)).padStart(2,'0') + "." + String(abf%60).padStart(2,'0');
+                    return `Ank. ${ankS} | Abf. ${abfS}`;
+                };
+
+                if (t.connTo && t.connTo.Rostock && t.connTo.Wismar) {
+                    let molliArr = timeToMinutes(molliTimeStr, 'arr');
+                    let startWindow = molliArr - 5;
+                    
+                    let abfRost = timeToMinutes(t.connTo.Rostock);
+                    if (nowMins >= startWindow && nowMins <= abfRost) {
+                        connTexts.push(`Anschluss Wismar → Rostock: ${formatDBTime(t.connTo.Rostock, false)}`);
+                    }
+                    
+                    let abfWism = timeToMinutes(t.connTo.Wismar);
+                    if (nowMins >= startWindow && nowMins <= abfWism) {
+                        connTexts.push(`Anschluss Rostock → Wismar: ${formatDBTime(t.connTo.Wismar, false)}`);
+                    }
+                }
+                
+                if (t.connFrom && t.connFrom.Rostock && t.connFrom.Wismar) {
+                    let molliDep = timeToMinutes(molliTimeStr, 'dep');
+                    
+                    let ankRost = timeToMinutes(t.connFrom.Rostock);
+                    if (nowMins >= ankRost && nowMins <= molliDep) {
+                        connTexts.push(`Anschluss Rostock → Wismar: ${formatDBTime(t.connFrom.Rostock, true)}`);
+                    }
+                    
+                    let ankWism = timeToMinutes(t.connFrom.Wismar);
+                    if (nowMins >= ankWism && nowMins <= molliDep) {
+                        connTexts.push(`Anschluss Wismar → Rostock: ${formatDBTime(t.connFrom.Wismar, true)}`);
+                    }
+                }
+            });
         });
+
+        if (connTexts.length > 0 && bdBahnhof) {
+            let startY = bdBahnhof.y - 53 - (connTexts.length - 1) * 12;
+            connTexts.forEach((txt, i) => {
+                const svgTxt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                svgTxt.setAttribute("x", bdBahnhof.x);
+                svgTxt.setAttribute("y", startY + i * 12);
+                svgTxt.setAttribute("text-anchor", "middle");
+                svgTxt.setAttribute("font-size", "10");
+                svgTxt.setAttribute("font-style", "italic");
+                svgTxt.setAttribute("font-weight", "bold");
+                svgTxt.setAttribute("fill", "#333");
+                svgTxt.textContent = txt;
+                svgTrainTimes.appendChild(svgTxt);
+            });
+        }
+
     }
 
     function makeElementDraggable(elmnt, container, trainId) {
@@ -2634,6 +2882,83 @@
         }
     }
 
+    let umlaufTooltip = null;
+    function showUmlaufTooltip(e, dIdx, trainId) {
+        if (!umlaufTooltip) {
+            umlaufTooltip = document.createElement('div');
+            umlaufTooltip.style.position = 'absolute';
+            umlaufTooltip.style.pointerEvents = 'none';
+            umlaufTooltip.style.zIndex = '2000';
+            document.body.appendChild(umlaufTooltip);
+        }
+        
+        const dir = fahrplanData.directions[dIdx];
+        const train = dir.trains.find(t => t.id === trainId);
+        if (!train) return;
+        
+        const colors = ['#e67e22', '#3498db']; 
+        const dirColor = colors[dIdx];
+        
+        umlaufTooltip.style.cssText = `
+            position: absolute;
+            background: rgba(255,255,255,0.95);
+            padding: 8px;
+            border-radius: 8px;
+            border: 2px solid ${dirColor};
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-sizing: border-box;
+            z-index: 2000;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            pointer-events: none;
+            width: 260px;
+        `;
+        
+        const desc = fahrplanData.restrictions ? (fahrplanData.restrictions[train.restriction] || "") : "";
+        const restSpan = train.restriction ? `<span class="restriction-tag" title="${desc}" style="margin-left: 6px; font-size: 10px;">${train.restriction}</span>` : "";
+        
+        let html = `
+            <div style="font-weight: bold; color: ${dirColor}; margin-bottom: 8px; font-size: 14px; user-select: none;">Zug ${train.id}${restSpan} <span style="color:#444; font-weight:normal;">nach ${dir.to}</span></div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
+                <tr style="border-bottom: 2px solid #ccc; color: #666; user-select: none;">
+                    <th style="padding: 3px; text-align: left;">Ank.</th>
+                    <th style="padding: 3px; text-align: left;">Abf.</th>
+                    <th style="padding: 3px; text-align: left; padding-left: 8px;">Bahnhof</th>
+                </tr>`;
+                
+        dir.stations.forEach((stationName, sIdx) => {
+            const timeStr = train.times[sIdx];
+            if (!timeStr || timeStr === '-') return;
+            
+            let ank = "", abf = "";
+            if (timeStr.includes('/')) { 
+                [ank, abf] = timeStr.split('/'); 
+            } else { 
+                if (sIdx === dir.stations.length - 1) ank = timeStr; else abf = timeStr; 
+            }
+            
+            html += `<tr style="border-bottom: 1px solid #eee; color: #333;"><td style="padding: 4px 3px;">${ank}</td><td style="padding: 4px 3px;">${abf}</td><td style="padding: 4px 3px; text-align: left; padding-left: 8px;">${stationName}</td></tr>`;
+        });
+        
+        html += `</table>`;
+        umlaufTooltip.innerHTML = html;
+        umlaufTooltip.style.display = 'block';
+        moveUmlaufTooltip(e);
+    }
+    
+    function moveUmlaufTooltip(e) {
+        if (umlaufTooltip && umlaufTooltip.style.display === 'block') {
+            umlaufTooltip.style.left = `${e.pageX + 15}px`;
+            umlaufTooltip.style.top = `${e.pageY + 15}px`;
+        }
+    }
+    
+    function hideUmlaufTooltip() {
+        if (umlaufTooltip) {
+            umlaufTooltip.style.display = 'none';
+        }
+    }
+
     function renderActiveUmlaufBody(ud) {
         const body = document.getElementById('umlauf-card-body');
         if (!body) return;
@@ -2643,7 +2968,8 @@
                 <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; white-space: nowrap;">
                     <thead>
                         <tr style="border-bottom: 2px solid #eee; color: #7f8c8d; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                            <th style="padding: 0.6rem 0.6rem; text-align: left; white-space: nowrap;">Zug</th>
+                            <th style="padding: 0.6rem 0; width: 28px; text-align: center;"></th>
+                            <th style="padding: 0.6rem 0.6rem; padding-left: 8px; text-align: left; white-space: nowrap;">Zug</th>
                             <th style="padding: 0.6rem 0.6rem; text-align: left; white-space: nowrap;">Start</th>
                             <th style="padding: 0.6rem 0.6rem; text-align: left; white-space: nowrap;">Heiligendamm</th>
                             <th style="padding: 0.6rem 0.6rem; text-align: left; white-space: nowrap;">Ziel</th>
@@ -2731,7 +3057,8 @@
                             hTimeStr,
                             depMins,
                             arrMins,
-                            duration: arrMins - depMins
+                            duration: arrMins - depMins,
+                            restriction: train.restriction
                         });
                     }
                 }
@@ -2750,9 +3077,14 @@
                     wendezeitStr = '<span style="color: #95a5a6; font-style: italic; font-size: 0.8rem;">Dienstende</span>';
                 }
                 
+                let showRestr = f.restriction ? true : false;
+                const desc = fahrplanData.restrictions ? (fahrplanData.restrictions[f.restriction] || "") : "";
+                const restHtml = showRestr ? `<span class="restriction-tag" title="${desc}" style="background: #222; color: #fff; padding: 2px 5px; border-radius: 3px; font-size: 10px; display: inline-block; min-width: 12px; text-align: center;">${f.restriction}</span>` : ``;
+                
                 tableRows += `
                     <tr style="border-bottom: 1px solid #f2f2f2; transition: background 0.15s ease;" onmouseover="this.style.background='rgba(0,0,0,0.02)';" onmouseout="this.style.background='none';">
-                        <td style="padding: 0.5rem 0.6rem; font-weight: bold; color: ${f.dirColor}; text-align: left; white-space: nowrap;">Zug ${f.trainId}</td>
+                        <td style="padding: 0.5rem 0; text-align: center;">${restHtml}</td>
+                        <td style="padding: 0.5rem 0.6rem; padding-left: 8px; font-weight: bold; color: ${f.dirColor}; text-align: left; white-space: nowrap; cursor: pointer;" onmouseover="showUmlaufTooltip(event, ${f.dIdx}, '${f.trainId}')" onmousemove="moveUmlaufTooltip(event)" onmouseout="hideUmlaufTooltip()">Zug ${f.trainId}</td>
                         <td style="padding: 0.5rem 0.6rem; color: #333; text-align: left; white-space: nowrap;"><strong>${f.depTimeStr}</strong> <span style="font-weight: normal; color: #555; margin-left: 4px;">${f.from}</span></td>
                         <td style="padding: 0.5rem 0.6rem; color: #333; text-align: left; font-weight: 500; white-space: nowrap;">${f.hTimeStr}</td>
                         <td style="padding: 0.5rem 0.6rem; color: #333; text-align: left; white-space: nowrap;"><strong>${f.arrTimeStr}</strong> <span style="font-weight: normal; color: #555; margin-left: 4px;">${f.to}</span></td>
@@ -2855,6 +3187,9 @@
     }
 
     function showTab(tabId) {
+        if (typeof hideZWLTooltip === 'function') hideZWLTooltip();
+        if (typeof hideUmlaufTooltip === 'function') hideUmlaufTooltip();
+        
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');

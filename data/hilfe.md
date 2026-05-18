@@ -1,8 +1,12 @@
 # Tab Fahrplan
-Fahrplandaten des Originalfahrplans [https://www.molli-bahn.de/fahrplaene-tickets/fahrplaene]
+Fahrplandaten des Originalfahrplans [https://www.molli-bahn.de/fahrplaene-tickets/fahrplaene], hierbei ist in der
+Titelzeile unter den hinterlegten Fahrplänen wählbar, ob der aktuelle oder ein vergangener Fahrplan angezeigt werden soll. Der Vergleich ist reizvoll bezüglich Sommer- und Winterfahrplan und hinsichtlich der benötigten Umläufe (2 bzw. 1). In der Titelzeile kann auch gezielt auf ein Datum der Fahrplanperiode gegangen werden; fahrplanbezogene Anzeigen aktualisieren sich, was besonders für Züge, die von Verkehrshinweisen betroffen sind, gilt (Morgenzug, Zusatzverkehr zu Weihnachten).
+
+# Tab Bildfahrplan
+Darstellung des Fahrplans als Zeit-/Wegliniendiagramm. Mit dem senkrechten Schieber links kann die Kompaktheit der Darstellung geregelt werden. Es gelten noch die für den Tab Strecke dargestellten Tastaturkürzel.
 
 # Tab Strecke
-Visualisierung der Strecke mit allen Bahnhöfen.
+Visualisierung der Strecke mit allen Bahnhöfen. 
 
 
 In der Titelleiste kann die Zeit gewählt werden, um die aktuellen Züge auf der Strecke zu sehen.
