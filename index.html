@@ -140,11 +140,17 @@
         tr:hover { background-color: #f9f9f9; }
 
         .restriction-tag {
-            font-size: 0.7rem;
-            background: var(--secondary);
-            padding: 2px 4px;
-            border-radius: 3px;
-            margin-left: 4px;
+            font-size: 0.8rem;
+            background: #222;
+            color: #fff;
+            padding: 1px 6px;
+            border-radius: 2px;
+            margin-left: 6px;
+            display: inline-block;
+            font-weight: bold;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            vertical-align: text-bottom;
+            line-height: 1.2;
         }
 
         /* Sub-Tabs */
@@ -237,7 +243,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1920px; margin: 0 auto; padding: 0 1rem;">
         <div style="display: flex; align-items: center; gap: 1rem; color: white;">
             <h1 style="margin: 0; font-size: 1.4rem; white-space: nowrap;">Bäderbahn Molli</h1>
-            <span id="validity-header" style="font-size: 0.85rem; opacity: 0.8; padding-top: 4px;"></span>
+            <select id="validity-header" style="font-size: 0.85rem; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.1); color: white; outline: none; cursor: pointer; font-family: inherit; font-weight: 600; appearance: auto; margin-top: 4px;"></select>
         </div>
         <div style="display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; flex-grow: 1; max-width: 550px; margin-left: 20px;">
             <button id="reset-time-btn" title="Auf Echtzeit zurücksetzen" style="background: none; border: none; cursor: pointer; color: white; padding: 0; display: flex; align-items: center;">
@@ -402,46 +408,47 @@
         });
     }
 
+    const timetableFiles = ['fahrplanS2026.json', 'fahrplanW2025.json'];
+    let loadedTimetables = [];
+
     async function init() {
         try {
-            const [fpRes, bfRes] = await Promise.all([
-                fetch('data/fahrplan.json'),
-                fetch('data/bf.json')
-            ]);
-            fahrplanData = await fpRes.json();
+            const bfRes = await fetch('data/bf.json');
             bfData = await bfRes.json();
-            interpolateMissingTimes();
-            
-            const slider = document.getElementById('sim-time-slider');
-            const resetBtn = document.getElementById('reset-time-btn');
-            
-            // Slider-Range dynamisch aus dem Fahrplan berechnen
-            let minMins = 24 * 60, maxMins = 0;
-            const now = new Date();
-            fahrplanData.directions.forEach(dir => dir.trains.forEach(t => {
-                if (!isTrainRunningToday(t.restriction, now)) return;
-                t.times.forEach(ts => {
-                    if (ts && ts !== '-') {
-                        const m = timeToMinutes(ts);
-                        if (m < minMins) minMins = m;
-                        if (m > maxMins) maxMins = m;
-                    }
-                });
-            }));
 
-            // Startzeit begrenzen
-            const nowMins = now.getHours() * 60 + now.getMinutes();
-            if (nowMins < minMins) {
-                baseSimTime = new Date(); baseSimTime.setHours(Math.floor(minMins/60), minMins%60, 0, 0);
-            } else if (nowMins > maxMins) {
-                baseSimTime = new Date(); baseSimTime.setHours(Math.floor(maxMins/60), maxMins%60, 0, 0);
-            } else {
-                baseSimTime = now;
+            // Load all timetables
+            for (const file of timetableFiles) {
+                try {
+                    const res = await fetch(`data/${file}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        const match = file.match(/fahrplan([SW])(\d{4})\.json/i);
+                        const prefix = match ? (match[1].toUpperCase() === 'S' ? "Sommer " : "Winter ") + match[2] : "Fahrplan";
+                        data._filename = file;
+                        data._prefix = prefix;
+                        loadedTimetables.push(data);
+                    }
+                } catch(e) {
+                    console.error("Fehler beim Laden von", file, e);
+                }
             }
-            realTimeAtSet = Date.now();
-            slider.min = minMins;
-            slider.max = maxMins;
-            
+
+            const selector = document.getElementById('validity-header');
+            selector.innerHTML = '';
+            loadedTimetables.forEach((t, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = `${t._prefix} (${t.validity})`;
+                opt.style.color = "black";
+                selector.appendChild(opt);
+            });
+
+            selector.addEventListener('change', (e) => {
+                applyTimetable(loadedTimetables[e.target.value]);
+            });
+
+            // Initialen Slider-Status binden
+            const slider = document.getElementById('sim-time-slider');
             const tooltip = document.getElementById('slider-tooltip');
             
             const updateTooltip = (val) => {
@@ -482,6 +489,7 @@
             });
             slider.addEventListener('touchend', () => isDraggingSlider = false);
 
+            const resetBtn = document.getElementById('reset-time-btn');
             resetBtn.addEventListener('click', () => {
                 baseSimTime = new Date();
                 realTimeAtSet = Date.now();
@@ -522,14 +530,58 @@
             });
 
             initGeolocation();
-            renderData();
             loadHelp();
-            drawZWL(); // Compute once to populate Umläufe and set tab button text
-            updateLive();
-            setInterval(updateLive, 30000); // Feste 30s Aktualisierung
+            
+            if (loadedTimetables.length > 0) {
+                applyTimetable(loadedTimetables[0]);
+            }
+            
+            setInterval(updateLive, 30000);
         } catch (e) {
             console.error("Fehler beim Laden der Daten:", e);
         }
+    }
+
+    function applyTimetable(data) {
+        fahrplanData = data;
+        
+        // Remove existing train cards
+        document.querySelectorAll('.train-info-card').forEach(el => el.remove());
+        
+        interpolateMissingTimes();
+        
+        const slider = document.getElementById('sim-time-slider');
+        
+        let minMins = 24 * 60, maxMins = 0;
+        const now = new Date();
+        fahrplanData.directions.forEach(dir => dir.trains.forEach(t => {
+            if (!isTrainRunningToday(t.restriction, now)) return;
+            t.times.forEach(ts => {
+                if (ts && ts !== '-') {
+                    const m = timeToMinutes(ts);
+                    if (m < minMins) minMins = m;
+                    if (m > maxMins) maxMins = m;
+                }
+            });
+        }));
+
+        // Startzeit begrenzen
+        const nowMins = now.getHours() * 60 + now.getMinutes();
+        if (nowMins < minMins) {
+            baseSimTime = new Date(); baseSimTime.setHours(Math.floor(minMins/60), minMins%60, 0, 0);
+        } else if (nowMins > maxMins) {
+            baseSimTime = new Date(); baseSimTime.setHours(Math.floor(maxMins/60), maxMins%60, 0, 0);
+        } else {
+            baseSimTime = now;
+        }
+        realTimeAtSet = Date.now();
+        slider.min = minMins;
+        slider.max = maxMins;
+        slider.value = getSimTime().getHours() * 60 + getSimTime().getMinutes();
+        
+        renderData();
+        drawZWL();
+        updateLive();
     }
 
     async function loadHelp() {
@@ -653,7 +705,6 @@
 
     function renderData() {
         if (!fahrplanData) return;
-        document.getElementById('validity-header').innerText = fahrplanData.validity;
         const container = document.getElementById('timetable-container');
         container.innerHTML = '';
         
