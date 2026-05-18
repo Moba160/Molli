@@ -1723,12 +1723,12 @@
                     
                     let ankRost = timeToMinutes(t.connFrom.Rostock);
                     if (nowMins >= ankRost && nowMins <= molliDep) {
-                        connTexts.push(`Anschluss von Rostock: ${formatDBTime(t.connFrom.Rostock, true)}`);
+                        connTexts.push(`Anschluss nach Wismar: ${formatDBTime(t.connFrom.Rostock, true)}`);
                     }
                     
                     let ankWism = timeToMinutes(t.connFrom.Wismar);
                     if (nowMins >= ankWism && nowMins <= molliDep) {
-                        connTexts.push(`Anschluss von Wismar: ${formatDBTime(t.connFrom.Wismar, true)}`);
+                        connTexts.push(`Anschluss nach Rostock: ${formatDBTime(t.connFrom.Wismar, true)}`);
                     }
                 }
             });
