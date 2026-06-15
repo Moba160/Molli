@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -1199,6 +1199,25 @@
         return index % 2 === 0 ? -20 : 30;
     }
 
+    // === Strecken-Zoom-State ===
+    let streckeVB = { x: 0, y: 0, w: 1000, h: 700 }; // aktuelle viewBox
+    const STRECKE_VB_BASE = { w: 1000, h: 700 };
+
+    function applyStreckeViewBox() {
+        const svg = document.getElementById('route-svg');
+        if (svg) svg.setAttribute('viewBox', `${streckeVB.x} ${streckeVB.y} ${streckeVB.w} ${streckeVB.h}`);
+    }
+
+    function streckeZoomLevel() {
+        return STRECKE_VB_BASE.w / streckeVB.w; // >1 = hineingezoomt
+    }
+
+    function resetStreckeZoom() {
+        streckeVB = { x: 0, y: 0, w: STRECKE_VB_BASE.w, h: STRECKE_VB_BASE.h };
+        applyStreckeViewBox();
+        renderRoute();
+    }
+
     function clusterPoints(points, distThreshold) {
         let clusters = [];
         points.forEach(p => {
@@ -1275,7 +1294,7 @@
                     photoPoints.push({ x, y, f });
                 }
             });
-            const clusters = clusterPoints(photoPoints, 20);
+            const clusters = clusterPoints(photoPoints, 20 / streckeZoomLevel());
 
             clusters.forEach((c, idx) => {
                 const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -1328,7 +1347,7 @@
                     if (c.fotos.length > 4) {
                         ttHTML += `<div style="width:100px; height:70px; display:flex; align-items:center; justify-content:center; background:#eee; border-radius:4px; font-size:12px;">+${c.fotos.length - 4} weitere</div>`;
                     }
-                    ttHTML += `</div><div style="text-align:center; font-size:12px; margin-top:6px; color:#333;"><b>${c.fotos.length} Foto${c.fotos.length > 1 ? 's' : ''}</b> (Klick für Galerie)</div>`;
+                    ttHTML += `</div><div style="text-align:center; font-size:12px; margin-top:6px; color:#333;"><b>${c.fotos.length} Foto${c.fotos.length > 1 ? 's' : ''}</b> – Scrollen zum Aufteilen, dann Klick für Galerie</div>`;
                     tt.innerHTML = ttHTML;
                     tt.style.display = 'block';
                 });
@@ -1363,8 +1382,41 @@
             btn.style.background = 'rgba(0,0,0,0.05)';
             btn.style.color = '#333';
         }
-        renderRoute();
+        resetStreckeZoom();
     };
+
+    // Scrollrad-Zoom auf route-svg
+    (function() {
+        const svg = document.getElementById('route-svg');
+        if (!svg) return;
+        svg.addEventListener('wheel', (e) => {
+            if (!window.showFotosOnStrecke) return; // Zoom nur im Fotomodus
+            e.preventDefault();
+
+            const rect = svg.getBoundingClientRect();
+            // Mausposition relativ zur SVG in viewBox-Koordinaten
+            const mouseXsvg = streckeVB.x + (e.clientX - rect.left) / rect.width  * streckeVB.w;
+            const mouseYsvg = streckeVB.y + (e.clientY - rect.top)  / rect.height * streckeVB.h;
+
+            const factor = e.deltaY < 0 ? 0.8 : 1.25; // Rein = 0.8, Raus = 1.25
+            let newW = streckeVB.w * factor;
+            let newH = streckeVB.h * factor;
+
+            // Grenzen: Zoom zwischen 0.25x und 8x der Ausgangs-ViewBox
+            newW = Math.max(STRECKE_VB_BASE.w / 8, Math.min(STRECKE_VB_BASE.w * 2, newW));
+            newH = newW * (STRECKE_VB_BASE.h / STRECKE_VB_BASE.w);
+
+            // Zoom zentriert auf Mauszeiger
+            streckeVB.x = mouseXsvg - (mouseXsvg - streckeVB.x) * (newW / streckeVB.w);
+            streckeVB.y = mouseYsvg - (mouseYsvg - streckeVB.y) * (newH / streckeVB.h);
+            streckeVB.w = newW;
+            streckeVB.h = newH;
+
+            applyStreckeViewBox();
+            renderRoute(); // neu clustern mit angepasstem Schwellenwert
+        }, { passive: false });
+    })();
+
 
     let currentStationBoardName = null;
     let stationBoardFilter = null;
@@ -3161,7 +3213,7 @@
                 }
             });
 
-            const clusters = clusterPoints(photoPoints, 20);
+            const clusters = clusterPoints(photoPoints, 20 / streckeZoomLevel());
 
             clusters.forEach((c, idx) => {
                 const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -3216,7 +3268,7 @@
                     if (c.fotos.length > 4) {
                         ttHTML += `<div style="width:100px; height:70px; display:flex; align-items:center; justify-content:center; background:#eee; border-radius:4px; font-size:12px;">+${c.fotos.length - 4} weitere</div>`;
                     }
-                    ttHTML += `</div><div style="text-align:center; font-size:12px; margin-top:6px; color:#333;"><b>${c.fotos.length} Foto${c.fotos.length > 1 ? 's' : ''}</b> (Klick für Galerie)</div>`;
+                    ttHTML += `</div><div style="text-align:center; font-size:12px; margin-top:6px; color:#333;"><b>${c.fotos.length} Foto${c.fotos.length > 1 ? 's' : ''}</b> – Scrollen zum Aufteilen, dann Klick für Galerie</div>`;
                     tt.innerHTML = ttHTML;
                     tt.style.display = 'block';
                 });
