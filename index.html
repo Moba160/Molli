@@ -3671,6 +3671,7 @@
         mainView.style.display = 'none';
         thumbsTitle.style.display = 'none';
         currentFotoMatches = [];
+        const countLabel = document.getElementById('foto-total-count');
         
         if (query.length >= 3 && fotosData.length > 0) {
             const monthMap = {
@@ -3700,6 +3701,8 @@
                 });
             });
             
+            countLabel.textContent = `(${currentFotoMatches.length}/${fotosData.length})`;
+            
             if (currentFotoMatches.length > 0) {
                 showMainFoto(0);
                 
@@ -3719,6 +3722,8 @@
             } else {
                 resultsContainer.innerHTML = '<div style="color: #666; font-style: italic; grid-column: 1 / -1; white-space: nowrap;">Keine Fotos gefunden.</div>';
             }
+        } else {
+            countLabel.textContent = fotosData.length ? `(${fotosData.length})` : '';
         }
     });
 
