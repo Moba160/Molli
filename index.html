@@ -1216,6 +1216,7 @@
             hitArea.setAttribute("fill", "transparent");
             hitArea.style.cursor = "pointer";
             hitArea.addEventListener("mouseover", () => {
+                if (window.showFotosOnStrecke) return;
                 cancelHideBoardTimer();
                 showStationBoard(bf.name);
             });
@@ -1240,29 +1241,41 @@
                 if (f.ort && f.ort.length === 2) {
                     const { x, y } = project(f.ort[0], f.ort[1]);
                     
+                    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    group.style.cursor = "pointer";
+
+                    const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    hitArea.setAttribute("cx", x);
+                    hitArea.setAttribute("cy", y);
+                    hitArea.setAttribute("r", "15");
+                    hitArea.setAttribute("fill", "transparent");
+                    
                     const photoIcon = document.createElementNS("http://www.w3.org/2000/svg", "text");
                     photoIcon.setAttribute("x", x);
                     photoIcon.setAttribute("y", y + 4);
                     photoIcon.setAttribute("text-anchor", "middle");
                     photoIcon.setAttribute("font-size", "14px");
-                    photoIcon.style.cursor = "pointer";
+                    photoIcon.setAttribute("pointer-events", "none");
                     photoIcon.textContent = "📸";
                     
-                    photoIcon.addEventListener("mouseover", (e) => {
+                    group.appendChild(photoIcon);
+                    group.appendChild(hitArea);
+                    
+                    group.addEventListener("mouseover", (e) => {
                         const tt = document.getElementById("zwl-foto-tooltip");
                         tt.innerHTML = `<img src="${f.foto}" style="width:150px; max-height:100px; object-fit:cover; border-radius:4px; display:block;"><div style="text-align:center; font-size:12px; margin-top:6px; color:#333;"><b>${f.datum || ''}</b> ${f.zeit || ''}</div>`;
                         tt.style.display = 'block';
                     });
-                    photoIcon.addEventListener("mousemove", (e) => {
+                    group.addEventListener("mousemove", (e) => {
                         const tt = document.getElementById("zwl-foto-tooltip");
                         tt.style.left = e.pageX + 15 + "px";
                         tt.style.top = e.pageY - 15 + "px";
                     });
-                    photoIcon.addEventListener("mouseout", () => {
+                    group.addEventListener("mouseout", () => {
                         document.getElementById("zwl-foto-tooltip").style.display = 'none';
                     });
                     
-                    svgFotosGroup.appendChild(photoIcon);
+                    svgFotosGroup.appendChild(group);
                 }
             });
         }
@@ -3071,29 +3084,41 @@
                         }
                     }
                     
+                    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    group.style.cursor = "pointer";
+
+                    const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    hitArea.setAttribute("cx", bestX);
+                    hitArea.setAttribute("cy", y);
+                    hitArea.setAttribute("r", "15");
+                    hitArea.setAttribute("fill", "transparent");
+
                     const photoIcon = document.createElementNS("http://www.w3.org/2000/svg", "text");
                     photoIcon.setAttribute("x", bestX);
                     photoIcon.setAttribute("y", y + 4);
                     photoIcon.setAttribute("text-anchor", "middle");
                     photoIcon.setAttribute("font-size", "14px");
-                    photoIcon.style.cursor = "pointer";
+                    photoIcon.setAttribute("pointer-events", "none");
                     photoIcon.textContent = "📸";
+
+                    group.appendChild(photoIcon);
+                    group.appendChild(hitArea);
                     
-                    photoIcon.addEventListener("mouseover", (e) => {
+                    group.addEventListener("mouseover", (e) => {
                         const tt = document.getElementById("zwl-foto-tooltip");
                         tt.innerHTML = `<img src="${f.foto}" style="width:150px; max-height:100px; object-fit:cover; border-radius:4px; display:block;"><div style="text-align:center; font-size:12px; margin-top:6px; color:#333;"><b>${f.datum || ''}</b> ${f.zeit}</div>`;
                         tt.style.display = 'block';
                     });
-                    photoIcon.addEventListener("mousemove", (e) => {
+                    group.addEventListener("mousemove", (e) => {
                         const tt = document.getElementById("zwl-foto-tooltip");
                         tt.style.left = e.pageX + 15 + "px";
                         tt.style.top = e.pageY - 15 + "px";
                     });
-                    photoIcon.addEventListener("mouseout", () => {
+                    group.addEventListener("mouseout", () => {
                         document.getElementById("zwl-foto-tooltip").style.display = 'none';
                     });
                     
-                    fotosGroup.appendChild(photoIcon);
+                    fotosGroup.appendChild(group);
                 }
             });
             svg.appendChild(fotosGroup);
