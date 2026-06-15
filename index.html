@@ -1228,6 +1228,7 @@
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
             let labelY = bf.y + (i % 2 === 0 ? -20 : 30);
             if (bf.name === "Bad Doberan Goethestraße") labelY += 40;
+            if (bf.name === "Bad Doberan Bahnhof") labelY += 55;
             text.setAttribute("x", bf.x); text.setAttribute("y", labelY);
             text.setAttribute("text-anchor", "middle"); text.setAttribute("font-size", "12");
             text.setAttribute("font-weight", "600"); text.setAttribute("fill", "#444");
