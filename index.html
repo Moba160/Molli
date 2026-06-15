@@ -1359,7 +1359,8 @@
                 group.addEventListener("mouseout", () => {
                     document.getElementById("zwl-foto-tooltip").style.display = 'none';
                 });
-                group.addEventListener("click", (e) => {
+                group.addEventListener("pointerdown", (e) => {
+                    if (e.pointerType === "mouse" && e.button !== 0) return;
                     e.preventDefault();
                     e.stopPropagation();
                     openFotoModal(c.fotos, 0);
@@ -3213,7 +3214,7 @@
                 }
             });
 
-            const clusters = clusterPoints(photoPoints, 20 / streckeZoomLevel());
+            const clusters = clusterPoints(photoPoints, 20);
 
             clusters.forEach((c, idx) => {
                 const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -3280,7 +3281,8 @@
                 group.addEventListener("mouseout", () => {
                     document.getElementById("zwl-foto-tooltip").style.display = 'none';
                 });
-                group.addEventListener("click", (e) => {
+                group.addEventListener("pointerdown", (e) => {
+                    if (e.pointerType === "mouse" && e.button !== 0) return;
                     e.preventDefault();
                     e.stopPropagation();
                     openFotoModal(c.fotos, 0);
