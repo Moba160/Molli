@@ -388,8 +388,10 @@
 
     <div id="fotos" class="content-section">
         <div class="card" style="max-width: 800px; margin: 0 auto;">
-            <h2>Suche in der Fotogalerie</h2>
-            <input type="text" id="foto-search" placeholder="Suchbegriff eingeben (min. 3 Zeichen)..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; margin-bottom: 1rem; font-family: inherit;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                <h2 style="margin: 0; flex-shrink: 0;">Suche in der Fotogalerie <span id="foto-total-count" style="font-weight: normal; font-size: 0.9em; color: #666;"></span></h2>
+                <input type="text" id="foto-search" placeholder="Suchbegriff eingeben (min. 3 Zeichen)..." style="flex-grow: 1; min-width: 250px; padding: 0.8rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; font-family: inherit;">
+            </div>
             
             <div id="foto-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
                 <span class="foto-chip" style="background: #000; color: #fff;">99 2321</span>
@@ -3291,8 +3293,6 @@
     let currentFotoMatches = [];
     let currentFotoIndex = 0;
 
-    async function loadFotos() {
-        try {
     document.getElementById('foto-chips').addEventListener('click', (e) => {
         if (e.target.classList.contains('foto-chip')) {
             const input = document.getElementById('foto-search');
@@ -3328,6 +3328,7 @@
                 .then(text => {
                     fotosData = jsyaml.load(text);
                     if (!fotosData) fotosData = [];
+                    document.getElementById('foto-total-count').textContent = `(${fotosData.length})`;
                     populateYearChips();
                 })
                 .catch(err => {
