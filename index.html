@@ -1340,11 +1340,8 @@
                 group.addEventListener("mouseout", () => {
                     document.getElementById("zwl-foto-tooltip").style.display = 'none';
                 });
-                group.addEventListener("contextmenu", (e) => {
-                    e.preventDefault();
-                    // We will update openFotoModal to support clusters
-                    openFotoModal(c.fotos, 0);
-                });
+                group.addEventListener("mousedown", (e) => { e.stopPropagation(); });
+                group.addEventListener("touchstart", (e) => { e.stopPropagation(); });
                 group.addEventListener("click", (e) => {
                     e.preventDefault();
                     openFotoModal(c.fotos, 0);
@@ -3232,6 +3229,8 @@
                 group.addEventListener("mouseout", () => {
                     document.getElementById("zwl-foto-tooltip").style.display = 'none';
                 });
+                group.addEventListener("mousedown", (e) => { e.stopPropagation(); });
+                group.addEventListener("touchstart", (e) => { e.stopPropagation(); });
                 group.addEventListener("click", (e) => {
                     e.preventDefault();
                     openFotoModal(c.fotos, 0);

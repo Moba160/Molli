@@ -83,10 +83,10 @@ def create_thumbnail(filepath):
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    # Assuming script is run from fotos/Frank/
+    # Assuming script is run from fotos/
     os.chdir(script_dir)
     
-    yaml_path = os.path.join("..", "index.yaml")
+    yaml_path = "index.yaml"
     
     # Load existing YAML
     existing_data = []
@@ -99,7 +99,7 @@ def main():
     
     jpg_files = []
     for ext in ("*.jpg", "*.jpeg", "*.JPG", "*.JPEG"):
-        jpg_files.extend([f for f in glob.glob(ext) if not f.endswith("_thumb.jpg") and not f.endswith("_thumb.jpeg") and not f.endswith("_thumb.JPG") and not f.endswith("_thumb.JPEG")])
+        jpg_files.extend([f for f in glob.glob(os.path.join("Frank", ext)) if not f.endswith("_thumb.jpg") and not f.endswith("_thumb.jpeg") and not f.endswith("_thumb.JPG") and not f.endswith("_thumb.JPEG")])
     
     updated_count = 0
     new_count = 0
@@ -108,9 +108,9 @@ def main():
         filepath = filename
         exif_data = extract_exif_data(filepath)
         thumb_path = create_thumbnail(filepath)
-        thumb_ref = f"fotos/Frank/{os.path.basename(thumb_path)}" if thumb_path else None
+        thumb_ref = f"fotos/{os.path.basename(os.path.dirname(thumb_path))}/{os.path.basename(thumb_path)}" if thumb_path else None
         
-        foto_ref = f"fotos/Frank/{filename}"
+        foto_ref = f"fotos/{filename.replace(os.sep, '/')}"
         
         if foto_ref in foto_map:
             # Update existing
