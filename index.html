@@ -3655,8 +3655,7 @@
         
         let datumText = m.datum || '';
         if (m.quelle) {
-            const link = m.artikel || m.foto;
-            datumText += (datumText ? ' | ' : '') + `Quelle: <a href="${link}" target="_blank" style="color:#666; text-decoration:underline;">${m.quelle}</a>`;
+            datumText += (datumText ? ' | ' : '') + `Quelle: <span style="color:#666;">${m.quelle}</span>`;
         }
         document.getElementById('foto-main-datum').innerHTML = datumText;
         document.getElementById('foto-main-link').href = m.artikel || m.foto;
@@ -3819,10 +3818,7 @@ function updateFotoModalView() {
     document.getElementById('foto-modal-img').src = f.foto;
     let text = `<b>${f.datum || ''}</b> ${f.zeit || ''}`;
     if (f.text) text += `<br>${f.text}`;
-    if (f.quelle) {
-        const link = f.artikel || f.foto;
-        text += `<br><span style="font-size:12px; color:#888;">Quelle: <a href="${link}" target="_blank" style="color:#888; text-decoration:underline;">${f.quelle}</a></span>`;
-    }
+    if (f.quelle) text += `<br><span style="font-size:12px; color:#888;">Quelle: ${f.quelle}</span>`;
     
     if (currentModalFotos.length > 1) {
         text += ` <span style="color:#888; font-size:12px; margin-left:10px;">(${currentModalIndex + 1} von ${currentModalFotos.length})</span>`;
