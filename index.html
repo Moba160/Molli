@@ -1185,6 +1185,37 @@
         btn.classList.add('active');
     }
 
+    function getStationLabelOffset(stationName, index) {
+        if (stationName === "Kühlungsborn West") return -25;
+        if (stationName === "Kühlungsborn Mitte") return 35;
+        if (stationName === "Kühlungsborn Ost") return -45;
+        if (stationName === "Steilküste") return 35;
+        if (stationName === "Heiligendamm") return -25;
+        if (stationName === "Rennbahn") return 35;
+        if (stationName === "Bad Doberan Goethestraße") return -25;
+        if (stationName === "Bad Doberan Stadtmitte") return 35;
+        if (stationName === "Bad Doberan Bahnhof") return 70;
+        return index % 2 === 0 ? -20 : 30;
+    }
+
+    function clusterPoints(points, distThreshold) {
+        let clusters = [];
+        points.forEach(p => {
+            let found = false;
+            for (let c of clusters) {
+                if (Math.hypot(c.x - p.x, c.y - p.y) < distThreshold) {
+                    c.fotos.push(p.f);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                clusters.push({ x: p.x, y: p.y, fotos: [p.f] });
+            }
+        });
+        return clusters;
+    }
+
     function renderRoute() {
         if (!bfData) return;
         const svgLine = document.getElementById('svg-route-line');
@@ -1226,9 +1257,7 @@
             svgHitAreas.appendChild(hitArea);
 
             const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            let labelY = bf.y + (i % 2 === 0 ? -20 : 30);
-            if (bf.name === "Bad Doberan Goethestraße") labelY += 40;
-            if (bf.name === "Bad Doberan Bahnhof") labelY += 55;
+            let labelY = bf.y + getStationLabelOffset(bf.name, i);
             text.setAttribute("x", bf.x); text.setAttribute("y", labelY);
             text.setAttribute("text-anchor", "middle"); text.setAttribute("font-size", "12");
             text.setAttribute("font-weight", "600"); text.setAttribute("fill", "#444");
@@ -1238,50 +1267,89 @@
         // Render Fotos on Strecke
         const svgFotosGroup = document.getElementById('svg-fotos');
         if (window.showFotosOnStrecke && svgFotosGroup && typeof fotosData !== 'undefined' && fotosData.length > 0) {
+            let photoPoints = [];
             fotosData.forEach(f => {
                 if (f.ort && f.ort.length === 2) {
                     const { x, y } = project(f.ort[0], f.ort[1]);
-                    
-                    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-                    group.style.cursor = "pointer";
-
-                    const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                    hitArea.setAttribute("cx", x);
-                    hitArea.setAttribute("cy", y);
-                    hitArea.setAttribute("r", "15");
-                    hitArea.setAttribute("fill", "transparent");
-                    
-                    const photoIcon = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                    photoIcon.setAttribute("x", x);
-                    photoIcon.setAttribute("y", y + 4);
-                    photoIcon.setAttribute("text-anchor", "middle");
-                    photoIcon.setAttribute("font-size", "14px");
-                    photoIcon.setAttribute("pointer-events", "none");
-                    photoIcon.textContent = "📸";
-                    
-                    group.appendChild(photoIcon);
-                    group.appendChild(hitArea);
-                    
-                    group.addEventListener("mouseover", (e) => {
-                        const tt = document.getElementById("zwl-foto-tooltip");
-                        tt.innerHTML = `<img src="${f.thumb || f.foto}" style="width:150px; max-height:100px; object-fit:cover; border-radius:4px; display:block;"><div style="text-align:center; font-size:12px; margin-top:6px; color:#333;"><b>${f.datum || ''}</b> ${f.zeit || ''}</div>`;
-                        tt.style.display = 'block';
-                    });
-                    group.addEventListener("mousemove", (e) => {
-                        const tt = document.getElementById("zwl-foto-tooltip");
-                        tt.style.left = e.pageX + 15 + "px";
-                        tt.style.top = e.pageY - 15 + "px";
-                    });
-                    group.addEventListener("mouseout", () => {
-                        document.getElementById("zwl-foto-tooltip").style.display = 'none';
-                    });
-                    group.addEventListener("contextmenu", (e) => {
-                        e.preventDefault();
-                        openFotoModal(f.foto, `<b>${f.datum || ''}</b> ${f.zeit || ''}`);
-                    });
-                    
-                    svgFotosGroup.appendChild(group);
+                    photoPoints.push({ x, y, f });
                 }
+            });
+            const clusters = clusterPoints(photoPoints, 20);
+
+            clusters.forEach((c, idx) => {
+                const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                group.style.cursor = "pointer";
+
+                const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                hitArea.setAttribute("cx", c.x);
+                hitArea.setAttribute("cy", c.y);
+                hitArea.setAttribute("r", "15");
+                hitArea.setAttribute("fill", "transparent");
+                
+                const photoIcon = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                photoIcon.setAttribute("x", c.x);
+                photoIcon.setAttribute("y", c.y + 4);
+                photoIcon.setAttribute("text-anchor", "middle");
+                photoIcon.setAttribute("font-size", "14px");
+                photoIcon.setAttribute("pointer-events", "none");
+                photoIcon.textContent = "📸";
+                
+                group.appendChild(photoIcon);
+                
+                if (c.fotos.length > 1) {
+                    const badgeBg = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    badgeBg.setAttribute("cx", c.x + 8);
+                    badgeBg.setAttribute("cy", c.y - 6);
+                    badgeBg.setAttribute("r", "6");
+                    badgeBg.setAttribute("fill", "#dc3545");
+                    badgeBg.setAttribute("pointer-events", "none");
+                    const badgeText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    badgeText.setAttribute("x", c.x + 8);
+                    badgeText.setAttribute("y", c.y - 3);
+                    badgeText.setAttribute("text-anchor", "middle");
+                    badgeText.setAttribute("font-size", "9px");
+                    badgeText.setAttribute("fill", "white");
+                    badgeText.setAttribute("font-weight", "bold");
+                    badgeText.setAttribute("pointer-events", "none");
+                    badgeText.textContent = c.fotos.length;
+                    group.appendChild(badgeBg);
+                    group.appendChild(badgeText);
+                }
+                
+                group.appendChild(hitArea);
+                
+                group.addEventListener("mouseover", (e) => {
+                    const tt = document.getElementById("zwl-foto-tooltip");
+                    let ttHTML = `<div style="display:flex; gap:4px; max-width: 320px; flex-wrap:wrap; justify-content:center;">`;
+                    c.fotos.slice(0, 4).forEach(cf => {
+                        ttHTML += `<div><img src="${cf.thumb || cf.foto}" style="width:100px; height:70px; object-fit:cover; border-radius:4px; display:block;"><div style="font-size:10px; text-align:center;">${cf.zeit || ''}</div></div>`;
+                    });
+                    if (c.fotos.length > 4) {
+                        ttHTML += `<div style="width:100px; height:70px; display:flex; align-items:center; justify-content:center; background:#eee; border-radius:4px; font-size:12px;">+${c.fotos.length - 4} weitere</div>`;
+                    }
+                    ttHTML += `</div><div style="text-align:center; font-size:12px; margin-top:6px; color:#333;"><b>${c.fotos.length} Foto${c.fotos.length > 1 ? 's' : ''}</b> (Klick für Galerie)</div>`;
+                    tt.innerHTML = ttHTML;
+                    tt.style.display = 'block';
+                });
+                group.addEventListener("mousemove", (e) => {
+                    const tt = document.getElementById("zwl-foto-tooltip");
+                    tt.style.left = e.pageX + 15 + "px";
+                    tt.style.top = e.pageY - 15 + "px";
+                });
+                group.addEventListener("mouseout", () => {
+                    document.getElementById("zwl-foto-tooltip").style.display = 'none';
+                });
+                group.addEventListener("contextmenu", (e) => {
+                    e.preventDefault();
+                    // We will update openFotoModal to support clusters
+                    openFotoModal(c.fotos, 0);
+                });
+                group.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    openFotoModal(c.fotos, 0);
+                });
+                
+                svgFotosGroup.appendChild(group);
             });
         }
     }
@@ -1661,8 +1729,7 @@
                         if (!timeStr || timeStr === '-') return;
                         const bf = projectedStations.find(s => s.name === stationName);
                         const originalIdx = bfData.findIndex(b => b.name === stationName);
-                        let vertOffset = (originalIdx % 2 === 0 ? -20 : 30);
-                        if (stationName === "Bad Doberan Goethestraße") vertOffset += 40;
+                        let vertOffset = getStationLabelOffset(stationName, originalIdx);
                         const timeLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
                         const labelWidth = getLabelWidth(stationName);
                         const gap = 4;
@@ -3052,6 +3119,7 @@
             const fotosGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
             fotosGroup.setAttribute("id", "zwl-fotos-group");
             
+            let photoPoints = [];
             fotosData.forEach(f => {
                 if (f.zeit && f.ort && f.ort.length === 2) {
                     const m = timeToMinutes(f.zeit);
@@ -3092,47 +3160,85 @@
                             bestX = sx1 + t * (sx2 - sx1);
                         }
                     }
-                    
-                    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-                    group.style.cursor = "pointer";
-
-                    const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                    hitArea.setAttribute("cx", bestX);
-                    hitArea.setAttribute("cy", y);
-                    hitArea.setAttribute("r", "15");
-                    hitArea.setAttribute("fill", "transparent");
-
-                    const photoIcon = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                    photoIcon.setAttribute("x", bestX);
-                    photoIcon.setAttribute("y", y + 4);
-                    photoIcon.setAttribute("text-anchor", "middle");
-                    photoIcon.setAttribute("font-size", "14px");
-                    photoIcon.setAttribute("pointer-events", "none");
-                    photoIcon.textContent = "📸";
-
-                    group.appendChild(photoIcon);
-                    group.appendChild(hitArea);
-                    
-                    group.addEventListener("mouseover", (e) => {
-                        const tt = document.getElementById("zwl-foto-tooltip");
-                        tt.innerHTML = `<img src="${f.thumb || f.foto}" style="width:150px; max-height:100px; object-fit:cover; border-radius:4px; display:block;"><div style="text-align:center; font-size:12px; margin-top:6px; color:#333;"><b>${f.datum || ''}</b> ${f.zeit}</div>`;
-                        tt.style.display = 'block';
-                    });
-                    group.addEventListener("mousemove", (e) => {
-                        const tt = document.getElementById("zwl-foto-tooltip");
-                        tt.style.left = e.pageX + 15 + "px";
-                        tt.style.top = e.pageY - 15 + "px";
-                    });
-                    group.addEventListener("mouseout", () => {
-                        document.getElementById("zwl-foto-tooltip").style.display = 'none';
-                    });
-                    group.addEventListener("contextmenu", (e) => {
-                        e.preventDefault();
-                        openFotoModal(f.foto, `<b>${f.datum || ''}</b> ${f.zeit || ''}`);
-                    });
-                    
-                    fotosGroup.appendChild(group);
+                    photoPoints.push({ x: bestX, y: y, f: f });
                 }
+            });
+
+            const clusters = clusterPoints(photoPoints, 20);
+
+            clusters.forEach((c, idx) => {
+                const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                group.style.cursor = "pointer";
+
+                const hitArea = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                hitArea.setAttribute("cx", c.x);
+                hitArea.setAttribute("cy", c.y);
+                hitArea.setAttribute("r", "15");
+                hitArea.setAttribute("fill", "transparent");
+
+                const photoIcon = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                photoIcon.setAttribute("x", c.x);
+                photoIcon.setAttribute("y", c.y + 4);
+                photoIcon.setAttribute("text-anchor", "middle");
+                photoIcon.setAttribute("font-size", "14px");
+                photoIcon.setAttribute("pointer-events", "none");
+                photoIcon.textContent = "📸";
+
+                group.appendChild(photoIcon);
+                
+                if (c.fotos.length > 1) {
+                    const badgeBg = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    badgeBg.setAttribute("cx", c.x + 8);
+                    badgeBg.setAttribute("cy", c.y - 6);
+                    badgeBg.setAttribute("r", "6");
+                    badgeBg.setAttribute("fill", "#dc3545");
+                    badgeBg.setAttribute("pointer-events", "none");
+                    const badgeText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    badgeText.setAttribute("x", c.x + 8);
+                    badgeText.setAttribute("y", c.y - 3);
+                    badgeText.setAttribute("text-anchor", "middle");
+                    badgeText.setAttribute("font-size", "9px");
+                    badgeText.setAttribute("fill", "white");
+                    badgeText.setAttribute("font-weight", "bold");
+                    badgeText.setAttribute("pointer-events", "none");
+                    badgeText.textContent = c.fotos.length;
+                    group.appendChild(badgeBg);
+                    group.appendChild(badgeText);
+                }
+
+                group.appendChild(hitArea);
+                
+                group.addEventListener("mouseover", (e) => {
+                    const tt = document.getElementById("zwl-foto-tooltip");
+                    let ttHTML = `<div style="display:flex; gap:4px; max-width: 320px; flex-wrap:wrap; justify-content:center;">`;
+                    c.fotos.slice(0, 4).forEach(cf => {
+                        ttHTML += `<div><img src="${cf.thumb || cf.foto}" style="width:100px; height:70px; object-fit:cover; border-radius:4px; display:block;"><div style="font-size:10px; text-align:center;">${cf.zeit || ''}</div></div>`;
+                    });
+                    if (c.fotos.length > 4) {
+                        ttHTML += `<div style="width:100px; height:70px; display:flex; align-items:center; justify-content:center; background:#eee; border-radius:4px; font-size:12px;">+${c.fotos.length - 4} weitere</div>`;
+                    }
+                    ttHTML += `</div><div style="text-align:center; font-size:12px; margin-top:6px; color:#333;"><b>${c.fotos.length} Foto${c.fotos.length > 1 ? 's' : ''}</b> (Klick für Galerie)</div>`;
+                    tt.innerHTML = ttHTML;
+                    tt.style.display = 'block';
+                });
+                group.addEventListener("mousemove", (e) => {
+                    const tt = document.getElementById("zwl-foto-tooltip");
+                    tt.style.left = e.pageX + 15 + "px";
+                    tt.style.top = e.pageY - 15 + "px";
+                });
+                group.addEventListener("mouseout", () => {
+                    document.getElementById("zwl-foto-tooltip").style.display = 'none';
+                });
+                group.addEventListener("contextmenu", (e) => {
+                    e.preventDefault();
+                    openFotoModal(c.fotos, 0);
+                });
+                group.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    openFotoModal(c.fotos, 0);
+                });
+                
+                fotosGroup.appendChild(group);
             });
             svg.appendChild(fotosGroup);
         }
@@ -3631,21 +3737,71 @@
 
 <!-- Foto Modal Overlay -->
 <div id="foto-modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center;" onclick="closeFotoModal()">
+    <div id="foto-modal-prev" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 40px; color: white; cursor: pointer; user-select: none; padding: 20px; display: none;" onclick="event.stopPropagation(); navigateFotoModal(-1)">&#10094;</div>
     <div style="position: relative; max-width: 90%; max-height: 90%; background: #fff; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center;" onclick="event.stopPropagation()">
         <button onclick="closeFotoModal()" style="position: absolute; top: -15px; right: -15px; background: #e74c3c; color: white; border: 2px solid white; border-radius: 50%; width: 32px; height: 32px; font-weight: bold; cursor: pointer; z-index: 10000; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">✕</button>
         <img id="foto-modal-img" src="" style="max-width: 100%; max-height: 80vh; display: block; border-radius: 4px; object-fit: contain;">
         <div id="foto-modal-text" style="text-align: center; margin-top: 10px; font-size: 15px; color: #333;"></div>
     </div>
+    <div id="foto-modal-next" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 40px; color: white; cursor: pointer; user-select: none; padding: 20px; display: none;" onclick="event.stopPropagation(); navigateFotoModal(1)">&#10095;</div>
 </div>
 <script>
-function openFotoModal(src, text) {
-    document.getElementById('foto-modal-img').src = src;
-    document.getElementById('foto-modal-text').innerHTML = text;
+let currentModalFotos = [];
+let currentModalIndex = 0;
+
+function openFotoModal(fotos, startIndex = 0) {
+    if (Array.isArray(fotos)) {
+        currentModalFotos = fotos;
+        currentModalIndex = startIndex;
+    } else {
+        // Fallback for single photo calls
+        currentModalFotos = [{ foto: fotos, datum: arguments[1] || '', zeit: '' }];
+        currentModalIndex = 0;
+    }
+    updateFotoModalView();
     document.getElementById('foto-modal-overlay').style.display = 'flex';
+    document.addEventListener('keydown', handleModalKeydown);
 }
+
+function updateFotoModalView() {
+    const f = currentModalFotos[currentModalIndex];
+    document.getElementById('foto-modal-img').src = f.foto;
+    let text = `<b>${f.datum || ''}</b> ${f.zeit || ''}`;
+    if (currentModalFotos.length > 1) {
+        text += ` <span style="color:#888; font-size:12px; margin-left:10px;">(${currentModalIndex + 1} von ${currentModalFotos.length})</span>`;
+        document.getElementById('foto-modal-prev').style.display = 'block';
+        document.getElementById('foto-modal-next').style.display = 'block';
+    } else {
+        document.getElementById('foto-modal-prev').style.display = 'none';
+        document.getElementById('foto-modal-next').style.display = 'none';
+    }
+    document.getElementById('foto-modal-text').innerHTML = text;
+}
+
+function navigateFotoModal(dir) {
+    if (currentModalFotos.length <= 1) return;
+    currentModalIndex += dir;
+    if (currentModalIndex < 0) currentModalIndex = currentModalFotos.length - 1;
+    if (currentModalIndex >= currentModalFotos.length) currentModalIndex = 0;
+    updateFotoModalView();
+}
+
+function handleModalKeydown(e) {
+    if (document.getElementById('foto-modal-overlay').style.display === 'none') return;
+    if (e.key === 'ArrowLeft') {
+        navigateFotoModal(-1);
+    } else if (e.key === 'ArrowRight') {
+        navigateFotoModal(1);
+    } else if (e.key === 'Escape') {
+        closeFotoModal();
+    }
+}
+
 function closeFotoModal() {
     document.getElementById('foto-modal-overlay').style.display = 'none';
     document.getElementById('foto-modal-img').src = '';
+    document.removeEventListener('keydown', handleModalKeydown);
+    currentModalFotos = [];
 }
 </script>
 </body>
