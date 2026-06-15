@@ -460,8 +460,8 @@
   datum: 29.05.2025
   zeit: '14:53'
   ort:
-    - 54.141672
-    - 11.843061
+  - 54.141672
+  - 11.843061
   thumb: fotos/Frank/PXL_20250529_125346606.MP_thumb.jpg
 - foto: fotos/Frank/PXL_20260608_173042402.jpg
   text: ''
@@ -469,8 +469,8 @@
   datum: 08.06.2026
   zeit: '19:30'
   ort:
-    - 54.146717
-    - 11.728533
+  - 54.146717
+  - 11.728533
   thumb: fotos/Frank/PXL_20260608_173042402_thumb.jpg
 - foto: fotos/Frank/20220907124115_IMG_7597.JPG
   thumb: fotos/Frank/20220907124115_IMG_7597_thumb.jpg
@@ -533,8 +533,8 @@
   datum: 01.12.2024
   zeit: '16:01'
   ort:
-    - 54.141625
-    - 11.842789
+  - 54.141625
+  - 11.842789
 - foto: fotos/Frank/PXL_20250415_085917811.MP.jpg
   thumb: fotos/Frank/PXL_20250415_085917811.MP_thumb.jpg
   text: ''
@@ -542,8 +542,8 @@
   datum: 15.04.2025
   zeit: '10:59'
   ort:
-    - 54.142394
-    - 11.840794
+  - 54.142394
+  - 11.840794
 - foto: fotos/Frank/PXL_20250415_090038982.MP.jpg
   thumb: fotos/Frank/PXL_20250415_090038982.MP_thumb.jpg
   text: ''
@@ -551,8 +551,8 @@
   datum: 15.04.2025
   zeit: '11:00'
   ort:
-    - 54.142325
-    - 11.840469
+  - 54.142325
+  - 11.840469
 - foto: fotos/Frank/PXL_20250415_090134449.jpg
   thumb: fotos/Frank/PXL_20250415_090134449_thumb.jpg
   text: ''
@@ -560,8 +560,8 @@
   datum: 15.04.2025
   zeit: '11:01'
   ort:
-    - 54.142325
-    - 11.840469
+  - 54.142325
+  - 11.840469
 - foto: fotos/Frank/PXL_20250415_090257807.MP.jpg
   thumb: fotos/Frank/PXL_20250415_090257807.MP_thumb.jpg
   text: ''
@@ -569,8 +569,8 @@
   datum: 15.04.2025
   zeit: '11:02'
   ort:
-    - 54.138308
-    - 11.851292
+  - 54.138308
+  - 11.851292
 - foto: fotos/Frank/PXL_20250415_121232119.MP.jpg
   thumb: fotos/Frank/PXL_20250415_121232119.MP_thumb.jpg
   text: ''
@@ -578,8 +578,8 @@
   datum: 15.04.2025
   zeit: '14:12'
   ort:
-    - 54.106708
-    - 11.899375
+  - 54.106708
+  - 11.899375
 - foto: fotos/Frank/PXL_20250415_124040035.MP.jpg
   thumb: fotos/Frank/PXL_20250415_124040035.MP_thumb.jpg
   text: ''
@@ -587,8 +587,8 @@
   datum: 15.04.2025
   zeit: '14:40'
   ort:
-    - 54.105264
-    - 11.901619
+  - 54.105264
+  - 11.901619
 - foto: fotos/Frank/PXL_20250415_124043404.jpg
   thumb: fotos/Frank/PXL_20250415_124043404_thumb.jpg
   text: ''
@@ -596,8 +596,8 @@
   datum: 15.04.2025
   zeit: '14:40'
   ort:
-    - 54.105264
-    - 11.901619
+  - 54.105264
+  - 11.901619
 - foto: fotos/Frank/PXL_20250415_124212887.MP.jpg
   thumb: fotos/Frank/PXL_20250415_124212887.MP_thumb.jpg
   text: ''
@@ -605,8 +605,8 @@
   datum: 15.04.2025
   zeit: '14:42'
   ort:
-    - 54.105292
-    - 11.901617
+  - 54.105292
+  - 11.901617
 - foto: fotos/Frank/PXL_20250529_125346606.MP copy.jpg
   thumb: fotos/Frank/PXL_20250529_125346606.MP copy_thumb.jpg
   text: ''
@@ -614,8 +614,8 @@
   datum: 29.05.2025
   zeit: '14:53'
   ort:
-    - 54.141672
-    - 11.843061
+  - 54.141672
+  - 11.843061
 - foto: fotos/Frank/PXL_20250529_125722946.MP~2.jpg
   thumb: fotos/Frank/PXL_20250529_125722946.MP~2_thumb.jpg
   text: ''
@@ -623,8 +623,8 @@
   datum: 29.05.2025
   zeit: '14:57'
   ort:
-    - 54.141742
-    - 11.843244
+  - 54.141742
+  - 11.843244
 - foto: fotos/Frank/PXL_20260608_172252058.jpg
   thumb: fotos/Frank/PXL_20260608_172252058_thumb.jpg
   text: ''
@@ -632,8 +632,8 @@
   datum: 08.06.2026
   zeit: '19:22'
   ort:
-    - 54.146664
-    - 11.727933
+  - 54.146664
+  - 11.727933
 - foto: https://eisenbahnstiftung.de/images/bildergalerie/11189.jpg
   thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/11189_x.jpg
   text: '<b>"Molli" in Bad Doberan (2)</b><br>Untrüglich haben die neuen Zeichen der
@@ -1709,3 +1709,120 @@
     zum Inselbahnhof Borkum. (20.09.2019) <i>Foto: Joachim Schmidt</i>'
   datum: 20.09.2019
   quelle: Eisenbahnstiftung
+- foto: fotos/Frank/PXL_20260219_121138360~2.jpg
+  thumb: fotos/Frank/PXL_20260219_121138360~2_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 19.02.2026
+  zeit: '12:11'
+  ort:
+  - 54.146636
+  - 11.728189
+- foto: fotos/Frank/PXL_20260219_121259081.jpg
+  thumb: fotos/Frank/PXL_20260219_121259081_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 19.02.2026
+  zeit: '13:12'
+  ort:
+  - 54.146592
+  - 11.728372
+- foto: fotos/Frank/PXL_20260219_121903965.jpg
+  thumb: fotos/Frank/PXL_20260219_121903965_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 19.02.2026
+  zeit: '13:19'
+  ort:
+  - 54.146378
+  - 11.726247
+- foto: fotos/Frank/PXL_20260219_121917179.jpg
+  thumb: fotos/Frank/PXL_20260219_121917179_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 19.02.2026
+  zeit: '13:19'
+  ort:
+  - 54.146378
+  - 11.726247
+- foto: fotos/Frank/PXL_20260219_121956781.jpg
+  thumb: fotos/Frank/PXL_20260219_121956781_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 19.02.2026
+  zeit: '13:19'
+  ort:
+  - 54.146378
+  - 11.726247
+- foto: fotos/Frank/PXL_20260219_122010533.jpg
+  thumb: fotos/Frank/PXL_20260219_122010533_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 19.02.2026
+  zeit: '13:20'
+  ort:
+  - 54.146378
+  - 11.726247
+- foto: fotos/Frank/PXL_20260219_122204181.jpg
+  thumb: fotos/Frank/PXL_20260219_122204181_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 19.02.2026
+  zeit: '13:22'
+  ort:
+  - 54.146453
+  - 11.726486
+- foto: fotos/Frank/PXL_20260219_122240188.jpg
+  thumb: fotos/Frank/PXL_20260219_122240188_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 19.02.2026
+  zeit: '13:22'
+  ort:
+  - 54.146453
+  - 11.726486
+- foto: fotos/Frank/PXL_20260221_103046166.jpg
+  thumb: fotos/Frank/PXL_20260221_103046166_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 21.02.2026
+  zeit: '11:30'
+  ort:
+  - 54.146644
+  - 11.729686
+- foto: fotos/Frank/PXL_20260221_103740836.jpg
+  thumb: fotos/Frank/PXL_20260221_103740836_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 21.02.2026
+  zeit: '11:37'
+  ort:
+  - 54.146667
+  - 11.7299
+- foto: fotos/Frank/PXL_20260221_103751487.jpg
+  thumb: fotos/Frank/PXL_20260221_103751487_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 21.02.2026
+  zeit: '11:37'
+  ort:
+  - 54.146667
+  - 11.7299
+- foto: fotos/Frank/PXL_20260221_103756781.jpg
+  thumb: fotos/Frank/PXL_20260221_103756781_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 21.02.2026
+  zeit: '11:37'
+  ort:
+  - 54.146667
+  - 11.7299
+- foto: fotos/Frank/PXL_20260221_103802487.jpg
+  thumb: fotos/Frank/PXL_20260221_103802487_thumb.jpg
+  text: ''
+  artikel: ''
+  datum: 21.02.2026
+  zeit: '11:38'
+  ort:
+  - 54.146667
+  - 11.7299
