@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Molli Fahrplan 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <style>
         :root {
             --primary: #8b0000;
@@ -371,6 +372,32 @@
     <div id="hilfe" class="content-section">
         <div class="card" id="hilfe-content" style="max-width: 800px; margin: 0 auto; line-height: 1.8;">
             <!-- Hilfe wird dynamisch geladen -->
+        </div>
+    </div>
+
+    <div id="fotos" class="content-section">
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <h2>Fotogalerie Suche</h2>
+            <input type="text" id="foto-search" placeholder="Suchbegriff eingeben (min. 3 Zeichen)..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; margin-bottom: 1rem; font-family: inherit;">
+            
+            <div id="foto-main-view" style="display: none; margin-bottom: 2rem; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <div style="padding: 1rem; background: #fdfdfd; border-bottom: 1px solid #eee;">
+                    <div id="foto-main-text" style="font-size: 1.1rem; color: #333; font-weight: 600;"></div>
+                    <div id="foto-main-datum" style="font-size: 0.85rem; color: #777; margin-top: 0.3rem;"></div>
+                </div>
+                <div style="position: relative; width: 100%; height: 400px; background: #000; display: flex; align-items: center; justify-content: center;">
+                    <button id="foto-prev-btn" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.7); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;">&#10094;</button>
+                    <a id="foto-main-link" href="#" target="_blank" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <img id="foto-main-img" src="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                    </a>
+                    <button id="foto-next-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.7); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;">&#10095;</button>
+                    <div id="foto-counter" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;"></div>
+                </div>
+            </div>
+            
+            <h3 id="foto-thumbnails-title" style="display: none; font-size: 1rem; color: #555; margin-bottom: 1rem;">Weitere Treffer</h3>
+            <div id="foto-results" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.5rem;">
+            </div>
         </div>
     </div>
 </div>
@@ -2271,6 +2298,7 @@
 
         
         const colors = ['#e67e22', '#3498db'];
+        const isSummerFahrplan = fahrplanData._prefix && fahrplanData._prefix.includes("Sommer");
         
         fahrplanData.directions.forEach((dir, dIdx) => {
             const dirColor = colors[dIdx];
@@ -2295,7 +2323,11 @@
                 points.forEach((p, pIdx) => {
                     let x = getStationX(p.stationName);
                     if (p.stationName === "Heiligendamm") {
-                        x += (dIdx === 0) ? 5 : -5;
+                        if (isSummerFahrplan) {
+                            x += (dIdx === 1) ? 5 : -5;
+                        } else {
+                            x += -5; // Winterfahrplan: immer Gleis 1
+                        }
                     }
                     const y = getY(p.mins);
                     
@@ -3192,8 +3224,11 @@
         
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
+        const targetTab = document.getElementById(tabId);
+        if (targetTab) targetTab.classList.add('active');
+        if (window.event && window.event.currentTarget && window.event.currentTarget.classList) {
+            window.event.currentTarget.classList.add('active');
+        }
         
         const timeControls = document.getElementById('time-controls-container');
         if (['bildfahrplan', 'umlauf', 'strecke'].includes(tabId)) {
@@ -3216,6 +3251,99 @@
     }
 
     init();
+
+    // Geheime Fotos-Seite Logic
+    let fotosData = [];
+    let currentFotoMatches = [];
+    let currentFotoIndex = 0;
+
+    async function loadFotos() {
+        try {
+            const res = await fetch('fotos/index.yaml');
+            if (res.ok) {
+                const text = await res.text();
+                fotosData = jsyaml.load(text) || [];
+            }
+        } catch (e) {
+            console.error("Fehler beim Laden der Fotos YAML:", e);
+        }
+    }
+    loadFotos();
+
+    function showMainFoto(index) {
+        if (currentFotoMatches.length === 0) return;
+        currentFotoIndex = index;
+        const m = currentFotoMatches[index];
+        
+        document.getElementById('foto-main-view').style.display = 'block';
+        document.getElementById('foto-main-text').textContent = m.text;
+        document.getElementById('foto-main-datum').textContent = m.datum || '';
+        document.getElementById('foto-main-link').href = m.artikel;
+        document.getElementById('foto-main-img').src = m.foto;
+        
+        document.getElementById('foto-counter').textContent = `${index + 1} / ${currentFotoMatches.length}`;
+        
+        document.getElementById('foto-prev-btn').style.display = index > 0 ? 'flex' : 'none';
+        document.getElementById('foto-next-btn').style.display = index < currentFotoMatches.length - 1 ? 'flex' : 'none';
+    }
+
+    document.getElementById('foto-prev-btn').addEventListener('click', () => {
+        if (currentFotoIndex > 0) showMainFoto(currentFotoIndex - 1);
+    });
+
+    document.getElementById('foto-next-btn').addEventListener('click', () => {
+        if (currentFotoIndex < currentFotoMatches.length - 1) showMainFoto(currentFotoIndex + 1);
+    });
+
+    document.getElementById('foto-search').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const resultsContainer = document.getElementById('foto-results');
+        const mainView = document.getElementById('foto-main-view');
+        const thumbsTitle = document.getElementById('foto-thumbnails-title');
+        
+        resultsContainer.innerHTML = '';
+        mainView.style.display = 'none';
+        thumbsTitle.style.display = 'none';
+        currentFotoMatches = [];
+        
+        if (query.length >= 3 && fotosData.length > 0) {
+            currentFotoMatches = fotosData.filter(f => f.text && f.text.toLowerCase().includes(query));
+            
+            if (currentFotoMatches.length > 0) {
+                showMainFoto(0);
+                
+                if (currentFotoMatches.length > 1) {
+                    thumbsTitle.style.display = 'block';
+                    currentFotoMatches.forEach((m, i) => {
+                        const thumb = document.createElement('div');
+                        thumb.style.cssText = 'cursor: pointer; background: #fff; border: 1px solid #eee; border-radius: 4px; overflow: hidden; height: 80px;';
+                        thumb.innerHTML = `<img src="${m.foto}" style="width: 100%; height: 100%; object-fit: cover;" title="${m.text}">`;
+                        thumb.addEventListener('click', () => {
+                            showMainFoto(i);
+                            window.scrollTo({ top: mainView.offsetTop - 20, behavior: 'smooth' });
+                        });
+                        resultsContainer.appendChild(thumb);
+                    });
+                }
+            } else {
+                resultsContainer.innerHTML = '<div style="color: #666; font-style: italic;">Keine Fotos gefunden.</div>';
+            }
+        }
+    });
+
+    window.addEventListener('hashchange', () => {
+        if (window.location.hash === '#fotos') {
+            showTab('fotos');
+            document.getElementById('foto-search').focus();
+        }
+    });
+    if (window.location.hash === '#fotos') {
+        setTimeout(() => {
+            showTab('fotos');
+            document.getElementById('foto-search').focus();
+        }, 500);
+    }
+
 </script>
 </body>
 </html>
