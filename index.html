@@ -1340,10 +1340,15 @@
                 group.addEventListener("mouseout", () => {
                     document.getElementById("zwl-foto-tooltip").style.display = 'none';
                 });
-                group.addEventListener("mousedown", (e) => { e.stopPropagation(); });
-                group.addEventListener("touchstart", (e) => { e.stopPropagation(); });
-                group.addEventListener("click", (e) => {
+                group.addEventListener("mousedown", (e) => {
+                    if (e.button !== 0) return;
                     e.preventDefault();
+                    e.stopPropagation();
+                    openFotoModal(c.fotos, 0);
+                });
+                group.addEventListener("touchstart", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     openFotoModal(c.fotos, 0);
                 });
                 
@@ -3229,10 +3234,15 @@
                 group.addEventListener("mouseout", () => {
                     document.getElementById("zwl-foto-tooltip").style.display = 'none';
                 });
-                group.addEventListener("mousedown", (e) => { e.stopPropagation(); });
-                group.addEventListener("touchstart", (e) => { e.stopPropagation(); });
-                group.addEventListener("click", (e) => {
+                group.addEventListener("mousedown", (e) => {
+                    if (e.button !== 0) return;
                     e.preventDefault();
+                    e.stopPropagation();
+                    openFotoModal(c.fotos, 0);
+                });
+                group.addEventListener("touchstart", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     openFotoModal(c.fotos, 0);
                 });
                 
