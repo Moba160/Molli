@@ -1340,13 +1340,7 @@
                 group.addEventListener("mouseout", () => {
                     document.getElementById("zwl-foto-tooltip").style.display = 'none';
                 });
-                group.addEventListener("mousedown", (e) => {
-                    if (e.button !== 0) return;
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openFotoModal(c.fotos, 0);
-                });
-                group.addEventListener("touchstart", (e) => {
+                group.addEventListener("click", (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     openFotoModal(c.fotos, 0);
@@ -1980,7 +1974,7 @@
         function dragMouseDown(e) {
             e = e || window.event;
             // Draggen ignorieren, wenn man direkt auf Knöpfe, Links oder in die Tabelle klickt
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'A' || e.target.closest('table')) return;
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'A' || e.target.closest('table') || e.target.closest('g')) return;
             e.preventDefault();
             pos3 = e.clientX;
             pos4 = e.clientY;
@@ -1989,7 +1983,7 @@
         }
 
         function dragTouchStart(e) {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'A' || e.target.closest('table')) return;
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'A' || e.target.closest('table') || e.target.closest('g')) return;
             const touch = e.touches[0];
             pos3 = touch.clientX;
             pos4 = touch.clientY;
@@ -3234,13 +3228,7 @@
                 group.addEventListener("mouseout", () => {
                     document.getElementById("zwl-foto-tooltip").style.display = 'none';
                 });
-                group.addEventListener("mousedown", (e) => {
-                    if (e.button !== 0) return;
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openFotoModal(c.fotos, 0);
-                });
-                group.addEventListener("touchstart", (e) => {
+                group.addEventListener("click", (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     openFotoModal(c.fotos, 0);
