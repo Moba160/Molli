@@ -374,7 +374,7 @@
                     @media (min-width: 1800px) { #map-container { height: 750px !important; } }
                     @media (min-width: 2200px) { #map-container { height: 850px !important; } }
                 </style>
-                <svg id="route-svg" width="100%" height="100%" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet">
+                <svg id="route-svg" width="100%" height="100%" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet">
                     <g id="svg-route-line"></g>
                     <g id="svg-stations"></g>
                     <g id="svg-trains"></g>
@@ -903,7 +903,7 @@
 
     function project(lat, lng) {
         const padding = 60;
-        const width = 1000 - 2 * padding, height = 600 - 2 * padding;
+        const width = 1000 - 2 * padding, height = 700 - 2 * padding;
         const x = padding + (lng - mapBounds.minLng) / (mapBounds.maxLng - mapBounds.minLng) * width;
         const y = padding + (1 - (lat - mapBounds.minLat) / (mapBounds.maxLat - mapBounds.minLat)) * height;
         return { x, y };
@@ -1322,7 +1322,7 @@
                     const tt = document.getElementById("zwl-foto-tooltip");
                     let ttHTML = `<div style="display:flex; gap:4px; max-width: 320px; flex-wrap:wrap; justify-content:center;">`;
                     c.fotos.slice(0, 4).forEach(cf => {
-                        ttHTML += `<div><img src="${cf.thumb || cf.foto}" style="width:100px; height:70px; object-fit:cover; border-radius:4px; display:block;"><div style="font-size:10px; text-align:center;">${cf.zeit || ''}</div></div>`;
+                        ttHTML += `<div><img src="${cf.thumb || cf.foto}" style="width:100px; height:70px; object-fit:cover; border-radius:4px; display:block;"><div style="font-size:10px; text-align:center;">${cf.datum ? cf.datum + ' ' : ''}${cf.zeit || ''}</div></div>`;
                     });
                     if (c.fotos.length > 4) {
                         ttHTML += `<div style="width:100px; height:70px; display:flex; align-items:center; justify-content:center; background:#eee; border-radius:4px; font-size:12px;">+${c.fotos.length - 4} weitere</div>`;
@@ -3178,8 +3178,9 @@
 
                 const photoIcon = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 photoIcon.setAttribute("x", c.x);
-                photoIcon.setAttribute("y", c.y + 4);
+                photoIcon.setAttribute("y", c.y);
                 photoIcon.setAttribute("text-anchor", "middle");
+                photoIcon.setAttribute("dominant-baseline", "central");
                 photoIcon.setAttribute("font-size", "14px");
                 photoIcon.setAttribute("pointer-events", "none");
                 photoIcon.textContent = "📸";
@@ -3197,6 +3198,7 @@
                     badgeText.setAttribute("x", c.x + 8);
                     badgeText.setAttribute("y", c.y - 3);
                     badgeText.setAttribute("text-anchor", "middle");
+                    badgeText.setAttribute("dominant-baseline", "central");
                     badgeText.setAttribute("font-size", "9px");
                     badgeText.setAttribute("fill", "white");
                     badgeText.setAttribute("font-weight", "bold");
@@ -3212,7 +3214,7 @@
                     const tt = document.getElementById("zwl-foto-tooltip");
                     let ttHTML = `<div style="display:flex; gap:4px; max-width: 320px; flex-wrap:wrap; justify-content:center;">`;
                     c.fotos.slice(0, 4).forEach(cf => {
-                        ttHTML += `<div><img src="${cf.thumb || cf.foto}" style="width:100px; height:70px; object-fit:cover; border-radius:4px; display:block;"><div style="font-size:10px; text-align:center;">${cf.zeit || ''}</div></div>`;
+                        ttHTML += `<div><img src="${cf.thumb || cf.foto}" style="width:100px; height:70px; object-fit:cover; border-radius:4px; display:block;"><div style="font-size:10px; text-align:center;">${cf.datum ? cf.datum + ' ' : ''}${cf.zeit || ''}</div></div>`;
                     });
                     if (c.fotos.length > 4) {
                         ttHTML += `<div style="width:100px; height:70px; display:flex; align-items:center; justify-content:center; background:#eee; border-radius:4px; font-size:12px;">+${c.fotos.length - 4} weitere</div>`;
@@ -3228,10 +3230,6 @@
                 });
                 group.addEventListener("mouseout", () => {
                     document.getElementById("zwl-foto-tooltip").style.display = 'none';
-                });
-                group.addEventListener("contextmenu", (e) => {
-                    e.preventDefault();
-                    openFotoModal(c.fotos, 0);
                 });
                 group.addEventListener("click", (e) => {
                     e.preventDefault();
