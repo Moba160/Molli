@@ -419,15 +419,13 @@
                     <div id="foto-main-text" style="font-size: 1.1rem; color: #333; font-weight: 600;"></div>
                     <div id="foto-main-datum" style="font-size: 0.85rem; color: #777; margin-top: 0.3rem;"></div>
                 </div>
-                <div style="width: 100%; display: flex; justify-content: center; background: #000; padding: 0;">
-                    <div style="position: relative; display: inline-block; max-width: 100%;">
-                        <button id="foto-prev-btn" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 15px 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s;">&#10094;</button>
-                        <a id="foto-main-link" href="#" target="_blank" style="display: block;">
-                            <img id="foto-main-img" src="" style="max-width: 100%; height: auto; max-height: 70vh; display: block; object-fit: contain;">
-                        </a>
-                        <button id="foto-next-btn" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 15px 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s;">&#10095;</button>
-                        <div id="foto-counter" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; pointer-events: none;"></div>
-                    </div>
+                <div style="position: relative; width: 100%; padding: 0;">
+                    <button id="foto-prev-btn" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 15px 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s;">&#10094;</button>
+                    <a id="foto-main-link" href="#" target="_blank" style="display: block; width: 100%;">
+                        <img id="foto-main-img" src="" style="width: 100%; height: auto; display: block;">
+                    </a>
+                    <button id="foto-next-btn" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 15px 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s;">&#10095;</button>
+                    <div id="foto-counter" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; pointer-events: none;"></div>
                 </div>
             </div>
             
@@ -3420,7 +3418,7 @@
                     });
                 }
             } else {
-                resultsContainer.innerHTML = '<div style="color: #666; font-style: italic;">Keine Fotos gefunden.</div>';
+                resultsContainer.innerHTML = '<div style="color: #666; font-style: italic; grid-column: 1 / -1; white-space: nowrap;">Keine Fotos gefunden.</div>';
             }
         }
     });
