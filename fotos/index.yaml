@@ -460,8 +460,8 @@
   datum: 29.05.2025
   zeit: '14:53'
   ort:
-  - 54.141672
-  - 11.843061
+    - 54.141672
+    - 11.843061
   thumb: fotos/Frank/PXL_20250529_125346606.MP_thumb.jpg
 - foto: fotos/Frank/PXL_20260608_173042402.jpg
   text: ''
@@ -469,8 +469,8 @@
   datum: 08.06.2026
   zeit: '19:30'
   ort:
-  - 54.146717
-  - 11.728533
+    - 54.146717
+    - 11.728533
   thumb: fotos/Frank/PXL_20260608_173042402_thumb.jpg
 - foto: fotos/Frank/20220907124115_IMG_7597.JPG
   thumb: fotos/Frank/20220907124115_IMG_7597_thumb.jpg
@@ -533,8 +533,8 @@
   datum: 01.12.2024
   zeit: '16:01'
   ort:
-  - 54.141625
-  - 11.842789
+    - 54.141625
+    - 11.842789
 - foto: fotos/Frank/PXL_20250415_085917811.MP.jpg
   thumb: fotos/Frank/PXL_20250415_085917811.MP_thumb.jpg
   text: ''
@@ -542,8 +542,8 @@
   datum: 15.04.2025
   zeit: '10:59'
   ort:
-  - 54.142394
-  - 11.840794
+    - 54.142394
+    - 11.840794
 - foto: fotos/Frank/PXL_20250415_090038982.MP.jpg
   thumb: fotos/Frank/PXL_20250415_090038982.MP_thumb.jpg
   text: ''
@@ -551,8 +551,8 @@
   datum: 15.04.2025
   zeit: '11:00'
   ort:
-  - 54.142325
-  - 11.840469
+    - 54.142325
+    - 11.840469
 - foto: fotos/Frank/PXL_20250415_090134449.jpg
   thumb: fotos/Frank/PXL_20250415_090134449_thumb.jpg
   text: ''
@@ -560,8 +560,8 @@
   datum: 15.04.2025
   zeit: '11:01'
   ort:
-  - 54.142325
-  - 11.840469
+    - 54.142325
+    - 11.840469
 - foto: fotos/Frank/PXL_20250415_090257807.MP.jpg
   thumb: fotos/Frank/PXL_20250415_090257807.MP_thumb.jpg
   text: ''
@@ -569,8 +569,8 @@
   datum: 15.04.2025
   zeit: '11:02'
   ort:
-  - 54.138308
-  - 11.851292
+    - 54.138308
+    - 11.851292
 - foto: fotos/Frank/PXL_20250415_121232119.MP.jpg
   thumb: fotos/Frank/PXL_20250415_121232119.MP_thumb.jpg
   text: ''
@@ -578,8 +578,8 @@
   datum: 15.04.2025
   zeit: '14:12'
   ort:
-  - 54.106708
-  - 11.899375
+    - 54.106708
+    - 11.899375
 - foto: fotos/Frank/PXL_20250415_124040035.MP.jpg
   thumb: fotos/Frank/PXL_20250415_124040035.MP_thumb.jpg
   text: ''
@@ -587,8 +587,8 @@
   datum: 15.04.2025
   zeit: '14:40'
   ort:
-  - 54.105264
-  - 11.901619
+    - 54.105264
+    - 11.901619
 - foto: fotos/Frank/PXL_20250415_124043404.jpg
   thumb: fotos/Frank/PXL_20250415_124043404_thumb.jpg
   text: ''
@@ -596,8 +596,8 @@
   datum: 15.04.2025
   zeit: '14:40'
   ort:
-  - 54.105264
-  - 11.901619
+    - 54.105264
+    - 11.901619
 - foto: fotos/Frank/PXL_20250415_124212887.MP.jpg
   thumb: fotos/Frank/PXL_20250415_124212887.MP_thumb.jpg
   text: ''
@@ -605,8 +605,8 @@
   datum: 15.04.2025
   zeit: '14:42'
   ort:
-  - 54.105292
-  - 11.901617
+    - 54.105292
+    - 11.901617
 - foto: fotos/Frank/PXL_20250529_125346606.MP copy.jpg
   thumb: fotos/Frank/PXL_20250529_125346606.MP copy_thumb.jpg
   text: ''
@@ -614,8 +614,8 @@
   datum: 29.05.2025
   zeit: '14:53'
   ort:
-  - 54.141672
-  - 11.843061
+    - 54.141672
+    - 11.843061
 - foto: fotos/Frank/PXL_20250529_125722946.MP~2.jpg
   thumb: fotos/Frank/PXL_20250529_125722946.MP~2_thumb.jpg
   text: ''
@@ -623,8 +623,8 @@
   datum: 29.05.2025
   zeit: '14:57'
   ort:
-  - 54.141742
-  - 11.843244
+    - 54.141742
+    - 11.843244
 - foto: fotos/Frank/PXL_20260608_172252058.jpg
   thumb: fotos/Frank/PXL_20260608_172252058_thumb.jpg
   text: ''
@@ -632,5 +632,1270 @@
   datum: 08.06.2026
   zeit: '19:22'
   ort:
-  - 54.146664
-  - 11.727933
+    - 54.146664
+    - 11.727933
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/11189.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/11189_x.jpg
+  text: '<b>"Molli" in Bad Doberan (2)</b><br>Untrüglich haben die neuen Zeichen der
+    Zeit bereits unmittelbar nach der Wende in Bad Doberan Einzug gehalten. Ein westdeutscher
+    Kaffeeröster wirbt am ehemaligen HO-Laden, während 99 2322 scheinbar unbeeindruckt
+    von dem Umschwung durch die Mollistraße fährt. (13.10.1991) <i>Foto: Will A. Reed</i>'
+  datum: 13.10.1991
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/114142.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/114142_x.jpg
+  text: '<b>99 321 in Bad Doberan (8)</b><br>Seit 1886 zwängt sich die Schmalspurbahn,
+    heute liebevoll "Molli" genannt, durch die engen Straßen Bad Doberans. 1967 war
+    hier 99 321 mit einem Personenzug aus Ostseebad Kühlungsborn unterwegs. (06.1967)
+    <i>Foto: Klaus Kieper, Slg. Holzborn</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/14766.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/14766_x.jpg
+  text: '<b>Molli (4)</b><br>80 Jahre nach Bild-Nr. 14765 erfreut sich die "Molli-Bäderbahn"
+    immer noch bester Gesundheit. Im Sommer 2013 verlässt 99 2322 den Bahnhof Kühlungsborn
+    West in Richtung Bad Doberan. (16.06.2013) <i>Foto: Joachim Bügel</i>'
+  datum: 16.06.2013
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/21074.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/21074_x.jpg
+  text: '<b>"Molli" in Bad Doberan (3)</b><br>99 323 (Bw Rostock) ist mit P 703 aus
+    Ostseebad Arendsee im Bahnhof Bad Doberan eingetroffen.  (06.07.1934) <i>Foto:
+    DLA Darmstadt (Bellingrodt)</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/14828.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/14828_x.jpg
+  text: '<b>Molli (5)</b><br>99 2322 unterwegs in der typischen Küstenlandschaft zwischen
+    Heiligendamm und Bad Doberan. (14.06.2013) <i>Foto: Joachim Bügel</i>'
+  datum: 14.06.2013
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/14829.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/14829_x.jpg
+  text: '<b>"Molli" in Bad Doberan (4)</b><br>Der erlebnisreichste Abschnitt der Bäderbahn
+    Molli ist sicherlich die Ortsdurchfahrt in Bad Doberan, beginnend hinter dem Haltepunkt
+    Goethestraße, den hier 99 2322 gerade verlassen hat. (14.06.2013) <i>Foto: Joachim
+    Bügel</i>'
+  datum: 14.06.2013
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/14830.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/14830_x.jpg
+  text: '<b>"Molli" in Bad Doberan (5)</b><br>Durch die nach "der Molli" benannte
+    "Mollistraße" fährt 99 2322 wie eine Straßenbahn durch Bad Doberan. Die sichtbaren
+    Veränderungen in dieser Straße zeigen eindrucksvoll die Vergleichsbilder aus den
+    Jahren 1959 (Bild-Nr. 10904) und 1991 (Bild-Nr. 11189). (15.06.2013) <i>Foto:
+    Joachim Bügel</i>'
+  datum: 15.06.2013
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/14831.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/14831_x.jpg
+  text: '<b>"Molli" in Bad Doberan (6)</b><br>Nach Abfahrt am Haltepunkt "Stadtmitte"
+    wird der Alexandrinenplatz in Bad Doberan von 99 2322 überquert. (15.06.2013)
+    <i>Foto: Joachim Bügel</i>'
+  datum: 15.06.2013
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/14832.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/14832_x.jpg
+  text: '<b>"Molli" in Bad Doberan (7)</b><br>99 2322 am Haltepunkt "Stadtmitte" in
+    Bad Doberan, diesmal von der anderen Seite wie Bild-Nr. 14831. (15.06.2013) <i>Foto:
+    Joachim Bügel</i>'
+  datum: 15.06.2013
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/14834.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/14834_x.jpg
+  text: '<b>"Molli" in Bad Doberan (8)</b><br>Anlässlich der Feier zu 220 Jahre Heiligendamm
+    wartet die Festgesellschaft auf die Ankunft des Zuges mit 99 2322 am Haltepunkt
+    Stadtmitte in Bad Doberan. (15.06.2013) <i>Foto: Joachim Bügel</i>'
+  datum: 15.06.2013
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/14835.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/14835_x.jpg
+  text: '<b>"Molli" in Bad Doberan (9)</b><br>Die festlich gekleideten Fahrgäste erwarten
+    99 2322, um am historischen Anbaden im nahen Heiligendamm teilzunehmen. (15.06.2013)
+    <i>Foto: Joachim Bügel</i>'
+  datum: 15.06.2013
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/14836.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/14836_x.jpg
+  text: '<b>"Molli" in Bad Doberan (10)</b><br>Die Festgesellschaft auf dem Weg zu
+    den Feierlichkeiten "220 Jahre Heiligendamm" am Hp Stadtmitte in Bad Doberan.  (15.06.2013)
+    <i>Foto: Joachim Bügel</i>'
+  datum: 15.06.2013
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/14837.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/14837_x.jpg
+  text: '<b>"Molli" in Bad Doberan (11)</b><br>Straßenbahnidylle mit 99 2322 am Haltepunkt
+    "Stadtmitte" in Bad Doberan. (15.06.2013) <i>Foto: Joachim Bügel</i>'
+  datum: 15.06.2013
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/14838.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/14838_x.jpg
+  text: '<b>"Molli" in Bad Doberan (12)</b><br>Gut beschirmt kann auch der Regen die
+    Urlaubsfreude nicht trüben. Wenigstens war die Mollistraße auf diese Weise bei
+    der Durchfahrt des Zuges menschen- und autoleer. (15.06.2013) <i>Foto: Joachim
+    Bügel</i>'
+  datum: 15.06.2013
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/20377.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/20377_x.jpg
+  text: '<b>75 1022 in Bad Doberan</b><br>75 1022 (Bw Rostock) ist mit P 125 in Bad
+    Doberan angekommen. Der Anschluß an die "Molli" findet rechts vom Empfangsgebäude
+    statt. (06.07.1934) <i>Foto: DLA Darmstadt (Bellingrodt)</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96895.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96895_x.jpg
+  text: '<b>99 321 in Bad Doberan (2)</b><br>99 321 rumpelt mit P 4609 zum Ostseebad
+    Kühlungsborn durch die Ernst Thälmann-Straße (heute: Mollistraße) in Bad Doberan.
+    (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/28070.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/28070_x.jpg
+  text: '<b>"Molli" in Bad Doberan (13)</b><br>99 2323 in der bekannten Ortsdurchfahrt
+    von Bad Doberan. (20.09.1978) <i>Foto: Peter Schiffer</i>'
+  datum: 20.09.1978
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/32484.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/32484_x.jpg
+  text: '<b>Durch Bad Doberan</b><br>Der Blick aus der "Molli" auf die Zaungäste in
+    der damals schmucklosen Ernst-Thälmann-Straße (heute Mollistraße) in Bad Doberan.
+    (08.1977) <i>Foto: Peter Wagner</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/38550.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/38550_x.jpg
+  text: '<b>99 322 in Bad Doberan (3)</b><br>99 322 im Bahnhof Bad Doberan. Im Jahr
+    1932 ließ die Deutsche Reichsbahn bei Orenstein & Koppel die deutlich größeren,
+    schnelleren und stärkeren Loks der Baureihe 99.32 (99 321–323) bauen. Die drei
+    Loks sind heute noch unter den Nummern 99 2321 bis 2323 bei der "Molli" im Einsatz.
+    (03.07.1968) <i>Foto: Will A. Reed</i>'
+  datum: 03.07.1968
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/38551.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/38551_x.jpg
+  text: '<b>99 331 in Bad Doberan</b><br>99 331 am Ausgangspunkt der "Molli" in Bad
+    Doberan. (03.07.1968) <i>Foto: Will A. Reed</i>'
+  datum: 03.07.1968
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/42297.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/42297_x.jpg
+  text: '<b>99 322 in Bad Doberan (4)</b><br>Seit 1886 rumpelt der "Molli" durch die
+    Straßen von Bad Doberan. In den 1930er Jahren, als dieses Bild der 99 322 vor
+    P 704 in der damaligen Alexandrinenstraße entstand, sah es dort kaum anders aus
+    als heute. (04.07.1933) <i>Foto: DLA Darmstadt (Bellingrodt)</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/42299.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/42299_x.jpg
+  text: '<b>99 323 in Bad Doberan (4)</b><br>Noch völlig autofrei erfolgte im Jahre
+    1939 die Durchfahrt der 99 323 (Bw Seestadt Rostock) durch die Straßen von Bad
+    Doberan, wie hier in der Alexandrinenstraße (heute Mollistraße) auf der Fahrt
+    zum Bahnhof. (1939) <i>Foto: Karl Eschenburg</i>'
+  datum: '1939'
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/43953.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/43953_x.jpg
+  text: '<b>"Molli" (14)</b><br>Die Bäderbahn "Molli" verbindet über 15 Kilometer
+    Bad Doberan mit Heiligendamm und dem Ostseebad Kühlungsborn. Hier steht 99 2321
+    im Endbahnhof Ostseebad Kühlungsborn West zur Fahrt nach Bad Doberan bereit. (15.06.2017)
+    <i>Foto: Andreas Höfig</i>'
+  datum: 15.06.2017
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/43954.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/43954_x.jpg
+  text: '<b>"Molli" (15)</b><br>Aus Bad Doberan trifft 99 2321 in Kühlungsborn West
+    ein. Links steht die Lok 99 332 als Denkmal am Molli-Museum. (13.06.2017) <i>Foto:
+    Andreas Höfig</i>'
+  datum: 13.06.2017
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/43955.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/43955_x.jpg
+  text: '<b>"Molli" (16)</b><br>99 2322 (Orenstein & Koppel) war eine von drei nach
+    den Einheitsgrundsätzen von Schmalspur-Lokomotiven für die Spurweite von 900 mm
+    speziell für die Bäderbahn Bad Doberan–Kühlungsborn beschaffte Lok, die dort bis
+    heute im Einsatz ist. (10.06.2017) <i>Foto: Andreas Höfig</i>'
+  datum: 10.06.2017
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/43956.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/43956_x.jpg
+  text: '<b>"Molli" (17)</b><br>99 2322 und 99 2323 im Bahnbetriebswerk der Bäderbahn
+    in Kühlungsborn West. (11.06.2017) <i>Foto: Andreas Höfig</i>'
+  datum: 11.06.2017
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/43957.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/43957_x.jpg
+  text: '<b>"Molli" (18)</b><br>99 2321 (Baujahr 1932) und 99 2331 (Baujahr 1951)
+    im Schuppen in Kühlungsborn West. 99 2331 dient nur als Reservelok und wird bevorzugt
+    wegen ihrer höheren Entgleisungssicherheit im Winter eingesetzt. (08.06.2017)
+    <i>Foto: Andreas Höfig</i>'
+  datum: 08.06.2017
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/43958.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/43958_x.jpg
+  text: '<b>"Molli" (19)</b><br>99 332 mit 99 2322 in Kühlungsborn West. (10.06.2017)
+    <i>Foto: Andreas Höfig</i>'
+  datum: 10.06.2017
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/44523.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/44523_x.jpg
+  text: '<b>"Molli" in Bad Doberan (14)</b><br>99 2323 mit einem Zug aus Kühlungsborn
+    in der Goethestraße von Bad Doberan, deren Charme nach der Umgestaltung der Straße
+    leider verloren ging. (15.04.1975) <i>Foto: Joachim Claus</i>'
+  datum: 15.04.1975
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/44592.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/44592_x.jpg
+  text: '<b>"Molli" in Bad Doberan (15)</b><br>Der Klassiker von der Durchfahrt der
+    "Molli" in Bad Doberan durfte in der Sammlung von Joachim Claus natürlich auch
+    nicht fehlen. (06.1976) <i>Foto: Joachim Claus</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/44593.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/44593_x.jpg
+  text: '<b>"Molli" in Bad Doberan (16)</b><br>99 2331, eine der drei im Jahr 1961
+    von den Werkbahnen der SDAG Wismut zum Molli gekommenen Maschinen und hier als
+    Baureihe 99.33 (99 331 bis 333) eingereiht, in der Goethestraße in Bad Doberan.
+    Sie dient noch heute hier als Reservelok. (06.1976) <i>Foto: Joachim Claus</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61648.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61648_x.jpg
+  text: '<b>Inselbahn Borkum (12)</b><br>Vom 14. bis 22. September 2019 weilte 99
+    331 von der Mecklenburgischen Bäderbahn Molli auf Borkum. Während die zweiachsige
+    Dampflok "BORKUM III" (links) mit Leichtöl befeuert wird und manchmal eher nach
+    Pommesbude statt nach Dampflok riecht, verbreitete 99 331 wieder den typischen
+    Kohleduft auf der Insel. (18.09.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 18.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61650.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61650_x.jpg
+  text: '<b>Inselbahn Borkum (14)</b><br>Nach rund zweieinhalb Jahren Vorbereitungszeit
+    war 99 331 der Bäderbahn Molli für gut eine Woche auf Borkum zu Gast. Ein längerer
+    Aufenthalt war aus logistischen Gründen nicht möglich, da auch bei der Molli im
+    Sommer Hochsaison herrschte und die Aktion immerhin acht Mitarbeiter der Molli
+    für 3 Wochen erforderte. Hier trifft die "Neubaulok" der LKM Babelsberg aus dem
+    Jahr 1951 auf den T 1 der Borkumer Kleinbahn, der noch aus der Vorkriegszeit stammt.
+    (19.09.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 19.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61652.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61652_x.jpg
+  text: '<b>Inselbahn Borkum (16)</b><br>Sichtlich Spaß hatte auch das Kühlungsborner
+    Personal bei seinem Einsatz auf Borkum. Insgesamt acht Molli-Mitarbeiter waren
+    an die Nordsee gekommen, um sich um den reibungslosen Betrieb der 99 331 zu kümmern.
+    Gemeinsam mit dem Borkumer Personal absolvieren sie in den paar Tagen ein beachtliches
+    Fahrtpensum auf der rund vier Kilometer langen Inselbahnstrecke. (19.09.2019)
+    <i>Foto: Joachim Schmidt</i>'
+  datum: 19.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61655.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61655_x.jpg
+  text: '<b>Inselbahn Borkum (19)</b><br>99 331 an der Wagenhalle der Borkumer Kleinbahn
+    auf Borkum. Obwohl die eigentlich seltenen Spurweiten von 900 mm von Molli und
+    Borkum perfekt zusammenpassten, mussten die Kupplungssysteme der Fahrzeuge vor
+    dem ersten Einsatz noch angepasst werden. Während bei der Molli das bei Schmalspurbahnen
+    übliche Mittelpuffer-Kupplungssystem verwendet wird, bedient man sich auf Borkum
+    gleich zweier Systeme: Die neuen Züge seit 1993 sind mit leichter Scharfenbergkupplung,
+    die alten mit Doppelpuffern und einfachen Ketten ausgerüstet. Damit 99 331 die
+    historischen Borkumer Wagen ziehen konnte, wurden die gedeckten Güterwagen 33
+    und 55 als Adapterwagen hergerichtet. Mit den Adapterwagen an jedem Zugende konnte
+    99 331 umsetzen und in beide Fahrtrichtungen gekuppelt werden. (19.09.2019) <i>Foto:
+    Joachim Schmidt</i>'
+  datum: 19.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/62137.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/62137_x.jpg
+  text: '<b>"Molli" in Bad Doberan (17)</b><br>Durch die nach "der Molli" benannte
+    "Mollistraße" fährt 99 2324 wie eine Straßenbahn durch Bad Doberan. (09.10.2019)
+    <i>Foto: Joachim Schmidt</i>'
+  datum: 09.10.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/62138.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/62138_x.jpg
+  text: '<b>Molli (6)</b><br>99 2322 unterwegs zwischen Heiligendamm und Vorder Bollhagen.
+    (09.10.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 09.10.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/62139.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/62139_x.jpg
+  text: '<b>Molli (7)</b><br>99 2322 auf dem Weg nach Bad Doberan bei Heiligendamm.
+    (09.10.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 09.10.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/63980.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/63980_x.jpg
+  text: '<b>Wintersportsonderzug (109)</b><br>In den 1980er Jahren wehte vor den Bahnhöfen
+    an Rhein und Ruhr die "Schachbrettfahne", wenn die Schneelage im Sauerland gut
+    war und u.a. von Münster, Mönchengladbach und Duisburg Wintersportsonderzüge nach
+    Winterberg verkehrten. Die Züge waren damals mit Loks der BR 215 des Bw Krefeld,
+    221 des Bw Osterfeld und Hagener 218 bespannt und sorgten mit ihren Dampfheizungen
+    für mollige Wärme im Zug. In diesem Winter bestellte der Zweckverband NWL wieder
+    Sonderzüge nach Winterberg. Vom 21.12.2019 bis zum 07.03.2020 verkehrte samstags
+    ein Zug von Oberhausen nach Winterberg. Am ersten Einsatztag bespannte 218 457
+    von Aix Rail mit Wagen der Centralbahn den Sonderzug, der mit Fahrkarten des Nahverkehrs
+    benutzt werden konnte. Der Zug wird heute allerdings ohne Schachbrettfahne angekündigt.
+    Das Bild des ersten Zuges entstand auf der Rückfahrt aus Winterberg beim schneelosen
+    Zwischenstop in Bochum Hbf. (21.12.2019) <i>Foto: Marcus Henschel</i>'
+  datum: 21.12.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/72817.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/72817_x.jpg
+  text: '<b>"Molli" in Bad Doberan (18)</b><br>Die bis heute legendäre Ortsdurchfahrt
+    der Bäderbahn "Molli" in der Mollistraße in Bad Doberan, die zu DDR-Zeiten noch
+    Ernst-Thälmann-Straße hieß und auch optisch etwas anders aussah. 99 2323 ist dort
+    Richtung Bahnhof unterwegs, wo Übergang zur normalspurigen Reichsbahn bestand.
+    (06.09.1983) <i>Foto: Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/72818.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/72818_x.jpg
+  text: '<b>"Molli" in Bad Doberan (19)</b><br>99 2321 rumpelt durch die Ernst-Thälmann-Straße
+    (heute: Mollistraße) durch Bad Doberan. Den Friseursalon an der Querstraße 2 gibt
+    es heute noch, allerdings unter anderem Namen. (06.09.1983) <i>Foto: Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/72819.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/72819_x.jpg
+  text: '<b>Molli (3)</b><br>Zwischen Ostseebad Kühlungsborn und Heiligendamm führt
+    die Strecke der Molli parallel zur Ostseeküste durch die Felder der LPG. 99 2321
+    ist hier am Hp. Steilküste kurz vor Heiligendamm unterwegs. (06.09.1983) <i>Foto:
+    Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/72820.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/72820_x.jpg
+  text: '<b>"Molli" in Bad Doberan (20)</b><br>99 2321 kreuzt von der Goethestraße
+    kommend die Severinstraße in Bad Doberan. An der Ostsee herrscht Ferienstimmung,
+    die Stadt ist gut besucht. (06.09.1983) <i>Foto: Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/72821.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/72821_x.jpg
+  text: '<b>"Molli" in Bad Doberan (21)</b><br>99 2323 in den beengten Verhältnissen
+    zwischen Severin- und Goethestraße in Bad Doberan. (06.09.1983) <i>Foto: Joachim
+    Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/72822.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/72822_x.jpg
+  text: '<b>"Molli" in Bad Doberan (22)</b><br>99 2323 mit einem Zug aus Kühlungsborn
+    in der Goethestraße von Bad Doberan. (06.09.1983) <i>Foto: Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/72823.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/72823_x.jpg
+  text: '<b>"Molli" in Bad Doberan (23)</b><br>99 2323 als "Straßenbahn" in der Goethestraße
+    in Bad Doberan. Es ist Ferienzeit und es herrscht an der Ostseeküste Hochbetrieb.
+    Der Freie Deutsche Gewerkschaftsbund (FDGB) war in der DDR der größte Anbieter
+    von Urlaubsreisen und die Gäste in den FDGB-Heimen wurden rundum versorgt. Eine
+    der größten Hotels zur DDR-Zeit war das FDGB-Erholungsheim „Waterkant“ in Börgerende,
+    knapp 5 km nördlich von Bad Doberan. Es wurde am 11. August 1976 eröffnet und
+    hatte 462 Betten, eine Gaststätte mit 240 Plätzen, Schwimmbad und etliche medizinische
+    Einrichtungen. Das seit kurz nach der Wende leerstehende Bauwerk zerfiel zur Ruine
+    und wurde 2008 abgerissen.  (06.09.1983) <i>Foto: Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/73807.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/73807_x.jpg
+  text: '<b>"Molli" in Bad Doberan (24)</b><br>99 2323 dampft durch die Ernst Thälmann-Straße
+    (heute: Mollistraße) in Bad Doberan. (06.09.1983) <i>Foto: Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/73808.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/73808_x.jpg
+  text: '<b>"Molli" in Bad Doberan (25)</b><br>99 2321 auf der Fahrt zum Ostseebad
+    Kühlungsborn in der Goethestraße in Bad Doberan. (06.09.1983) <i>Foto: Joachim
+    Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/73809.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/73809_x.jpg
+  text: '<b>"Molli" in Bad Doberan (26)</b><br>99 2321 vor dem Prinzenpalais am Alexandrinenplatz.
+    Das Haus im Stil des Klassizismus wurde 1821 eigentlich als Privatresidenz des
+    Erbauers, dem Architekten Carl Theodor Severin, erbaut. Kurz nach der Fertigstellung
+    wurde er dazu gedrängt, das Haus an den Erbgroßherzog, den späteren Großherzog
+    Paul Friedrich von Mecklenburg-Schwerin zu verkaufen. Zu DDR-Zeiten war hier eine
+    Schule untergebracht, heute ein Hotel. (06.09.1983) <i>Foto: Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/73810.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/73810_x.jpg
+  text: '<b>"Molli" in Bad Doberan (27)</b><br>Der nächste Zug aus Kühlungsborn mit
+    99 2323 in der Goethestraße in Bad Doberan. (06.09.1983) <i>Foto: Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/73811.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/73811_x.jpg
+  text: '<b>"Molli" in Bad Doberan (28)</b><br>99 2323 kreuzt in Bad Doberan die Serverinstraße
+    und fährt aus der Goethestraße kommend in die Ernst-Thälmann-Straße (heute: Mollistraße)
+    ein. (06.09.1983) <i>Foto: Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/73812.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/73812_x.jpg
+  text: '<b>"Molli" in Bad Doberan (29)</b><br>99 2321 an der Haltestelle Bad Doberan
+    Stadtmitte am Alexandrinenplatz auf der Fahrt zum Reichsbahnbahnhof. (06.09.1983)
+    <i>Foto: Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/73813.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/73813_x.jpg
+  text: '<b>"Molli" in Bad Doberan (30)</b><br>99 2321 ergänzt ihre Vorräte im Bw
+    Bad Doberan. Dahinter verläuft die normalspurige Strecke Wismar - Rostock. (06.09.1983)
+    <i>Foto: Joachim Schmidt</i>'
+  datum: 06.09.1983
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/76593.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/76593_x.jpg
+  text: '<b>"Molli" in Bad Doberan (31)</b><br>99 322 in der Ernst-Thälmann-Straße
+    in Bad Doberan. (1968) <i>Foto: Joachim Claus</i>'
+  datum: '1968'
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/82571.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/82571_x.jpg
+  text: '<b>"Molli" in Bad Doberan (32)</b><br>99 2321 mit P 14137 aus Ostseebad Kühlungsborn
+    vor dem "Haus Gottesfrieden" in Bad Doberan. Das "Haus Gottesfrieden" ist das
+    ehemalige Wohnhaus des Architekten Carl Theodor Severin, das er im Jahre 1823/24
+    errichten ließ. Severin war u.a. auch für das Gesellschafts-, Tanz- und Speisehaus
+    (heute Kurhaus) in Heiligendamm der verantwortliche Architekt. (01.08.1988) <i>Foto:
+    Wolfgang Bügel</i>'
+  datum: 01.08.1988
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/82572.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/82572_x.jpg
+  text: '<b>"Molli" in Bad Doberan (33)</b><br>99 2321 rollt mit P 14141 durch die
+    Ernst-Thälmannstraße (heute Mollistraße) durch Bad Doberan. (01.08.1988) <i>Foto:
+    Wolfgang Bügel</i>'
+  datum: 01.08.1988
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/82574.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/82574_x.jpg
+  text: '<b>"Molli" in Bad Doberan (34)</b><br>Damals wie heute zwängt sich die "Molli"
+    durch die Straßen von Bad Doberan. Hier ist es noch zu Reichsbahnzeiten 99 2322
+    (Baujahr 1932) mit P 14143 in der Goethestraße. (01.08.1988) <i>Foto: Wolfgang
+    Bügel</i>'
+  datum: 01.08.1988
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/82575.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/82575_x.jpg
+  text: '<b>"Molli" in Bad Doberan (35)</b><br>Genauso eng ging und geht es in der
+    Ernst-Thälmann-Straße (heute Mollistraße) in Bad Doberan zu. Für das Lokpersonal
+    ist hier höchste Aufmerksamkeit gefordert. Gelegentlich kommt es dennoch zu Unfällen,
+    die im Regelfall auf das Fehlverhalten der Straßenverkehrsteilnehmer gehen, die
+    es tatsächlich schaffen, den Zug zu übersehen. Wegen der niedrigen Geschwindigkeiten,
+    die hier gefahren werden, gehen solche Unfälle meist glimpflich aus. (01.08.1988)
+    <i>Foto: Wolfgang Bügel</i>'
+  datum: 01.08.1988
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93675.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93675_x.jpg
+  text: '<b>"Molli" in Bad Doberan (39)</b><br>Die Bad Doberaner "Straßenbahn" 99
+    2324 mit MBB 14617 in der Goethestraße. (07.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 07.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93676.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93676_x.jpg
+  text: '<b>"Molli" in Bad Doberan (40)</b><br>99 2323 mit MBB 14619 (Ostseebad Kühlungsborn
+    West - Bad Doberan) in der Bad Doberaner Goethestraße. (07.05.2023) <i>Foto: Zeno
+    Pillmann</i>'
+  datum: 07.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/82579.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/82579_x.jpg
+  text: '<b>"Molli" in Bad Doberan (37)</b><br>99 2322 mit P 14143 in der Goethestraße
+    in Bad Doberan. (04.05.1989) <i>Foto: Slg. Wolfgang Bügel</i>'
+  datum: 04.05.1989
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/82851.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/82851_x.jpg
+  text: '<b>99 323 in Arendsee (2)</b><br>In exakt seitlicher Fotoposition präsentiert
+    das Lokpersonal seine neue 99 323 im Lokbf Ostseebad Arendsee. Ab 29.05.1933 zählte
+    sie zum Lokbestand des Bw Rostock. Noch heute leistet die Lok als 99 2323-6 auf
+    der Bäderbahn "Molli" zuverlässig ihren Dienst.  (04.07.1933) <i>Foto: DLA Darmstadt
+    (Bellingrodt)</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/86322.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/86322_x.jpg
+  text: '<b>Molli (8)</b><br>99 2321 auf dem Weg nach Bad Doberan bei Kühlungsborn.
+    (05.05.2022) <i>Foto: Michael Hubrich</i>'
+  datum: 05.05.2022
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/86323.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/86323_x.jpg
+  text: '<b>"Molli" in Bad Doberan (38)</b><br>Durch die nach "der Molli" benannte
+    "Mollistraße" fährt 99 2324 wie eine Straßenbahn durch Bad Doberan. Die sichtbaren
+    Veränderungen in dieser Straße zeigen eindrucksvoll die Vergleichsbilder aus den
+    Jahren 1959 (Bild-Nr. 10904) und 1991 (Bild-Nr. 11189). (06.05.2022) <i>Foto:
+    Michael Hubrich</i>'
+  datum: 06.05.2022
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93674.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93674_x.jpg
+  text: '<b>Molli (9)</b><br>99 2323 fährt mit MBB 14611 aus dem Ostseebad Kühlungsborn
+    West in Bad Doberan ein.  (12.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 12.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93677.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93677_x.jpg
+  text: '<b>Molli (10)</b><br>99 2324 mit MBB 14617 aus Ostseebad Kühlungsborn West
+    in unmittelbarer Nähe der Ostseerennbahn, wo es einen zusätzlichen Bahnhof für
+    Veranstaltungsverkehre gibt. Die Ostseerennbahn zwischen Heiligendamm und Bad
+    Doberan ist die älteste Galopprennbahn auf dem europäischen Festland. Die ersten
+    Pferderennen fanden hier 1804 auf freiem Feld statt. (07.05.2023) <i>Foto: Zeno
+    Pillmann</i>'
+  datum: 07.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93678.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93678_x.jpg
+  text: '<b>Molli (11)</b><br>99 2324 mit MBB 14613 am Heiligendammer Einfahrsignal
+    aus Richtung Bad Doberan. Bis Anfang der 1990er Jahre stand das Signal links vom
+    Gleis. Zur besseren Erkennbarkeit wurde es - trotz der Gefährdung durch den Straßenverkehr
+    - dann wieder auf die (richtige) Gleisseite versetzt. Seit 2008 ist es mit einem
+    Negativsignalflügel ausgestattet. Im Hintergrund ist das Heiligendammer Grand-Hotel
+    zu sehen, wo sich 2007 die Vertreter der damaligen G8-Staaten trafen.  (12.05.2023)
+    <i>Foto: Zeno Pillmann</i>'
+  datum: 12.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93679.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93679_x.jpg
+  text: '<b>Molli (12)</b><br>99 2323 verlässt mit MBB 14615 nach Bad Doberan den
+    Kreuzungsbahnhof Heiligendamm. (12.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 12.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93680.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93680_x.jpg
+  text: '<b>Molli (13)</b><br>Zugkreuzung im Bahnhof Heiligendamm zwischen 99 2324
+    vor MBB 14627 nach Bad Doberan und dem einfahrenden MBB 14626 nach Kühlungsborn
+    mit 99 2323. (07.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 07.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93681.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93681_x.jpg
+  text: '<b>Molli (14)</b><br>99 2323 vor der Kulisse des Badehauses (rechts, erbaut
+    1796) und Burg Hohenzollern aus dem Jahr 1849 in Heiligendamm.  (08.05.2023) <i>Foto:
+    Zeno Pillmann</i>'
+  datum: 08.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93682.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93682_x.jpg
+  text: '<b>Molli (15)</b><br>1938 schlossen sich die Orte Ostseebad Arendsee, Brunshaupten
+    und Fulgen zum Ostseebad Kühlungsborn zusammen. Der heutige Bahnhof Ostseebad
+    Kühlungsborn Ost trug bis dahin den Namen Brunshaupten. Ebenfalls in den 1930er
+    Jahren erhielt die Station ein neues Empfangsgebäude. 99 2322 verlässt mit MBB
+    14613 den Bahnhof Richtung Bad Doberan. (14.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 14.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93683.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93683_x.jpg
+  text: '<b>Molli (16)</b><br>Der Bahnhof Kühlungsborn West ist seit Anfang der 1990er
+    Jahre betrieblich nicht mehr besetzt. Das Einfahrsignal aus Richtung Kühlungsborn
+    Mitte blieb aus Gründen der Traditionspflege am Originalstandort stehen und wurde
+    durch ein weißes Kreuz ungültig gemacht. 99 2323 passiert mit dem Frühzug MBB
+    14613 nach Bad Doberan den Bü an der Fritz-Reuter-Straße. (08.05.2023) <i>Foto:
+    Zeno Pillmann</i>'
+  datum: 08.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93684.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93684_x.jpg
+  text: '<b>Molli (17)</b><br>99 2324 dampft mit MBB 14613 nach Bad Doberan aus dem
+    Bahnhof Ostseebad Kühlungsborn West, der bis 1938 Ostseebad Arendsee hieß. Rechts
+    steht die Denkmallok 99 332. (07.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 07.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93685.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93685_x.jpg
+  text: '<b>Molli (18)</b><br>In Kühlungsborn West macht sich 99 2323 mit MBB 14615
+    auf den Weg nach Bad Doberan. (07.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 07.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93686.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93686_x.jpg
+  text: '<b>Molli (19)</b><br>Ausfahrt des MBB 14615 nach Bad Doberan mit 99 2324
+    in Ostseebad Kühlungsborn West. (15.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 15.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93687.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93687_x.jpg
+  text: '<b>Molli (20)</b><br>99 2324 bringt den MBB 14615 nach Bad Doberan hinter
+    Ostseebad Kühlungsborn West in Fahrt. (15.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 15.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93688.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93688_x.jpg
+  text: '<b>Molli (21)</b><br>Neben den 1932 für die Bäderbahn Bad Doberan – Kühlungsborn
+    beschafften drei Lokomotiven der Baureihe 99.32 standen dort ab 1961 auch die
+    von der SDAG Wismut übernommenen 99 331-333 im Einsatz. 99 333 wurde bereits 1968
+    ausgemustert. Die 1995 abgestellte 99 332 wird in den Sommermonaten im Bahnhof
+    Kühlungsborn West ausgestellt. Da die noch betriebsfähige 99 331 den Anforderungen
+    des (Sommer-)Fahrplans nicht mehr gewachsen war, wurde eine weitere leistungsfähige
+    Lok benötigt. Daher wurde eine Lok der Baureihe 99.32 (99 2324) im Jahr 2009 im
+    Dampflokwerk Meiningen nachgebaut. Links wartet 99 2323 mit MBB 14615 auf Ausfahrt.
+    (07.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 07.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93689.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93689_x.jpg
+  text: '<b>Molli (22)</b><br>Die Bäderbahn Molli mit einer Spurweite von 900 mm bedient
+    die 15 Kilometer lange Strecke von Bad Doberan über Heiligendamm nach dem Ostseebad
+    Kühlungsborn. Sie wird vom Eisenbahnverkehrsunternehmen Mecklenburgische Bäderbahn
+    Molli (MBB) betrieben. In der sommerlichen Hochsaison wird die Strecke tagsüber
+    im Stundentakt mit zwei Zügen bedient, die sich jeweils in Heiligendamm kreuzen.
+    Die Fahrzeit für die gesamte Strecke beträgt ca. 40 Minuten. Im Ostseebad Kühlungsborn
+    West befindet sich auch der Lokbahnhof mit dem Heizhaus, in dem gerade 99 2322
+    ihren Dienst antritt. (13.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 13.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93690.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93690_x.jpg
+  text: '<b>Molli (23)</b><br>99 2322 wartet am MBB 14613 nach Bad Doberan im Bahnhof
+    Ostseebad Kühlungsborn West. Links steht die Neubaulok 99 2324. (13.05.2023) <i>Foto:
+    Zeno Pillmann</i>'
+  datum: 13.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93691.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93691_x.jpg
+  text: '<b>Molli (24)</b><br>Zwischen dem Ostseebad Kühlungsborn und Heiligendamm
+    verläuft die Molli parallel zur Steilküste auf schnurgerader Strecke, auf der
+    gerade 99 2324 mit MBB 14611 nach Bad Doberan angedampft kommt. Ein Blick auf
+    die Ostsee wäre hier allerdings nur von einem (nicht vorhandenen) erhöhten Standpunkt
+    möglich. (08.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 08.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93692.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93692_x.jpg
+  text: '<b>Molli (25)</b><br>Hinter dem Haltepunkt Steilküste verabschiedet sich
+    99 2324 mit MBB 14611 nach Bad Doberan. (08.05.2023) <i>Foto: Zeno Pillmann</i>'
+  datum: 08.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/94974.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/94974_x.jpg
+  text: '<b>99 2322, 2331 in Kühlungsborn</b><br>Im Ostseebad Kühlungsborn West warten
+    99 2331 und 99 2322. Gut zu erkennen sind die Bauartunterschiede der beiden Loks.
+    99 2331 des Typs 225 PS Schmalspur des VEB Lokomotivbau Karl Marx basiert auf
+    einem Typenprogramm für kleinere Dampflokomotiven, die speziell für den Einsatz
+    bei Industriebetrieben entwickelt wurden. Ende der 1950er Jahre sah sich die Reichsbahn
+    veranlasst, die 27 Jahre alten Lokomotiven der Baureihe 99.31 zu ersetzen. Ein
+    Nachbau der Baureihe 99.32 war nicht möglich. So erwarb die Reichsbahn drei Lokomotiven
+    von der SDAG Wismut. Im April 1959 wurde 99 331 (ehemals Nr. 22) nach Anpassungsarbeiten
+    im Raw Görlitz in Dienst gestellt. 1961 wurden sie auf Heißdampf umgebaut. 99
+    2322 hingegen wurde 1932 nach den Einheitsgrundsätzen der Deutschen Reichsbahn
+    gebaut und ist auch bis heute bei der "Molli" im Einsatz. (06.1979) <i>Foto: Robin
+    Fell</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96376.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96376_x.jpg
+  text: '<b>Molli (26)</b><br>99 2322 mit einem Personenzug aus Ostseebad Kühlungsborn
+    am Bedarfshaltepunkt Rennbahn zwischen Heiligendamm und Bad Doberan.  (05.10.2023)
+    <i>Foto: Thorsten Eichhorn</i>'
+  datum: 05.10.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96377.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96377_x.jpg
+  text: '<b>Molli (27)</b><br>Die 1995 gegründete Mecklenburgische Bäderbahn Molli
+    (MBB) gehört anteilig dem Landkreis Rostock (64 %), der Stadt Bad Doberan (19,7
+    %), dem Ostseebad Kühlungsborn (14,8 %) sowie einer natürlichen Person (1,5 %).
+    Die Gesellschaft hat ihren Sitz in Bad Doberan, wo auch 99 2322 erwischt wurde.
+    (05.10.2023) <i>Foto: Thorsten Eichhorn</i>'
+  datum: 05.10.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96896.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96896_x.jpg
+  text: '<b>99 321 in Bad Doberan (3)</b><br>Die heute noch vorhandene Ortsdurchfahrt
+    der Bäderbahn Molli in Bad Doberan war schon immer eine Herausforderung für Lokpersonal
+    und Anwohner. Hier zwängt sich der P 4609 zum Ostseebad Kühlungsborn durch die
+    Ernst-Thälmann-Straße. (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96901.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96901_x.jpg
+  text: '<b>99 321 in Kühlungsborn (1)</b><br>1932 ließ die Deutsche Reichsbahn die
+    deutlich größeren, schnelleren und stärkeren Loks der Baureihe 99.32 (99 321–323)
+    speziell für die Bäderbahn Molli bauen. Die drei Loks sind heute noch unter den
+    Nummern 99 2321-0, 99 2322-8 und 99 2323-6 im Einsatz. Hier restauriert 99 321
+    in Kühlungsborn West. (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96902.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96902_x.jpg
+  text: '<b>99 321 in Kühlungsborn (2)</b><br>1910 entstanden in Ostseebad Kühlungsborn
+    West die Lokbehandlungsanlagen und ein zweiständiger Lokschuppen der damaligen
+    Großherzoglich Mecklenburgischen Friedrich-Franz-Eisenbahn. 1915 wurden die Anlagen
+    um eine Wagenhalle ergänzt. Seit 1. April 1920 gehörte die ''Molli'' zur Deutschen
+    Reichsbahn. Die Reichsbahn vergrößerte 1933 den Lokschuppen auf vier Stände mit
+    zweiflügligen Holztoren.  (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96903.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96903_x.jpg
+  text: '<b>Wagen 990-003</b><br>1930 lieferte die Waggonfabrik Wismar vier moderne
+    und komfortable Reisezugwagen für den ''Molli''. Die Einstiegsbühnen waren jetzt
+    geschlossen, und Polstersitze sorgten für mehr Komfort. Die Drehgestelle besaßen
+    zudem zusätzliche Schraubenfedern. Die Reichsbahn der DDR setzte die Wagen in
+    der 1. Klasse ein, obwohl beim ''Molli'' nur Züge mit Wagen der 2. Klasse verkehrten.
+    Der KA4i-Wagen 990-003 steht hier vor dem Empfangsgebäude in Ostseebad Kühlungsborn
+    West. (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96909.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96909_x.jpg
+  text: '<b>OOw-Wagen in Bad Doberan</b><br>Wie auf der normalspurigen Reichsbahn
+    war auch auf dem ''Molli'' die Braunkohle der Hausbrandversorgung das am häufigsten
+    transportierte Ladegut. Im Bahnhof Bad Doberan stehen die beladenen Oow-Wagen
+    99-03-18 (Bj. 1915), 98-02-51 (Bj. 1915), 98-03-07 (Bj. 1914) und 98-03-02 (Bj.
+    1922). (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96910.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96910_x.jpg
+  text: '<b>Post-Wagen "2310 Schw" </b><br>Der dreiachsige DR-Postwagen "2310 Schwerin"
+    der Deutschen Post im Bahnhof Bad Doberan. Rechts steht der schmalspurige kleine
+    Bruder KD4i-Post 996-001 der ''Molli''. (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96911.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96911_x.jpg
+  text: '<b>KD4i-Post 996-001</b><br>Der vierachsige KD4i-Post 996-001 (Baujahr 1902)
+    der ''Molli'' im Bahnhof Bad Doberan.  (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96912.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96912_x.jpg
+  text: '<b>50 471 in Bad Doberan</b><br>50 471 vom Bw Rostock rangiert im Bahnhof
+    Bad Doberan. Links befinden sich die Anlagen der Bäderbahn ''Molli''. (24.08.1966)
+    <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/110757.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/110757_x.jpg
+  text: '<b>Molli (28)</b><br>Seit 1886 gehört die Mecklenburgische Bäderbahn Molli
+    (vormals Großherzoglich Mecklenburgische Friedrich-Franz-Eisenbahn) mit der seltenen
+    Spurweite von 900 mm zum Stadtbild in Bad Doberan. Der Klassiker ist seitdem die
+    Fahrt mitten durch die Hauptgeschäftsstraße, die zwischenzeitlich in "Mollistraße"
+    umbenannt wurde. An diesem Tag rollt 99 2322 mit dem Mittagszug aus Kühlungsborn
+    West durch die Mollistraße. (25.06.2025) <i>Foto: Joachim Schmidt</i>'
+  datum: 25.06.2025
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/110758.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/110758_x.jpg
+  text: '<b>Molli (29)</b><br>Erhöhte Aufmerksamkeit erfordert die Fahrt der 99 2322
+    durch die Mollistraße in Bad Doberan. Das Lokpersonal muss jederzeit mit unbedachten
+    Autofahrern oder Passanten rechnen. Zur Entstehungsgeschichte des Namens "Molli"
+    gibt es viele unterschiedliche Geschichten. Am weit verbreitesten ist die Anekdote
+    über einen kleinen dicken Mops namens "Molli": Vor mehr als einhundert Jahren
+    reiste eine alte Dame mit ihrem kleinen Hund nach Bad Doberan. Natürlich wollte
+    auch sie mit der neu eröffneten Dampfeisenbahn von Bad Doberan nach Heiligendamm
+    fahren. Doch ihr Mops war unter keinen Umständen zum Einsteigen zu bewegen. Als
+    der Hund ausriss, rief die alte Dame ihm noch hinterher: "Molli, bliev stahn!"
+    (plattdeutsch für "Molli, bleib stehen!"). Doch nicht etwa der Mops hörte auf
+    diesen Ruf, sondern der Lokführer brachte seinen gerade angefahrenen Zug zum Halten.
+    Fortan hieß die kleine Bäderbahn im Volksmund "Molli". (25.06.2025) <i>Foto: Joachim
+    Schmidt</i>'
+  datum: 25.06.2025
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/110759.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/110759_x.jpg
+  text: '<b>Molli (30)</b><br>99 2322 überquert den Alexandrinenplatz in Bad Doberan.
+    Das "Haus Gottesfrieden" (links) ist das ehemalige Wohnhaus des bekannten deutschen
+    Stadtarchitekten Carl Theodor Severin (1763–1836), das er im Jahre 1823/24 errichten
+    ließ.  (25.06.2025) <i>Foto: Joachim Schmidt</i>'
+  datum: 25.06.2025
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/117686.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/117686_x.jpg
+  text: '<b>99 2321 bei Kühlungsborn</b><br>Auch abseits der Badesaison fährt der
+    "Molli". Hier ist 99 2321 mit P 14145 nach Bad Doberan im vorwinterlichen Kühlungsborn
+    Ost unterwegs. (30.11.1985) <i>Foto: Thomas Fischer</i>'
+  datum: 30.11.1985
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/4882.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/4882_x.jpg
+  text: '<b>99 2323 in Bad Doberan (1)</b><br>99 2323-6 (99 323) in der bekannten
+    Ortsdurchfahrt von Bad Doberan. (20.09.1978) <i>Foto: Peter Schiffer</i>'
+  datum: 20.09.1978
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/4883.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/4883_x.jpg
+  text: '<b>99 2323 in Bad Doberan (2)</b><br>99 2323-6 (99 323) in der Ortsdurchfahrt
+    von Bad Doberan mit typischem DDR-Flair und der obligatorischen Braunkohlenlieferung
+    auf dem Bürgersteig. (20.09.1978) <i>Foto: Peter Schiffer</i>'
+  datum: 20.09.1978
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/10228.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/10228_x.jpg
+  text: '<b>99 303 in Bad Doberan</b><br>99 303 (Bw Rostock) im Bahnhof Bad Doberan.
+    Die abgestellte Reservelok wurde für Carl Bellingrodt extra aus dem Lokschuppen
+    gezogen. Die Großherzoglich Mecklenburgische Friedrich-Franz-Eisenbahn (MFFE)
+    ließ die Lok 1914 als Gattung T 7 von der Fa. Henschel in Cassel bauen.  (04.07.1933)
+    <i>Foto: DLA Darmstadt (Bellingrodt)</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/10229.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/10229_x.jpg
+  text: '<b>99 312 in Arendsee</b><br>99 312 (Bw Rostock) steht im Bahnhof Ostseebad
+    Arendsee mit einem typischen "Bäderzug" zur Abfahrt nach Bad Doberan bereit. Seit
+    11. April 1938 trägt der Bahnhof den Namen Ostseebad Kühlungsborn West. (07.07.1929)
+    <i>Foto: DLA Darmstadt (Bellingrodt)</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/42296.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/42296_x.jpg
+  text: '<b>99 323 in Arendsee (1)</b><br>Orenstein & Koppel lieferte 1932/33 drei
+    Lokomotiven für die 900 mm Schmalspurbahn Bad Doberan—Ostseebad Arendsee. 99 323
+    wurde am 27.01.1933 vom RAW Rostock abgenommen, aber erst im Mai 1933 in Betrieb
+    genommen. Hier steht sie an der Lokschuppenzufahrt in Ostseebad Arendsee (ab April
+    1938 Ostseebad Kühlungsborn West).  (04.07.1933) <i>Foto: DLA Darmstadt (Bellingrodt)</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/34004.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/34004_x.jpg
+  text: '<b>99 322 in Bad Doberan (1)</b><br>99 322 in der bekannten Ortsdurchfahrt
+    in der Goethestraße von Bad Doberan. (1967) <i>Foto: Birger Wilcke (Sammlung Ludger
+    Kenning)</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/34005.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/34005_x.jpg
+  text: '<b>99 322 in Bad Doberan (2)</b><br>99 322 an der Haltestelle "Stadtmitte"
+    in Bad Doberan. (08.1965) <i>Foto: Karl-Heinz Brust</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/40219.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/40219_x.jpg
+  text: '<b>99 321 in Bad Doberan (1)</b><br>99 321 mit einem Zug nach Kühlungsborn
+    in der Goethestraße in Bad Doberan. (24.08.1966) <i>Foto: Joachim Claus</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/40220.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/40220_x.jpg
+  text: '<b>Führerhaus der 99 321</b><br>99 321, die 1932 speziell für den Einsatz
+    auf der Bäderbahn Bad Doberan - Heiligendamm - Ostseebad Kühlungsborn gebaut wurde
+    und dort bis heute im Einsatz ist. 1970 erhielt die die EDV-Nummer 99 2321-0,
+    in Zeiten der DB AG war sie 1994/95 sogar als 099 901-1 unterwegs. (24.08.1966)
+    <i>Foto: Joachim Claus</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/40221.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/40221_x.jpg
+  text: '<b>Führerhaus der 99 333</b><br>99 333 war - wie das Fabrikschild unzweifelhaft
+    ausweist - ein DDR-Neubau aus dem Jahr 1950. Sie war speziell für den Einsatz
+    bei Industriebetrieben entwickelt worden und so kam sie zunächst zur SDAG Wismut
+    nach Karl-Marx-Stadt. Ende der 1950er Jahre sah sich die Reichsbahn veranlasst,
+    die 27 Jahre alten Lokomotiven der Baureihe 99.31 auf der Schmalspurbahn Bad Doberan
+    - Kühlungsborn zu ersetzen. Ein Nachbau der Baureihe 99.32 war nicht möglich.
+    So erwarb die Reichsbahn drei Werkloks von der SDAG Wismut. Nach Anpassungsarbeiten
+    im Reichsbahnausbesserungswerk Görlitz kam die ehemalige Werklok 1 als 99 333
+    im Dezember 1960 an die Ostsee. 1961 wurden die beiden anderen Loks (99 331 und
+    die 99 332) auf Heißdampf umgebaut, 99 333 blieb eine Naßdampflok und war ab Mitte
+    der 1960er Jahre nur noch Reservemaschine. 1968 wurde sie ausgemustert. (24.08.1966)
+    <i>Foto: Joachim Claus</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/44587.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/44587_x.jpg
+  text: '<b>50 0044 in Bad Doberan</b><br>50 0044 (Bw Wittenberge) kachelt mit einem
+    Güterzug aus Bad Doberan. (06.1976) <i>Foto: Joachim Claus</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/78781.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/78781_x.jpg
+  text: '<b>099 902 in Bad Doberan</b><br>Die so moderne Deutsche Bahn hätte sich
+    sicherlich nicht träumen lassen, dass sie Lokomotiven mit der Baureihenbezeichnung
+    "0" wieder in ihren offiziellen Bestand übernehmen musste. War doch dieses Grundübel
+    seit 1977 aus den Bestandslisten (im Westen) gestrichen worden. Dummerweise kamen
+    mit der Vereinigung beider Bahnen im Jahr 1994 zahlreiche Schmalspurdampflokomotiven
+    wieder in den Bestand der neuen Bahn. So musste man notgedrungen die vorhandenen
+    Schmalspurloks der DR wieder mit der computergerechten Null versehen, so wie hier
+    99 2322, die als 099 902 den Bü Dammchaussee in Bad Doberan befährt. Der Spuk
+    sollte jedoch nicht lange dauern, waren die Bürokraten damit beschäftigt, die
+    Schmalspurbahnen schnellstmöglich zu privatisieren, um so das dampfende Übel wieder
+    loszuwerden. Die wenigen am Ende noch vorhandenen normalspurigen Dampfloks fielen
+    dabei nicht ins Gewicht, da sie in der Öffentlichkeit nicht mit einer solchen
+    EDV-Nummer in Erscheinung traten. So fuhr z.B. 01 150 nie mit der befremdlichen
+    EDV-Nummer 088 011-2 herum. (04.1995) <i>Foto: Hans-Jürgen Bockfeld</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/82570.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/82570_x.jpg
+  text: '<b>99 2321 in Kühlungsborn (1)</b><br>99 2321 fährt mit P 14137 (Ostseebad
+    Kühlungsborn West ab 8.21 Uhr - Bad Doberan an 9.06 Uhr) im Haltepunkt Kühlungsborn-Mitte
+    ein. (01.08.1988) <i>Foto: Wolfgang Bügel</i>'
+  datum: 01.08.1988
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/82573.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/82573_x.jpg
+  text: '<b>99 2322 bei Kühlungsborn</b><br>99 2322 mit P 14143 nach Bad Doberan am
+    Einfahrsignal von Kühlungsborn-West. (01.08.1988) <i>Foto: Wolfgang Bügel</i>'
+  datum: 01.08.1988
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/82577.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/82577_x.jpg
+  text: '<b>99 2323 bei Heiligendamm</b><br>99 2323 mit P 14141 am Einfahrsignal aus
+    Richtung Bad Doberan in Heiligendamm. (04.05.1989) <i>Foto: Slg. Wolfgang Bügel</i>'
+  datum: 04.05.1989
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/82849.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/82849_x.jpg
+  text: '<b>99 311 in Arendsee</b><br>99 311 vom Bw Rostock steht als Reservelok im
+    Lokbf Ostseebad Arendsee kalt abgestellt. Henschel in Cassel lieferte die Lok
+    1923 für die 900 mm-spurige Bäderbahn Bad Doberan—Arendsee. Sie verfügte über
+    die selten eingesetzte Zweikammer-Druckluftbremse von Knorr. Alle Radsätze wurden
+    von vorn gebremst. Die Luftbehälter befanden sich unter dem Führerhaus und die
+    Luftpumpe auf dem rechten Umlaufblech vor dem Wasserkasten. 99 311 wurde 1942
+    an die Firma Rathjens in Naumburg/Saale für eine Baustelle in Dänemark vermietet.
+    Sie kehrte nicht mehr zurück und wurde nach 1945 in Dänemark verschrottet.  (04.07.1933)
+    <i>Foto: DLA Darmstadt (Bellingrodt)</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/82850.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/82850_x.jpg
+  text: '<b>99 312 in Bad Doberan</b><br>Für die mecklenburgische Bäderbahn wurden
+    1923/24 drei Lokomotiven der Gattung T 42 beschafft und als 99 311–313 in Dienst
+    gestellt. Sie lösten dort die 1910 gelieferten Lokomotiven der Gattung T 7 ab,
+    die den gestiegenen Anforderungen nicht mehr gewachsen waren. Nach Lieferung der
+    neuen Einheitsloks der Baureihe 99³² im Jahre 1933 wurden sie in den Reservestand
+    versetzt, versahen untergeordnete Dienste oder wurden als Heizlok vermietet. Das
+    Bild zeigt 99 312 (Bw Rostock) bereits als Reservelok in Bad Doberan abgestellt.
+    1961 wurde sie an den VEB Bauunion Rostock als Heizlok verkauft. (04.07.1933)
+    <i>Foto: DLA Darmstadt (Bellingrodt)</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96897.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96897_x.jpg
+  text: '<b>99 321 in Bad Doberan (4)</b><br>Der P 4609 in der Ernst-Thälmann-Straße
+    in Bad Doberan. Immer wieder kommt es hier zu Unfällen mit der Schmalspurbahn,
+    insbesondere mit Touristen aus dem Westen, die solche Verkehrsverhältnisse seit
+    den 1950er Jahren nicht mehr gewohnt sind. Den Friseur an der Querstraße gibt
+    es im übrigen auch immer noch. (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96898.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96898_x.jpg
+  text: '<b>99 321 in Bad Doberan (5)</b><br>99 321 fährt mit einem Personenzug aus
+    Ostseebad Kühlungsborn in den Endbahnhof Bad Doberan ein. Hier gibt es Anschluss
+    an die Normalspurstrecke Wismar - Rostock. (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96899.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96899_x.jpg
+  text: '<b>Zugkreuzung in Heiligendamm -1</b><br>Zugkreuzung im Bahnhof Heiligendamm
+    zwischen P 4609 nach Ostseebad Kühlungsborn (rechts) und P 4610 nach Bad Doberan.
+    (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96900.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96900_x.jpg
+  text: '<b>Zugkreuzung in Heiligendamm -2</b><br>Wie immer verlässt in Heiligendamm
+    zuerst der Personenzug nach Bad Doberan den Kreuzungsbahnhof, während P 4609 nach
+    Ostseebad Kühlungsborn noch warten muss. (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96905.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96905_x.jpg
+  text: '<b>99 321 in Kühlungsborn (3)</b><br>99 321 wartet vor P 4610 nach Bad Doberan
+    im Bahnhof Ostseebad Kühlungsborn Ost auf die Abfahrt. Bis 1938 hieß der Bahnhof
+    Brunshaupten. (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96906.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96906_x.jpg
+  text: '<b>Ankunft in Bad Doberan</b><br>Der P 4610 aus Ostseebad Kühlungsborn ist
+    in Bad Doberan eingetroffen. Hier steigen die Fahrgäste in Züge Richtung Rostock
+    bzw. Wismar um. (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96907.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96907_x.jpg
+  text: '<b>99 321 in Bad Doberan (6)</b><br>Vor dem stattlichen Empfangsgebäude aus
+    dem Jahr 1912 wartet in Bad Doberan 99 321 auf die Rückfahrt nach Ostseebad Kühlungsborn
+    West. (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/96908.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/96908_x.jpg
+  text: '<b>99 321 in Bad Doberan (7)</b><br>99 321 verlässt mit P 4611 den Bahnhof
+    Bad Doberan. Der Bahnübergang an der Friedrich-Franz-Straße existiert heute noch.
+    (24.08.1966) <i>Foto: Gerd Wolff</i>'
+  datum: 24.08.1966
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/97510.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/97510_x.jpg
+  text: '<b>50 0066 in Bad Doberan</b><br>Die ölgefeuerte 50 0066 (ex 50 3505, ex
+    50 1330) verlässt mit einem Güterzug den Bahnhof Bad Doberan. Das Stellwerk "W
+    1" war bis 04.11.2000 im Betrieb, die Dampflok verabschiedete sich 1980 aus dem
+    aktiven Dienst. (05.09.1977) <i>Foto: Robin Fell</i>'
+  datum: 05.09.1977
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/117687.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/117687_x.jpg
+  text: '<b>99 2322 in Kühlungsborn</b><br>99 2322 wartet vor P 14143 im Bahnhof Kühlungsborn
+    West auf die Abfahrt nach Bad Doberan. (29.11.1985) <i>Foto: Thomas Fischer</i>'
+  datum: 29.11.1985
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/42298.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/42298_x.jpg
+  text: '<b>99 322 in Heiligendamm</b><br>99 322 (Bw Rostock) läuft mit PmG 701 nach
+    Ostseebad Arendsee in den Kreuzungsbahnhof Heiligendamm ein.  (04.07.1933) <i>Foto:
+    DLA Darmstadt (Bellingrodt)</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/94972.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/94972_x.jpg
+  text: '<b>99 2321 in Kühlungsborn (2)</b><br>99 2321 spiegelt sich in einem Karpfenteich
+    kurz vor Ostseebad Kühlungsborn Ost. (20.04.1973) <i>Foto: Robin Fell</i>'
+  datum: 20.04.1973
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/42300.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/42300_x.jpg
+  text: '<b>99 2323 in Kühlungsborn</b><br>99 2323 (99 323) im Bahnhof Kühlungsborn-Ost.  (20.09.1978)
+    <i>Foto: Peter Schiffer</i>'
+  datum: 20.09.1978
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/9709.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/9709_x.jpg
+  text: '<b>Waldeisenbahn Muskau (1)</b><br>99 3311 und 99 3312 im Bw Bad Muskau.
+    Bei den Lokomotiven handelt es sich um ehemalige Heeresfeldbahnloks, die im 1.
+    Weltkrieg gebaut wurden. (26.04.1976) <i>Foto: Will A. Reed</i>'
+  datum: 26.04.1976
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/9710.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/9710_x.jpg
+  text: '<b>Waldeisenbahn Muskau (2)</b><br>Die Lokomotive "DIANA" der Waldeisenbahn
+    Muskau wurde 1912 von Borsig gebaut. Die Lokomotive erhielt 1951 nach der Übernahme
+    der Waldeisenbahn durch die Deutsche Reichsbahn die Betriebsnummer 99 3312. Die
+    Lokomotive ist noch heute betriebsfähig erhalten. (26.04.1976) <i>Foto: Will A.
+    Reed</i>'
+  datum: 26.04.1976
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/17461.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/17461_x.jpg
+  text: '<b>99 3314 in Krauschwitz</b><br>99 3314 wurde ursprünglich 1917 von Henschel
+    als Heeresfeldbahnlok "HF 1487" gebaut und gelangte 1921 zur Waldeisenbahn Muskau.
+    1951 erhielt sie dort nach der Übernahme durch die Deutsche Reichsbahn die Nummer
+    99 3314. 1983 wurde sie schließlich in den Westen verkauft und war u.a. bei der
+    Dampf-Kleinbahn Mühlenstroth nahe Gütersloh im Einsatz. Sie befindet sich heute
+    in Privatbesitz. (21.03.1978) <i>Foto: Slg. Wolfgang Bügel</i>'
+  datum: 21.03.1978
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/25291.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/25291_x.jpg
+  text: '<b>99 3312 in Bad Muskau</b><br>Die Lok "DIANA" der Waldeisenbahn Muskau
+    (WEM) wurde 1912 von Borsig hergestellt. Sie erhielt 1951 nach der Übernahme durch
+    die Deutsche Reichsbahn die Betriebsnummer 99 3312 und ist seit 1998 wieder betriebsfähig
+    auf dem Streckennetz der Museumsbahn im Einsatz. (24.05.2015) <i>Foto: Andreas
+    Höfig</i>'
+  datum: 24.05.2015
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/31068.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/31068_x.jpg
+  text: '<b>Muskauer Waldbahn (1)</b><br>Die von Henschel 1917 gebaute Heeresfeldbahnlok
+    (HFB-Nummer 1547) landete zum Ende des 1. Weltkriegs zunächst in einem Demobilisierungslager.
+    1922 erwarb die Gräflich von Arminsche Kleinbahn, heute als Waldeisenbahn Muskau
+    bekannt, die Lok und setzte sie auf ihren Strecken ein. Als 1951 die Waldeisenbahn
+    Muskau von der Deutschen Reichsbahn übernommen wurde, erhielt sie die Betriebsnummer
+    99 3315. 1977 wurde sie an die Dampf-Kleinbahn Mühlenstroth in Gütersloh verkauft.
+    Dort als Nr. 6  "Richard Roosen" in den Fahrzeugpark eingereiht, fuhr sie bis
+    2003 regelmäßig vor den Museumszügen. Im Sommer 2008 wurde die Lok reaktiviert
+    und kam anlässlich des 35-jährigen Vereinsbestehens letztmalig zum Einsatz. (29.03.1973)
+    <i>Foto: Johannes Glöckner</i>'
+  datum: 29.03.1973
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/31069.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/31069_x.jpg
+  text: '<b>Muskauer Waldbahn (2)</b><br>99 3316 (Borsig, Baujahr 1916) rangiert in
+    Muskau. Die Lok wurde im August 1916 als HF 634 an den Übungsplatz Rehagen-Klausdorf
+    ausgeliefert und gelangte erst Mai 1950 zur Waldeisenbahn Muskau. Im April 1984
+    wurde sie an das Technikmuseum Sinsheim verkauft. (29.03.1973) <i>Foto: Johannes
+    Glöckner</i>'
+  datum: 29.03.1973
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/31071.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/31071_x.jpg
+  text: '<b>Muskauer Waldbahn (4)</b><br>99 3316 mit einem Güterzug unterwegs bei
+    Muskau. (29.03.1973) <i>Foto: Johannes Glöckner</i>'
+  datum: 29.03.1973
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/37101.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/37101_x.jpg
+  text: '<b>99 3315 in Bad Muskau (1)</b><br>99 3315 trifft in Bad Muskau ein. Die
+    Henschel-Brigadelok kam 1917 zur Heeresfeldbahn und dort die HFB-Nummer 1547 zugeteilt.
+    1922 erwarb sie die Gräflich von Armin''sche Kleinbahn, heute als Waldeisenbahn
+    Muskau bekannt, und setzte sie auf ihren Strecken ein. (11.04.1975) <i>Foto: Johannes
+    Glöckner</i>'
+  datum: 11.04.1975
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/37102.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/37102_x.jpg
+  text: '<b>99 3315 in Bad Muskau (2)</b><br>1951 übernahm die Deutsche Reichsbahn
+    der DDR die Anlagen und Betriebsführung der durch Reparationsleistungen und Kriegsschäden
+    arg gebeutelten Muskauer Waldbahn. Hierbei wurden auch die dort vorhandenen Lokomotiven
+    eingegeliedert. Die ehemalige Henschel-Brigadelok (HFB-Nr. 1547) bekam die Betriebsnummer
+    99 3315 zugeteilt. 1977 wurde die Lok mit fortschreitender Stillegung der Bahn
+    abgestellt und an die Dampf-Kleinbahn Mühlenstroth in Gütersloh verkauft. Dort
+    wurde die Lok als Nr. 6  "Richard Roosen" in den Fahrzeugpark eingereiht und war
+    bis 2003 regelmäßig vor Museumszügen im Einsatz. Im Herbst 2013 kehrte die Lok
+    zur Waldeisenbahn Muskau zurück und traf am 04.10.2013 wieder in ihrer alten Heimat
+    Weißwasser ein. Am 10. September 2015 wurde sie ins tschechischen Zamberk gebracht,
+    wo die Lok eine Hauptuntersuchung erhalten soll. Danach soll sie die vorhandenen
+    Lokomotiven 99 3312 und 99 3317 beim Einsatz vor den Museumszügen auf ihren alten
+    Stammstrecken unterstützen. (11.04.1975) <i>Foto: Johannes Glöckner</i>'
+  datum: 11.04.1975
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/37103.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/37103_x.jpg
+  text: '<b>99 3315 bei Bad Muskau (3)</b><br>99 3315 kurz vor Bad Muskau.  (11.04.1975)
+    <i>Foto: Johannes Glöckner</i>'
+  datum: 11.04.1975
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/41819.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/41819_x.jpg
+  text: '<b>Waldeisenbahn Muskau (3)</b><br>99 3317 auf der vom Muskauer Standesherr
+    Graf Hermann von Arnim 1895 zur Erschließung der Wälder und Rohstoffvorkommen
+    im Umfeld von Muskau und Weißwasser gegründeten (Pferde-)bahn mit einer Spurweite
+    von 600 mm. Die Industriebetriebe (Braunkohlegruben, Ziegeleien, Sägewerke, Papierfabriken
+    und Glashütten) sollten so an das Bahnnetz angeschlossen werden. Schon 1895 wurden
+    die ersten beiden Dampfloks angeschafft (die erste Dampflok war die dreiachsige
+    Tenderlokomotive "GRAF ARNIM", die 1895 bei Krauss in München gebaut wurde. Bis
+    zur Jahrhundertwende wuchs das Gleisnetz bereits auf etwa 50 km an. 99 3317 wurde
+    1918 als Heeresfeldbahnlok in Dienst gestellt und kam erst nach dem Zweiten Weltkrieg
+    nach Muskau. (1967) <i>Foto: J. R. Broughton</i>'
+  datum: '1967'
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/53139.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/53139_x.jpg
+  text: '<b>Muskauer Waldbahn (5)</b><br>Die Waldeisenbahn Muskau wurde 1895 zur Erschließung
+    der Wälder und Rohstoffvorkommen im Umfeld von Muskau und Weißwasser mit einer
+    Spurweite von 600 mm angelegt. Zudem sollten damit die entstandenen Industriebetriebe
+    (Braunkohlegruben, Ziegeleien, Sägewerke, Papierfabriken und Glashütten) an das
+    Bahnnetz angeschlossen werden. Heute ist sie die größte Museumsbahn in 600-mm-Spur
+    in Deutschland. 99 3313 (die ehemalige Heeresfeldbahnlok 312 aus dem Jahr 1914)
+    ist hier bei Bad Muskau unterwegs. (06.1973) <i>Foto: Robin Fell</i>'
+  datum: ''
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61649.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61649_x.jpg
+  text: '<b>Inselbahn Borkum (13)</b><br>Blick aus dem T 1 am dreigleisigen Lokschuppen/Werkstatthalle
+    der Borkumer Kleinbahn auf Lok "BORKUM III" und Gastlok 99 331 von der Ostseeküste.
+    (18.09.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 18.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61651.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61651_x.jpg
+  text: '<b>Inselbahn Borkum (15)</b><br>Lokparade auf Borkum mit Lok "Borkum III"
+    (ex "Dollart", Baujahr 1940), Triebwagen T 1 (Wismar, Baujahr 1940) und Gastlok
+    99 331 (LKM, Baujahr 1951) aus Kühlungsborn. (19.09.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 19.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61653.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61653_x.jpg
+  text: '<b>Inselbahn Borkum (17)</b><br>99 331 wechselt im Inselbahnhof Borkum an
+    die Zugspitze. (19.09.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 19.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61654.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61654_x.jpg
+  text: '<b>Inselbahn Borkum (18)</b><br>99 331 vor dem Borkumer Wahrzeichen des "Großen
+    Leuchtturms Borkum", der im westlichen Teil des Stadtzentrums der Insel Borkum
+    steht und einer von drei Leuchttürmen auf der Insel ist. Nachdem der "Alte Leuchtturm
+    Borkum" abgebrannt war, entstand der neue Leuchtturm im Jahr 1879 in Rekordzeit.
+    Zwischen der Grundsteinlegung am 1. Mai und dem Richtfest am 20. September lagen
+    weniger als fünf Monate. Er besitzt eine 3 m hohe Drehlinsenleuchte mit sechs
+    großen Linsenfeldern, deren Nennreichweite 24,4 Seemeilen (ca. 45 Kilometer) beträgt.  (19.09.2019)
+    <i>Foto: Joachim Schmidt</i>'
+  datum: 19.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61656.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61656_x.jpg
+  text: '<b>Inselbahn Borkum (20)</b><br>99 331 an der Kiebitzdelle auf Borkum auf
+    der Fahrt zur Reede. (19.09.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 19.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61657.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61657_x.jpg
+  text: '<b>Inselbahn Borkum (21)</b><br>Nostalgie gegen Moderne: Diesmal hat die
+    Dampflok die 360-Grad-Ansicht des amerikanischen Online-Dienstes wohl mächtig
+    verhagelt. In der Kibitzdelle zeichnete Google Street-View diesmal nur viel Qualm
+    der vorbeifahrenden 99 331 auf. (19.09.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 19.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61658.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61658_x.jpg
+  text: '<b>Inselbahn Borkum (22)</b><br>Parallelfahrt zwischen 99 331 und dem T 1
+    am Neuen Deich auf Borkum. (19.09.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 19.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61659.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61659_x.jpg
+  text: '<b>Inselbahn Borkum (23)</b><br>99 331 trifft am Fähranleger Borkum ein.
+    (19.09.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 19.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61660.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61660_x.jpg
+  text: '<b>Inselbahn Borkum (24)</b><br>Von der Ostsee an die Nordsee: Gastlok 99
+    331 setzt am Fähranleger um. Mit ihr kam nach über 50 Jahren erstmals wieder eine
+    kohlegefeuerte Dampflok auf Borkum zum Einsatz.  (19.09.2019) <i>Foto: Joachim
+    Schmidt</i>'
+  datum: 19.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/61661.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/61661_x.jpg
+  text: '<b>Inselbahn Borkum (25)</b><br>99 331 wartet am Anleger 1 auf die Rückfahrt
+    zum Inselbahnhof Borkum. (20.09.2019) <i>Foto: Joachim Schmidt</i>'
+  datum: 20.09.2019
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/76802.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/76802_x.jpg
+  text: '<b>99 3313 in Muskau</b><br>Zur Erschließung der Wälder und Rohstoffvorkommen
+    im Umfeld von Muskau und Weißwasser wurde bereits um 1890 eine Pferdebahn mit
+    einer Spurweite von 600 mm angelegt. Damit wurden die entstandenen Industriebetriebe
+    (Braunkohlegruben, Ziegeleien, Sägewerke, Papierfabriken und Glashütten) über
+    das Bahnnetz angeschlossen. Schon 1895 wurden die ersten beiden Dampfloks angeschafft.
+    Bis zur Jahrhundertwende wuchs das Gleisnetz auf etwa 50 km. 99 3313 wurde 1914
+    von Borsig als Heeresfeldbahnlok in Dienst gestellt und kam 1921 als 8836 nach
+    Muskau. Die Reichsbahn musterte sie 1984 aus. (1975) <i>Foto: Joachim Schmidt</i>'
+  datum: '1975'
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/85666.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/85666_x.jpg
+  text: '<b>Waldeisenbahn Muskau (4)</b><br>Die Lokomotive "DIANA" der Waldeisenbahn
+    Muskau wurde 1912 von Borsig gebaut. Sie erhielt 1951 nach der Übernahme der Waldeisenbahn
+    durch die Deutsche Reichsbahn die Betriebsnummer 99 3312 (Aufnahme in Krauschwitz).
+    Die Lokomotive ist noch heute betriebsfähig erhalten. Die Waldbahn entstand 1895,
+    als der Muskauer Standesherr Graf Hermann von Arnim zur Erschließung der Wälder
+    und Rohstoffvorkommen im Umfeld von Muskau und Weißwasser eine Pferdebahn mit
+    einer Spurweite von 600 mm anlegen ließ. Außerdem sollten damit die entstandenen
+    Industriebetriebe (Braunkohlegruben, Ziegeleien, Sägewerke, Papierfabriken und
+    Glashütten) an das Bahnnetz angeschlossen werden. Schon im Entstehungsjahr wurden
+    die ersten beiden Dampfloks angeschafft. Bis zur Jahrhundertwende wuchs das Gleisnetz
+    auf etwa 50 km. (05.07.1976) <i>Foto: Hans-Jürgen Trunk</i>'
+  datum: 05.07.1976
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93371.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93371_x.jpg
+  text: '<b>Dampfkleinbahn Mühlenstroth -1</b><br>Die Dampf-Kleinbahn Mühlenstroth
+    ist eine vom gleichnamigen Verein betriebene schmalspurige Kleinbahnanlage in
+    Gütersloh. Die Bahn befindet sich auf dem Gelände einer Ausflugsgaststätte. Die
+    kreisförmige, 1,5 km lange Gleisanlage umrundet eine etwa 240 Meter mal 280 Meter
+    große Wiese, in deren Mitte sich Lokschuppen und Wagenhalle befinden. Die zuletzt
+    bei der Muskauer Waldbahn eingesetzte 99 3318 dreht hier ihre Runden. (01.05.2023)
+    <i>Foto: Joachim Schmidt</i>'
+  datum: 01.05.2023
+  quelle: Eisenbahnstiftung
+- foto: https://eisenbahnstiftung.de/images/bildergalerie/93372.jpg
+  thumb: https://eisenbahnstiftung.de/images/thumbnails/bildergalerie/93372_x.jpg
+  text: '<b>Dampfkleinbahn Mühlenstroth -2</b><br>99 3318 war ursprünglich als Brigadelokomotive
+    "HF 2301" (Borsig, Baujahr 1918) für den Truppen- und Materialtransport im Ersten
+    Weltkrieg gebaut worden. Nach Kriegsende wurde die Lok nach Polen verkauft und
+    gelangte schließlich nach Litauen. Im Zweiten Weltkrieg fand sich die Lok in den
+    von deutschen besetzten Gebieten wieder und wurde als Beutelok zurück nach Deutschland
+    transportiert. 1948 übernahm sie das Braunkohlenwerk "Frieden" in Weißwasser,
+    1953 ging sie an die Waldeisenbahn Muskau über. Dort wurde ihr von der Deutschen
+    Reichsbahn die Nummer 99 3318 zugeteilt. Bis Ende 1972 stand sie dort im Einsatz.
+    Nach einer betriebsfähigen Aufarbeitung Anfang 1974 wurde die Lok im April selben
+    Jahres an die Dampf-Kleinbahn Mühlenstroth in Gütersloh verkauft. (01.05.2023)
+    <i>Foto: Joachim Schmidt</i>'
+  datum: 01.05.2023
+  quelle: Eisenbahnstiftung
