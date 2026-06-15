@@ -7,6 +7,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <style>
+        .foto-chip {
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            user-select: none;
+            transition: opacity 0.2s;
+        }
+        .foto-chip:hover {
+            opacity: 0.8;
+        }
         :root {
             --primary: #8b0000;
             --secondary: #f4e1d2;
@@ -379,6 +390,23 @@
         <div class="card" style="max-width: 800px; margin: 0 auto;">
             <h2>Suche in der Fotogalerie</h2>
             <input type="text" id="foto-search" placeholder="Suchbegriff eingeben (min. 3 Zeichen)..." style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; margin-bottom: 1rem; font-family: inherit;">
+            
+            <div id="foto-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
+                <span class="foto-chip" style="background: #000; color: #fff;">99 2321</span>
+                <span class="foto-chip" style="background: #000; color: #fff;">99 2322</span>
+                <span class="foto-chip" style="background: #000; color: #fff;">99 2323</span>
+                <span class="foto-chip" style="background: #000; color: #fff;">99 2324</span>
+                <span class="foto-chip" style="background: #000; color: #fff;">99 331</span>
+                <span class="foto-chip" style="background: #000; color: #fff;">99 332</span>
+                
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Bad Doberan</span>
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Heiligendamm</span>
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Kühlungsborn Ost</span>
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Kühlungsborn West</span>
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Rennbahn</span>
+                
+                <span class="foto-chip" id="foto-chip-year" style="background: #d32f2f; color: #fff;"></span>
+            </div>
             
             <div id="foto-main-view" style="display: none; margin-bottom: 2rem; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 <div style="padding: 1rem; background: #fdfdfd; border-bottom: 1px solid #eee;">
@@ -3270,6 +3298,15 @@
     }
     loadFotos();
 
+    document.getElementById('foto-chip-year').textContent = new Date().getFullYear();
+    document.querySelectorAll('.foto-chip').forEach(chip => {
+        chip.addEventListener('click', (e) => {
+            const input = document.getElementById('foto-search');
+            input.value = e.target.textContent;
+            input.dispatchEvent(new Event('input'));
+        });
+    });
+
     function showMainFoto(index) {
         if (currentFotoMatches.length === 0) return;
         currentFotoIndex = index;
@@ -3307,7 +3344,32 @@
         currentFotoMatches = [];
         
         if (query.length >= 3 && fotosData.length > 0) {
-            currentFotoMatches = fotosData.filter(f => f.text && f.text.toLowerCase().includes(query));
+            const monthMap = {
+                'januar': '.01.',
+                'februar': '.02.',
+                'märz': '.03.',
+                'maerz': '.03.',
+                'april': '.04.',
+                'mai': '.05.',
+                'juni': '.06.',
+                'juli': '.07.',
+                'august': '.08.',
+                'september': '.09.',
+                'oktober': '.10.',
+                'november': '.11.',
+                'dezember': '.12.'
+            };
+            
+            const tokens = query.split(/\s+/).filter(t => t.length > 0);
+            currentFotoMatches = fotosData.filter(f => {
+                const textLower = (f.text || '').toLowerCase();
+                const dateLower = (f.datum || '').toLowerCase();
+                
+                return tokens.every(token => {
+                    const dateToken = monthMap[token] || token;
+                    return textLower.includes(token) || dateLower.includes(dateToken);
+                });
+            });
             
             if (currentFotoMatches.length > 0) {
                 showMainFoto(0);
