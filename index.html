@@ -636,6 +636,7 @@
             });
 
             window.addEventListener('keydown', (e) => {
+                if (document.getElementById('fotos').classList.contains('active')) return;
                 const slider = document.getElementById('sim-time-slider');
                 if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter'].includes(e.key)) {
                     e.preventDefault();
@@ -3672,6 +3673,29 @@
 
     document.getElementById('foto-next-btn').addEventListener('click', () => {
         if (currentFotoIndex < currentFotoMatches.length - 1) showMainFoto(currentFotoIndex + 1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (!document.getElementById('fotos').classList.contains('active')) return;
+        if (document.getElementById('foto-modal-overlay').style.display !== 'none') return;
+        if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') return;
+        }
+        
+        if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+            e.preventDefault();
+            if (currentFotoMatches.length === 0) return;
+            
+            if (e.key === 'ArrowLeft' && currentFotoIndex > 0) {
+                showMainFoto(currentFotoIndex - 1);
+            } else if (e.key === 'ArrowRight' && currentFotoIndex < currentFotoMatches.length - 1) {
+                showMainFoto(currentFotoIndex + 1);
+            } else if (e.key === 'ArrowUp') {
+                showMainFoto(currentFotoMatches.length - 1);
+            } else if (e.key === 'ArrowDown') {
+                showMainFoto(0);
+            }
+        }
     });
 
     document.getElementById('foto-search').addEventListener('input', (e) => {
