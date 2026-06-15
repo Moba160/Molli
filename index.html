@@ -430,10 +430,6 @@
                 <span id="foto-year-chips" style="display: contents;"></span>
             </div>
             
-            <div style="font-size: 0.8rem; color: #ccc; margin-bottom: 1.5rem; text-align: right;">
-                Quellen: Eigene Bilder, <a href="https://eisenbahnstiftung.de/bildergalerie" target="_blank" style="color: #ccc; text-decoration: none;">Eisenbahnstiftung</a>, <a href="https://www.presskurier.de" target="_blank" style="color: #ccc; text-decoration: none;">Preß'-Kurier</a>
-            </div>
-            
             <div id="foto-main-view" style="display: none; margin-bottom: 2rem; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 <div style="padding: 1rem; background: #fdfdfd; border-bottom: 1px solid #eee;">
                     <div id="foto-main-text" style="font-size: 1.1rem; color: #333; font-weight: normal;"></div>
@@ -3641,9 +3637,14 @@
         const m = currentFotoMatches[index];
         
         document.getElementById('foto-main-view').style.display = 'block';
-        document.getElementById('foto-main-text').textContent = m.text;
-        document.getElementById('foto-main-datum').textContent = m.datum || '';
-        document.getElementById('foto-main-link').href = m.artikel;
+        document.getElementById('foto-main-text').innerHTML = m.text;
+        
+        let datumText = m.datum || '';
+        if (m.quelle) {
+            datumText += (datumText ? ' | ' : '') + `Quelle: <span style="color:#666;">${m.quelle}</span>`;
+        }
+        document.getElementById('foto-main-datum').innerHTML = datumText;
+        document.getElementById('foto-main-link').href = m.artikel || m.foto;
         document.getElementById('foto-main-img').src = m.foto;
         
         document.getElementById('foto-counter').textContent = `${index + 1} / ${currentFotoMatches.length}`;
@@ -3769,6 +3770,9 @@ function updateFotoModalView() {
     const f = currentModalFotos[currentModalIndex];
     document.getElementById('foto-modal-img').src = f.foto;
     let text = `<b>${f.datum || ''}</b> ${f.zeit || ''}`;
+    if (f.text) text += `<br>${f.text}`;
+    if (f.quelle) text += `<br><span style="font-size:12px; color:#888;">Quelle: ${f.quelle}</span>`;
+    
     if (currentModalFotos.length > 1) {
         text += ` <span style="color:#888; font-size:12px; margin-left:10px;">(${currentModalIndex + 1} von ${currentModalFotos.length})</span>`;
         document.getElementById('foto-modal-prev').style.display = 'block';
