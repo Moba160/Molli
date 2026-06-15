@@ -75,17 +75,21 @@ def scrape_fotos():
                         break
 
             if img_el:
-                img_src = img_el.get('src', '')
+                img_src = img_el.get('data-srcset', '')
+                if img_src:
+                    img_src = img_src.split(',')[0].strip().split(' ')[0]
+                else:
+                    img_src = img_el.get('src', '')
+                    
                 if img_src.startswith('/'):
                     img_src = BASE_URL + img_src
                 
-                text = ''
-                figure = img_el.find_parent('figure')
-                if figure and figure.find('figcaption'):
-                    text = figure.find('figcaption').get_text(strip=True)
-                else:
-                    text = img_el.get('alt') or img_el.get('title') or ''
-                    if not text:
+                text = img_el.get('title') or img_el.get('alt') or ''
+                if not text:
+                    figure = img_el.find_parent('figure')
+                    if figure and figure.find('figcaption'):
+                        text = figure.find('figcaption').get_text(strip=True)
+                    else:
                         h1 = art_soup.find('h1')
                         if h1: text = h1.get_text(strip=True)
                 
@@ -96,6 +100,11 @@ def scrape_fotos():
                 date_el = art_soup.select_one('.field--name-field-date') or art_soup.find('time')
                 if date_el:
                     datum = date_el.get_text(strip=True)
+                    
+                # Try to extract date from text if it has the format " | DD.MM.YYYY"
+                m_date = re.search(r'\|\s*(\d{2}\.\d{2}\.\d{4})\s*\|?', text)
+                if m_date:
+                    datum = m_date.group(1)
                 
                 print(f" -> Foto gefunden: {img_src}")
                 
