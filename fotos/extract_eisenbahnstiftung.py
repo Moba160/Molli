@@ -24,10 +24,11 @@ def extract_photos():
 
     existing_urls = set()
     for f in fotos_data:
-        if 'foto' in f:
+        if f.get('quelle') == 'Eisenbahnstiftung' and 'foto' in f:
             existing_urls.add(f['foto'])
 
     new_fotos_count = 0
+    found_urls = set()
 
     for keyword in KEYWORDS:
         print(f"\nSuche nach: {keyword}...")
@@ -72,6 +73,13 @@ def extract_photos():
             # Kombiniere zu einem Text
             text = f"<b>{title_text}</b><br>{alt_text}" if title_text else alt_text
             
+            # P\u00fcfe auf exakte \u00dcbereinstimmung des Suchbegriffs (vermeidet 99 3311 bei Suche nach 99 331)
+            search_pattern = r'\b' + re.escape(keyword) + r'\b'
+            if not (re.search(search_pattern, title_text, re.IGNORECASE) or re.search(search_pattern, alt_text, re.IGNORECASE)):
+                continue
+                
+            found_urls.add(full_img_url)
+            
             if full_img_url in existing_urls:
                 continue
                 
@@ -96,7 +104,14 @@ def extract_photos():
             safe_print = title_text.encode('ascii', 'replace').decode('ascii')
             print(f"Neu gefunden: {safe_print}")
 
-    if new_fotos_count > 0:
+    # Entferne alte Eintr\u00e4ge, die nicht mehr gefunden wurden
+    original_count = len(fotos_data)
+    fotos_data = [f for f in fotos_data if f.get('quelle') != 'Eisenbahnstiftung' or f.get('foto') in found_urls]
+    removed_count = original_count - len(fotos_data)
+
+    if new_fotos_count > 0 or removed_count > 0:
+        if removed_count > 0:
+            print(f"\nEntferne {removed_count} nicht mehr vorhandene Fotos.")
         print(f"\nSpeichere {new_fotos_count} neue Fotos in {YAML_FILE}...")
         # Custom dumper to format yaml nicely
         class Dumper(yaml.Dumper):

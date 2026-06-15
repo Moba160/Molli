@@ -112,7 +112,8 @@ def scrape_fotos():
                     'datum': datum,
                     'text': text,
                     'artikel': url,
-                    'foto': img_src
+                    'foto': img_src,
+                    'quelle': "Preß'-Kurier"
                 })
                 
                 newly_added += 1
@@ -123,15 +124,36 @@ def scrape_fotos():
         except Exception as e:
             print(f"Fehler beim Verarbeiten von {url}: {e}")
 
-    if newly_added > 0:
-        print(f"Speichere {newly_added} neue Einträge in index.yaml...")
+    # Update existing entries with quelle and remove obsolete ones
+    original_count = len(existing_data)
+    
+    def is_presskurier(item):
+        return 'presskurier.de' in item.get('artikel', '') or 'presskurier.de' in item.get('foto', '') or item.get('quelle') == "Preß'-Kurier"
+        
+    filtered_data = []
+    for item in existing_data:
+        if is_presskurier(item):
+            # If it's a presskurier item, it MUST be in article_links to be kept
+            if item.get('artikel') in article_links:
+                item['quelle'] = "Preß'-Kurier"
+                filtered_data.append(item)
+        else:
+            filtered_data.append(item)
+            
+    existing_data = filtered_data
+    removed = original_count - len(existing_data)
+
+    if newly_added > 0 or removed > 0:
+        if removed > 0:
+            print(f"Entferne {removed} nicht mehr verlinkte Artikel.")
+        print(f"Speichere neue Einträge in index.yaml...")
         with open(YAML_PATH, 'w', encoding='utf-8') as f:
             yaml_str = yaml.dump(existing_data, allow_unicode=True, default_flow_style=False, sort_keys=False)
             yaml_str = yaml_str.replace('\n- ', '\n\n- ')
             f.write(yaml_str)
         print("Fertig.")
     else:
-        print("Keine neuen Fotos gefunden. YAML ist aktuell.")
+        print("Keine neuen Fotos gefunden und keine entfernt. YAML ist aktuell.")
         if not os.path.exists(YAML_PATH):
             with open(YAML_PATH, 'w', encoding='utf-8') as f:
                 f.write("[]\n")
