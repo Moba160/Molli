@@ -399,13 +399,17 @@
                 <span class="foto-chip" style="background: #000; color: #fff;">99 331</span>
                 <span class="foto-chip" style="background: #000; color: #fff;">99 332</span>
                 
-                <span class="foto-chip" style="background: #0056b3; color: #fff;">Bad Doberan</span>
-                <span class="foto-chip" style="background: #0056b3; color: #fff;">Heiligendamm</span>
-                <span class="foto-chip" style="background: #0056b3; color: #fff;">Kühlungsborn Ost</span>
                 <span class="foto-chip" style="background: #0056b3; color: #fff;">Kühlungsborn West</span>
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Kühlungsborn Mitte</span>
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Kühlungsborn Ost</span>
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Steilküste</span>
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Heiligendamm</span>
                 <span class="foto-chip" style="background: #0056b3; color: #fff;">Rennbahn</span>
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Bad Doberan Goethestraße</span>
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Bad Doberan Stadtmitte</span>
+                <span class="foto-chip" style="background: #0056b3; color: #fff;">Bad Doberan Bahnhof</span>
                 
-                <span class="foto-chip" id="foto-chip-year" style="background: #d32f2f; color: #fff;"></span>
+                <span id="foto-year-chips" style="display: contents;"></span>
             </div>
             
             <div id="foto-main-view" style="display: none; margin-bottom: 2rem; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
@@ -413,13 +417,15 @@
                     <div id="foto-main-text" style="font-size: 1.1rem; color: #333; font-weight: 600;"></div>
                     <div id="foto-main-datum" style="font-size: 0.85rem; color: #777; margin-top: 0.3rem;"></div>
                 </div>
-                <div style="position: relative; width: 100%; height: 400px; background: #000; display: flex; align-items: center; justify-content: center;">
-                    <button id="foto-prev-btn" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.7); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;">&#10094;</button>
-                    <a id="foto-main-link" href="#" target="_blank" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-                        <img id="foto-main-img" src="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                    </a>
-                    <button id="foto-next-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.7); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;">&#10095;</button>
-                    <div id="foto-counter" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;"></div>
+                <div style="width: 100%; display: flex; justify-content: center; background: #000; padding: 0;">
+                    <div style="position: relative; display: inline-block; max-width: 100%;">
+                        <button id="foto-prev-btn" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 15px 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s;">&#10094;</button>
+                        <a id="foto-main-link" href="#" target="_blank" style="display: block;">
+                            <img id="foto-main-img" src="" style="max-width: 100%; height: auto; max-height: 70vh; display: block; object-fit: contain;">
+                        </a>
+                        <button id="foto-next-btn" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 15px 10px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s;">&#10095;</button>
+                        <div id="foto-counter" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; pointer-events: none;"></div>
+                    </div>
                 </div>
             </div>
             
@@ -3287,25 +3293,50 @@
 
     async function loadFotos() {
         try {
-            const res = await fetch('fotos/index.yaml');
-            if (res.ok) {
-                const text = await res.text();
-                fotosData = jsyaml.load(text) || [];
-            }
-        } catch (e) {
-            console.error("Fehler beim Laden der Fotos YAML:", e);
-        }
-    }
-    loadFotos();
-
-    document.getElementById('foto-chip-year').textContent = new Date().getFullYear();
-    document.querySelectorAll('.foto-chip').forEach(chip => {
-        chip.addEventListener('click', (e) => {
+    document.getElementById('foto-chips').addEventListener('click', (e) => {
+        if (e.target.classList.contains('foto-chip')) {
             const input = document.getElementById('foto-search');
             input.value = e.target.textContent;
             input.dispatchEvent(new Event('input'));
-        });
+        }
     });
+
+    function populateYearChips() {
+        const yearSet = new Set();
+        fotosData.forEach(f => {
+            if (f.datum) {
+                const match = f.datum.match(/\b(19|20)\d{2}\b/);
+                if (match) yearSet.add(match[0]);
+            }
+        });
+        const years = Array.from(yearSet).sort((a,b) => b - a);
+        const container = document.getElementById('foto-year-chips');
+        container.innerHTML = '';
+        years.forEach(yr => {
+            const span = document.createElement('span');
+            span.className = 'foto-chip';
+            span.style.cssText = 'background: #d32f2f; color: #fff;';
+            span.textContent = yr;
+            container.appendChild(span);
+        });
+    }
+
+    function loadFotos() {
+        if (!fotosData || fotosData.length === 0) {
+            fetch('fotos/index.yaml')
+                .then(res => res.text())
+                .then(text => {
+                    fotosData = jsyaml.load(text);
+                    if (!fotosData) fotosData = [];
+                    populateYearChips();
+                })
+                .catch(err => {
+                    console.error("Fehler beim Laden der Fotos:", err);
+                    fotosData = [];
+                });
+        }
+    }
+    loadFotos();
 
     function showMainFoto(index) {
         if (currentFotoMatches.length === 0) return;
