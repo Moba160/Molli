@@ -1,7 +1,13 @@
 import os
 import glob
 import yaml
+import yaml
 import exifread
+try:
+    from PIL import Image, ExifTags
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
 
 def convert_to_degrees(value):
     """Helper function to convert the GPS coordinates stored in the EXIF to degrees in float format"""
@@ -47,6 +53,33 @@ def extract_exif_data(filepath):
     except Exception as e:
         print(f"Error reading {filepath}: {e}")
     return metadata
+    return metadata
+
+def create_thumbnail(filepath):
+    if not HAS_PIL:
+        return None
+    thumb_path = filepath.rsplit('.', 1)[0] + '_thumb.jpg'
+    if not os.path.exists(thumb_path):
+        try:
+            with Image.open(filepath) as img:
+                exif = img._getexif()
+                if exif is not None:
+                    for orientation in ExifTags.TAGS.keys():
+                        if ExifTags.TAGS[orientation] == 'Orientation':
+                            break
+                    if orientation in exif:
+                        if exif[orientation] == 3:
+                            img = img.rotate(180, expand=True)
+                        elif exif[orientation] == 6:
+                            img = img.rotate(270, expand=True)
+                        elif exif[orientation] == 8:
+                            img = img.rotate(90, expand=True)
+                img.thumbnail((300, 300))
+                img.save(thumb_path, "JPEG", quality=85)
+        except Exception as e:
+            print(f"Error creating thumbnail for {filepath}: {e}")
+            return None
+    return thumb_path
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -64,7 +97,9 @@ def main():
     # Map for easy lookup
     foto_map = {entry['foto']: entry for entry in existing_data if 'foto' in entry}
     
-    jpg_files = glob.glob("*.jpg") + glob.glob("*.jpeg") + glob.glob("*.JPG") + glob.glob("*.JPEG")
+    jpg_files = []
+    for ext in ("*.jpg", "*.jpeg", "*.JPG", "*.JPEG"):
+        jpg_files.extend([f for f in glob.glob(ext) if not f.endswith("_thumb.jpg") and not f.endswith("_thumb.jpeg") and not f.endswith("_thumb.JPG") and not f.endswith("_thumb.JPEG")])
     
     updated_count = 0
     new_count = 0
@@ -72,23 +107,28 @@ def main():
     for filename in jpg_files:
         filepath = filename
         exif_data = extract_exif_data(filepath)
+        thumb_path = create_thumbnail(filepath)
+        thumb_ref = f"fotos/Frank/{os.path.basename(thumb_path)}" if thumb_path else None
         
         foto_ref = f"fotos/Frank/{filename}"
         
         if foto_ref in foto_map:
+            # Update existing
             entry = foto_map[foto_ref]
-            # Update missing attributes
             if 'datum' in exif_data and not entry.get('datum'):
                 entry['datum'] = exif_data['datum']
             if 'zeit' in exif_data:
                 entry['zeit'] = exif_data['zeit']
             if 'ort' in exif_data:
                 entry['ort'] = exif_data['ort']
+            if thumb_ref:
+                entry['thumb'] = thumb_ref
             updated_count += 1
         else:
             # Create new entry
             entry = {
                 'foto': foto_ref,
+                'thumb': thumb_ref if thumb_ref else '',
                 'text': "",
                 'artikel': "",
                 'datum': exif_data.get('datum', ''),
