@@ -3622,6 +3622,10 @@
                     if (!fotosData) fotosData = [];
                     document.getElementById('foto-total-count').textContent = `(${fotosData.length})`;
                     populateYearChips();
+                    if (window.location.hash === '#fotos') {
+                        const searchInput = document.getElementById('foto-search');
+                        if (searchInput.value.trim().length < 3) showRandomFoto();
+                    }
                 })
                 .catch(err => {
                     console.error("Fehler beim Laden der Fotos:", err);
@@ -3630,6 +3634,15 @@
         }
     }
     loadFotos();
+
+    function showRandomFoto() {
+        if (!fotosData || fotosData.length === 0) return;
+        currentFotoMatches = fotosData;
+        const rnd = Math.floor(Math.random() * fotosData.length);
+        document.getElementById('foto-thumbnails-title').style.display = 'none';
+        document.getElementById('foto-results').innerHTML = '';
+        showMainFoto(rnd);
+    }
 
     function showMainFoto(index) {
         if (currentFotoMatches.length === 0) return;
@@ -3724,19 +3737,24 @@
             }
         } else {
             countLabel.textContent = fotosData.length ? `(${fotosData.length})` : '';
+            showRandomFoto();
         }
     });
 
     window.addEventListener('hashchange', () => {
         if (window.location.hash === '#fotos') {
             showTab('fotos');
-            document.getElementById('foto-search').focus();
+            const searchInput = document.getElementById('foto-search');
+            searchInput.focus();
+            if (searchInput.value.trim().length < 3) showRandomFoto();
         }
     });
     if (window.location.hash === '#fotos') {
         setTimeout(() => {
             showTab('fotos');
-            document.getElementById('foto-search').focus();
+            const searchInput = document.getElementById('foto-search');
+            searchInput.focus();
+            if (searchInput.value.trim().length < 3) showRandomFoto();
         }, 500);
     }
 
