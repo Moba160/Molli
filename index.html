@@ -385,6 +385,7 @@
                     <g id="svg-train-list"></g>
                     <g id="svg-station-board"></g>
                     <g id="svg-hit-areas"></g>
+                    <g id="svg-fotos"></g>
                 </svg>
             </div>
         </div>
@@ -1273,6 +1274,10 @@
                     });
                     group.addEventListener("mouseout", () => {
                         document.getElementById("zwl-foto-tooltip").style.display = 'none';
+                    });
+                    group.addEventListener("contextmenu", (e) => {
+                        e.preventDefault();
+                        openFotoModal(f.foto, `<b>${f.datum || ''}</b> ${f.zeit || ''}`);
                     });
                     
                     svgFotosGroup.appendChild(group);
@@ -3117,6 +3122,10 @@
                     group.addEventListener("mouseout", () => {
                         document.getElementById("zwl-foto-tooltip").style.display = 'none';
                     });
+                    group.addEventListener("contextmenu", (e) => {
+                        e.preventDefault();
+                        openFotoModal(f.foto, `<b>${f.datum || ''}</b> ${f.zeit || ''}`);
+                    });
                     
                     fotosGroup.appendChild(group);
                 }
@@ -3615,5 +3624,26 @@
 
 </script>
 <div id="zwl-foto-tooltip" style="position: absolute; display: none; background: white; border: 1px solid #ccc; border-radius: 8px; padding: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; pointer-events: none; transform: translate(-50%, -100%); margin-top: -10px;"></div>
+
+<!-- Foto Modal Overlay -->
+<div id="foto-modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center;" onclick="closeFotoModal()">
+    <div style="position: relative; max-width: 90%; max-height: 90%; background: #fff; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center;" onclick="event.stopPropagation()">
+        <button onclick="closeFotoModal()" style="position: absolute; top: -15px; right: -15px; background: #e74c3c; color: white; border: 2px solid white; border-radius: 50%; width: 32px; height: 32px; font-weight: bold; cursor: pointer; z-index: 10000; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">✕</button>
+        <img id="foto-modal-img" src="" style="max-width: 100%; max-height: 80vh; display: block; border-radius: 4px; object-fit: contain;">
+        <div id="foto-modal-text" style="text-align: center; margin-top: 10px; font-size: 15px; color: #333;"></div>
+    </div>
+</div>
+<script>
+function openFotoModal(src, text) {
+    document.getElementById('foto-modal-img').src = src;
+    document.getElementById('foto-modal-text').innerHTML = text;
+    document.getElementById('foto-modal-overlay').style.display = 'flex';
+}
+function closeFotoModal() {
+    document.getElementById('foto-modal-overlay').style.display = 'none';
+    document.getElementById('foto-modal-img').src = '';
+}
+</script>
 </body>
 </html>
+
