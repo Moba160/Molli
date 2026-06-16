@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -1390,14 +1390,23 @@
     (function() {
         const svg = document.getElementById('route-svg');
         if (!svg) return;
+
+        let zoomAnchor = null;   // Ankerpunkt in SVG-Koordinaten (wird beim ersten Scroll gesetzt)
+        let zoomEndTimer = null; // Timer zum Freigeben des Ankerpunkts nach Zoom-Pause
+
         svg.addEventListener('wheel', (e) => {
             if (!window.showFotosOnStrecke) return; // Zoom nur im Fotomodus
             e.preventDefault();
 
             const rect = svg.getBoundingClientRect();
-            // Mausposition relativ zur SVG in viewBox-Koordinaten
-            const mouseXsvg = streckeVB.x + (e.clientX - rect.left) / rect.width  * streckeVB.w;
-            const mouseYsvg = streckeVB.y + (e.clientY - rect.top)  / rect.height * streckeVB.h;
+
+            // Beim ersten Scroll-Event der Session: Cursorposition als Ankerpunkt erfassen
+            if (zoomAnchor === null) {
+                zoomAnchor = {
+                    x: streckeVB.x + (e.clientX - rect.left) / rect.width  * streckeVB.w,
+                    y: streckeVB.y + (e.clientY - rect.top)  / rect.height * streckeVB.h
+                };
+            }
 
             const factor = e.deltaY < 0 ? 0.8 : 1.25; // Rein = 0.8, Raus = 1.25
             let newW = streckeVB.w * factor;
@@ -1407,14 +1416,21 @@
             newW = Math.max(STRECKE_VB_BASE.w / 8, Math.min(STRECKE_VB_BASE.w * 2, newW));
             newH = newW * (STRECKE_VB_BASE.h / STRECKE_VB_BASE.w);
 
-            // Zoom zentriert auf Mauszeiger
-            streckeVB.x = mouseXsvg - (mouseXsvg - streckeVB.x) * (newW / streckeVB.w);
-            streckeVB.y = mouseYsvg - (mouseYsvg - streckeVB.y) * (newH / streckeVB.h);
+            // Ankerpunkt bleibt für die gesamte Zoom-Session zentriert
+            streckeVB.x = zoomAnchor.x - newW / 2;
+            streckeVB.y = zoomAnchor.y - newH / 2;
             streckeVB.w = newW;
             streckeVB.h = newH;
 
             applyStreckeViewBox();
             renderRoute(); // neu clustern mit angepasstem Schwellenwert
+
+            // Nach 500ms ohne Scroll: Ankerpunkt freigeben → nächste Session nutzt neue Cursorposition
+            if (zoomEndTimer) clearTimeout(zoomEndTimer);
+            zoomEndTimer = setTimeout(() => {
+                zoomAnchor = null;
+                zoomEndTimer = null;
+            }, 500);
         }, { passive: false });
     })();
 
